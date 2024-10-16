@@ -17,7 +17,8 @@ function App() {
   // Fetch users from the backend
   const fetchAPI = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/users");
+      const response = await axios.get("http://localhost:8080/users"); // Use this line to run on local machine
+      // const response = await axios.get("/users"); // Use this line to run in the docker container
       setUsers(response.data);
     } 
     catch (error) {
