@@ -4,10 +4,10 @@ WORKDIR /backend
 
 COPY package*.json ./
 
-RUN npm install
+RUN npm install --production
 
 COPY . .
 
 EXPOSE 8080
 
-CMD ["npm", "run", "dev", "-- --host"]
+CMD ["npm", "start"]

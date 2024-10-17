@@ -4,8 +4,8 @@ const { Sequelize } = require("sequelize");
 const cors = require("cors");
 
 const corsOptions = {
-    origin: ["http://localhost:5173", "http://localhost:5000"],
-  };
+    origin: ["http://localhost:5173", "http://localhost:5000", "http://frontend:80", "http://localhost:80", "http://frontend:5000", "http://backend:8080", "http://backend:5001", "http://localhost:8080", "http://localhost:5001"],
+};
 
 app.use(cors(corsOptions));
 
@@ -37,7 +37,7 @@ app.get("/users", async (req, res) => {
         const users = await User.findAll();
         res.status(200).json(users);
     } catch (error) {
-        console.error("Error fetching users:", error);
+        console.error("Error fetching users (backend):", error);
         res.status(500).json({ error: "An error occurred while fetching users" });
     }
 });

@@ -17,12 +17,11 @@ function App() {
   // Fetch users from the backend
   const fetchAPI = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/users"); // Use this line to run on local machine
-      // const response = await axios.get("/users"); // Use this line to run in the docker container
+      const response = await axios.get("http://localhost:5001/users");
       setUsers(response.data);
     } 
     catch (error) {
-      console.error("Error fetching users:", error);
+      console.error("Error fetching users (frontend):", error);
     }
   };
 
