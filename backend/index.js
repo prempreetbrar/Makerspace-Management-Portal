@@ -3,8 +3,9 @@ const app = express();
 const { Sequelize } = require("sequelize");
 const cors = require("cors");
 
+// localhost:{backend port} -> must match left half of line 8 in dockerfile;
 const corsOptions = {
-    origin: ["http://localhost:5173", "http://localhost:5000", "http://frontend:80", "http://localhost:80", "http://frontend:5000", "http://backend:8080", "http://backend:5001", "http://localhost:8080", "http://localhost:5001"],
+    origin: ["http://localhost:5173", "http://localhost:8800", "http://frontend:80", "http://localhost:80", "http://frontend:8800", "http://backend:8080", "http://backend:5001", "http://localhost:8080", "http://localhost:5001"],
 };
 
 app.use(cors(corsOptions));
@@ -41,7 +42,7 @@ app.get("/users", async (req, res) => {
         res.status(500).json({ error: "An error occurred while fetching users" });
     }
 });
-
-app.listen(8080, () => {
-console.log("Server started on port 8080");
+const listenPort = 8080; // must be the same as the LEFT part of the docker backend port. See the docker compose
+app.listen(listenPort, () => {
+console.log(`Server started on port ${listenPort}`);
 });
