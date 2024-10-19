@@ -1,3 +1,7 @@
+/**
+ * Defines the User model representing the User table in the database. 
+ */
+
 const { DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
