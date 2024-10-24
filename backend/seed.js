@@ -6,13 +6,14 @@
  */
 
 const sequelize = require("./config/database");
-const UserModel = require("./models/User");
+const UserModel = require("./models/User").default;
 
 // Import models
 const User = UserModel(sequelize);
 
 // Sync the database and seed data
 // Set the clear = true to erase existing data from your database
+
 const seedDatabase = async (clear = false) => {
     try {
         if (clear) {
