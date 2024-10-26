@@ -6,7 +6,7 @@
  */
 
 const sequelize = require("./config/database");
-const UserModel = require("./models/User").default;
+const UserModel = require("./models/User");
 
 // Import models
 const User = UserModel(sequelize);
@@ -29,9 +29,9 @@ const seedDatabase = async (clear = false) => {
         const userCount = await User.count();
         if (userCount === 0) {
             await User.bulkCreate([
-                {username: "Conner", birthday: "1997-09-07"},
-                {username: "Sid the Kid", birthday: "1989-08-07"},
-                {username: "AM34", birthday: "1998-03-04"},
+                {email: "real_email1@email.com", firstName: "Conner", lastName: "McDavid", userRole: "Premium", password: "passwordpasswordpasswordpasswordpasswordpasswordpasswordpassword"},
+                {email: "real_email2@email.com", firstName: "Sidney", lastName: "Crosby", userRole: "Basic", password: "passwordpasswordpasswordpasswordpasswordpasswordpasswordpassword"},
+                {email: "real_email3@email.com", firstName: "Austin", lastName: "Matthews", userRole: "Premium", password: "passwordpasswordpasswordpasswordpasswordpasswordpasswordpassword"},
             ]);
             console.log("Seeded user table");
         } 

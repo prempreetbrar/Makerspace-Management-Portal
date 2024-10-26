@@ -6,8 +6,11 @@ import axios from 'axios';
 
 // Define the structure of a User
 type User = {
-  username: string;
-  birthday: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  userRole: string;
+  password: string;
 };
 
 function App() {
@@ -17,7 +20,7 @@ function App() {
   // Fetch users from the backend
   const fetchAPI = async () => {
     try {
-      const response = await axios.get("http://localhost:5001/users");
+      const response = await axios.get("http://localhost:8080/users"); // Change port to 5001 to run on docker
       setUsers(response.data);
     } 
     catch (error) {
@@ -53,8 +56,11 @@ function App() {
           {users.length > 0 ? (
             users.map((user, index) => (
               <div key={index}>
-                <p>Username: {user.username}</p>
-                <p>Birthday: {new Date(user.birthday).toLocaleDateString()}</p>
+                <p>email: {user.email}</p>
+                <p>firstName: {user.firstName}</p>
+                <p>lastName: {user.lastName}</p>
+                <p>userRole: {user.userRole}</p>
+                <p>password: {user.password}</p>
                 <br />
               </div>
             ))

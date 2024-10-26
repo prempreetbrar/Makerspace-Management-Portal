@@ -6,7 +6,7 @@
 const express = require("express");
 const router = express.Router();
 const sequelize = require("../config/database");
-const UserModel = require("../models/User").default(sequelize); // use import instead of this syntax
+const UserModel = require("../models/User")(sequelize); // use import instead of this syntax
 
 // Get all users
 
