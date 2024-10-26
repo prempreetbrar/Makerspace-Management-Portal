@@ -1,4 +1,4 @@
-const DataTypes = require('sequelize');
+const {DataTypes} = require('sequelize');
 module.exports = (sequelize) => {
     const Booking = sequelize.define('Booking', {
         id: 
@@ -10,7 +10,6 @@ module.exports = (sequelize) => {
         userEmail:
         {
             type: DataTypes.STRING(320),
-            allowNull: false,
         },
         equipmentID:
         {
@@ -30,7 +29,6 @@ module.exports = (sequelize) => {
     },
     {
         tableName: 'Bookings',
-        c
     });
     return Booking;
 };

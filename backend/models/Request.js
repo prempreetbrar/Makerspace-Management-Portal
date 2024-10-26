@@ -1,6 +1,6 @@
 const {DataTypes} = require('sequelize');
-const EquipmentModel = require('./Equipment');
-const UserModel = require('./User');
+const Equipment = require('./Equipment');
+const User = require('./User');
 module.exports = (sequelize) => {
     const Request = sequelize.define('Request', {
         id: 
@@ -27,11 +27,16 @@ module.exports = (sequelize) => {
         {
             type: DataTypes.STRING(10),
             defaultValue:'pending',
-            optional
+            validator:
+            {
+                oneOf: ['approved', 'denied', 'pending'],
+            }
         },
     },
     {
         tableName: 'Requests',
     });
+    User.hasMany(Request)
+    Request.belongsTo(User);
     return Request;
 };

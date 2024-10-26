@@ -1,6 +1,6 @@
 const {DataTypes}  = require('sequelize');
 module.exports = (sequelize) => {
-    const Equipment = sequelize.define('Equipment', {
+    const Issue = sequelize.define('Equipment', {
         id: 
         {
             type: DataTypes.UUID,
@@ -8,24 +8,25 @@ module.exports = (sequelize) => {
             autoIncrement: true,
             primaryKey: true,
         },
-        name: 
+        equipmentName: 
         {
             type: DataTypes.STRING(128),
-            allowNull: false,
+            allowNull: true,
         },
         description:
         {
             type: DataTypes.TEXT,
             defaultValue:'',
         },
-        icon:
+        dateSubmitted:
         {
-            type: DataTypes.BLOB, //image asset
-            defaultValue: '',
+            type: DataTypes.DATE
         },
-        equipmentStatus:
+        issueStatus:
         {
-            type: DataTypes.STRING(20),
+            type: DataTypes.BOOLEAN, // resolved or not resolved
+            allowNull: false,
+            defaultValue: false,
         },
         isBookable:
         {
