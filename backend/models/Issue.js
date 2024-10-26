@@ -28,21 +28,9 @@ module.exports = (sequelize) => {
             allowNull: false,
             defaultValue: false,
         },
-        isBookable:
-        {
-            // if false, users need to submit a special request
-            type: DataTypes.BOOLEAN,
-            defaultValue: true,
-            allowNull: false,
-        },
-        isPremium:
-        {
-            type: DataTypes.BOOLEAN,
-            defaultValue: false,
-        },
     },
     {
-        tableName: 'Equipment',
+        tableName: 'Issues',
     });
-    return Equipment;
+    return Issue;
 };
