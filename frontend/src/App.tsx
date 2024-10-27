@@ -3,6 +3,7 @@ import reactLogo from './assets/react.svg';
 import viteLogo from '/vite.svg';
 import './App.css';
 import axios from 'axios';
+import { UUID } from 'crypto';
 
 // Define the structure of a User
 type User = {
@@ -13,23 +14,37 @@ type User = {
   password: string;
 };
 
+type Issue = {
+  id: UUID;
+  equipmentName: string;
+  description: Text;
+  dateSubmitted: Date;
+  issueStatus: Boolean;
+};
+
 function App() {
   const [count, setCount] = useState(0);
   const [users, setUsers] = useState<User[]>([]);
+  const [issues, setIssues] = useState<Issue[]>([]);
 
-  // Fetch users from the backend
+  // Effect hook for fetching data from the backend
   const fetchAPI = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/users"); // Change port to 5001 to run on docker
-      setUsers(response.data);
+      const [usersResponse, issuesResponse] = await Promise.all([
+        axios.get("http://localhost:8080/users"),  // Change port to 5001 to run on docker
+        axios.get("http://localhost:8080/issues")
+      ]);
+
+      setUsers(usersResponse.data);
+      setIssues(issuesResponse.data);
     } 
     catch (error) {
-      console.error("Error fetching users (frontend):", error);
+      console.error("Error fetching data (frontend):", error);
     }
   };
 
   useEffect(() => {
-    fetchAPI(); // Fetch users when the component mounts
+    fetchAPI(); // Fetch data when the component mounts
   }, []);
 
   return (
@@ -50,7 +65,7 @@ function App() {
         <p>
           Edit <code>src/App.tsx</code> and save to test HMR
         </p>
-        {/* Display fetched users */}
+        {/* Display users */}
         <div>
           <h2>Users List</h2>
           {users.length > 0 ? (
@@ -68,6 +83,24 @@ function App() {
             <p>No users found.</p>
           )}
         </div>
+        {/* Display issues */}
+        <div>
+          <h2>Issues List</h2>
+          {issues.length > 0 ? (
+            issues.map((issue, index) => (
+              <div key={index}>
+                <p>id: {issue.id}</p>
+                <p>equipmentName: {issue.equipmentName}</p>
+                <p>description: {issue.description}</p>
+                <p>dateSubmitted: {issue.dateSubmitted.toString()}</p>
+                <p>issueStatus: {issue.issueStatus ? "Resolved" : "Unresolved"}</p>
+                <br />
+              </div>
+            ))
+          ) : (
+            <p>No issues found.</p>
+          )}
+        </div>
       </div>
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
@@ -77,3 +110,4 @@ function App() {
 }
 
 export default App;
+

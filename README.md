@@ -41,7 +41,7 @@ Note that this is not a comprehensive guide and you will likely encounter issues
   - The page should like this:<br>
         ![screenshot](frontend/public/starter_home_page.png)
 
-## Docker containers
+## Docker Containers
 - Confirm that you can run the project on local development servers as detailed above before attempting to run it on Docker
 - Open a terminal and navigate to the project root
 - In frontend/src/App.tsx, set the value of 'response' to match the following: ```const response = await axios.get("http://localhost:5001/users");```

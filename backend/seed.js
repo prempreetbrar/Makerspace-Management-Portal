@@ -5,16 +5,19 @@
  * the 'Add test data to tables' comment.
  */
 
+const { DataTypes, DATE } = require("sequelize");
 const sequelize = require("./config/database");
 const UserModel = require("./models/User");
+const IssueModel = require("./models/Issue");
 
 // Import models
 const User = UserModel(sequelize);
+const Issue = IssueModel(sequelize);
 
 // Sync the database and seed data
 // Set the clear = true to erase existing data from your database
 
-const seedDatabase = async (clear = false) => {
+const seedDatabase = async (clear = true) => {
     try {
         if (clear) {
             // Clear existing data
@@ -34,6 +37,14 @@ const seedDatabase = async (clear = false) => {
                 {email: "real_email3@email.com", firstName: "Austin", lastName: "Matthews", userRole: "Premium", password: "passwordpasswordpasswordpasswordpasswordpasswordpasswordpassword"},
             ]);
             console.log("Seeded user table");
+        }
+        const issueCount = await Issue.count();
+        if (issueCount === 0) {
+            await Issue.bulkCreate([
+                {id: 0, equipmentName: "3D Printer", description: "This machine prints things in three dimensions!", dateSubmitted: new Date(), issueStatus: false},
+                {id: 1, equipmentName: "Vending machine", description: "Get ur snaks here!!!", dateSubmitted: new Date(), issueStatus: true},
+            ]);
+            console.log("Seeded issue table");
         } 
     } 
     catch (error) {
