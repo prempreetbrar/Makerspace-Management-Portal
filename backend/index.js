@@ -9,6 +9,7 @@ const cors = require("cors");
 const seedDatabase = require("./seed");
 const userRoutes = require("./routes/users");
 const issueRoutes = require("./routes/issues");
+const equipmentRoutes = require("./routes/equipment");
 const listenPort = 8080; // must be the same as the LEFT part of the docker backend port. See the docker compose
 
 // localhost:{backend port} -> must match left half of line 8 in dockerfile;
@@ -20,6 +21,7 @@ app.use(cors(corsOptions));
 seedDatabase();
 app.use("/users", userRoutes); //shouldn't this be "users", not "/users"?
 app.use("/issues", issueRoutes);
+app.use("/equipment", equipmentRoutes);
 
 app.listen(listenPort, () => {
 console.log(`Server started on port ${listenPort}`);

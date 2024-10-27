@@ -5,7 +5,7 @@ import './App.css';
 import axios from 'axios';
 import { UUID } from 'crypto';
 
-// Define the structure of a User
+// Define the structure of backend data
 type User = {
   email: string;
   firstName: string;
@@ -22,21 +22,37 @@ type Issue = {
   issueStatus: Boolean;
 };
 
+type Equipment = {
+  id: UUID;
+  name: string;
+  description: string;
+  icon: {
+    type: string;
+    data: number[];
+  };
+  equipmentStatus: string;
+  isBookable: boolean;
+  isPremium: boolean;
+};
+
 function App() {
   const [count, setCount] = useState(0);
   const [users, setUsers] = useState<User[]>([]);
   const [issues, setIssues] = useState<Issue[]>([]);
+  const [equipment, setEquipment] = useState<Equipment[]>([]);
 
   // Effect hook for fetching data from the backend
   const fetchAPI = async () => {
     try {
-      const [usersResponse, issuesResponse] = await Promise.all([
-        axios.get("http://localhost:8080/users"),  // Change port to 5001 to run on docker
-        axios.get("http://localhost:8080/issues")
+      const [usersResponse, issuesResponse, equipmentResponse] = await Promise.all([
+        axios.get("http://localhost:8080/users"),
+        axios.get("http://localhost:8080/issues"),
+        axios.get("http://localhost:8080/equipment")
       ]);
 
       setUsers(usersResponse.data);
       setIssues(issuesResponse.data);
+      setEquipment(equipmentResponse.data);
     } 
     catch (error) {
       console.error("Error fetching data (frontend):", error);
@@ -46,6 +62,12 @@ function App() {
   useEffect(() => {
     fetchAPI(); // Fetch data when the component mounts
   }, []);
+
+  // Helper function to convert icon data to base64
+  const arrayBufferToBase64 = (buffer: number[]) => {
+    const binary = String.fromCharCode(...buffer);
+    return window.btoa(binary);
+  };
 
   return (
     <>
@@ -62,20 +84,18 @@ function App() {
         <button onClick={() => setCount((count) => count + 1)}>
           count is {count}
         </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
+        <p>Edit <code>src/App.tsx</code> and save to test HMR</p>
+
         {/* Display users */}
         <div>
           <h2>Users List</h2>
           {users.length > 0 ? (
             users.map((user, index) => (
               <div key={index}>
-                <p>email: {user.email}</p>
-                <p>firstName: {user.firstName}</p>
-                <p>lastName: {user.lastName}</p>
-                <p>userRole: {user.userRole}</p>
-                <p>password: {user.password}</p>
+                <p>Email: {user.email}</p>
+                <p>First Name: {user.firstName}</p>
+                <p>Last Name: {user.lastName}</p>
+                <p>User Role: {user.userRole}</p>
                 <br />
               </div>
             ))
@@ -83,22 +103,49 @@ function App() {
             <p>No users found.</p>
           )}
         </div>
+
         {/* Display issues */}
         <div>
           <h2>Issues List</h2>
           {issues.length > 0 ? (
             issues.map((issue, index) => (
               <div key={index}>
-                <p>id: {issue.id}</p>
-                <p>equipmentName: {issue.equipmentName}</p>
-                <p>description: {issue.description}</p>
-                <p>dateSubmitted: {issue.dateSubmitted.toString()}</p>
-                <p>issueStatus: {issue.issueStatus ? "Resolved" : "Unresolved"}</p>
+                <p>Equipment Name: {issue.equipmentName}</p>
+                <p>Description: {issue.description}</p>
+                <p>Date Submitted: {new Date(issue.dateSubmitted).toLocaleString()}</p>
+                <p>Status: {issue.issueStatus ? "Resolved" : "Pending"}</p>
                 <br />
               </div>
             ))
           ) : (
             <p>No issues found.</p>
+          )}
+        </div>
+
+        {/* Display equipment */}
+        <div>
+          <h2>Equipment List</h2>
+          {equipment.length > 0 ? (
+            equipment.map((equip, index) => (
+              <div key={index}>
+                <p>Name: {equip.name}</p>
+                <p>Description: {equip.description}</p>
+                <p>Icon: </p>
+                {equip.icon && equip.icon.data && (
+                  <img
+                    src={`data:image/png;base64,${arrayBufferToBase64(equip.icon.data)}`}
+                    alt={`${equip.name} icon`}
+                    style={{ width: '50px', height: '50px' }}
+                  />
+                )}
+                <p>Status: {equip.equipmentStatus}</p>
+                <p>Bookable: {equip.isBookable ? "Yes" : "No"}</p>
+                <p>Premium: {equip.isPremium ? "Yes" : "No"}</p>
+                <br />
+              </div>
+            ))
+          ) : (
+            <p>No equipment found.</p>
           )}
         </div>
       </div>

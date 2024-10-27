@@ -5,12 +5,12 @@
 const express = require("express");
 const router = express.Router();
 const sequelize = require("../config/database");
-const Equipment = require("../models/Equipment")(sequelize);
+const EquipmentModel = require("../models/Equipment")(sequelize);
 
 // Get all Equipment
-router.get("/", async (req, res) => {
+router.get("/", async (_req, res) => {
     try {
-        const equipment = await Equipment.findAll();
+        const equipment = await EquipmentModel.findAll();
         res.status(200).json(equipment);
     } 
     catch (error) {

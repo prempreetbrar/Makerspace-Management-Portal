@@ -9,14 +9,17 @@ const { DataTypes, DATE } = require("sequelize");
 const sequelize = require("./config/database");
 const UserModel = require("./models/User");
 const IssueModel = require("./models/Issue");
+const EquipmentModel = require("./models/Equipment");
+const fs = require("fs");
+const path = require("path");
 
 // Import models
 const User = UserModel(sequelize);
 const Issue = IssueModel(sequelize);
+const Equipment = EquipmentModel(sequelize);
 
 // Sync the database and seed data
 // Set the clear = true to erase existing data from your database
-
 const seedDatabase = async (clear = true) => {
     try {
         if (clear) {
@@ -38,6 +41,7 @@ const seedDatabase = async (clear = true) => {
             ]);
             console.log("Seeded user table");
         }
+
         const issueCount = await Issue.count();
         if (issueCount === 0) {
             await Issue.bulkCreate([
@@ -45,6 +49,15 @@ const seedDatabase = async (clear = true) => {
                 {id: 1, equipmentName: "Vending machine", description: "Get ur snaks here!!!", dateSubmitted: new Date(), issueStatus: true},
             ]);
             console.log("Seeded issue table");
+        }
+
+        const equipmentCount = await Equipment.count();
+        if (equipmentCount === 0) {
+            await Equipment.bulkCreate([
+                {id: 0, name: "3D Printer", description: "This machine prints things in three dimensions!", icon: fs.readFileSync(path.join(__dirname, "icons", "3d_printer.png")), equipmentStatus: "good", isBookable: true, isPremium: true},
+                {id: 1, name: "Stapler", description: "Staples stuff", icon: fs.readFileSync(path.join(__dirname, "icons", "stapler.png")), equipmentStatus: "really good", isBookable: false, isPremium: false},
+            ]);
+            console.log("Seeded equipment table");
         } 
     } 
     catch (error) {
