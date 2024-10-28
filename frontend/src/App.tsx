@@ -3,7 +3,6 @@ import reactLogo from './assets/react.svg';
 import viteLogo from '/vite.svg';
 import './App.css';
 import axios from 'axios';
-import { UUID } from 'crypto';
 
 // Define the structure of backend data
 type User = {
@@ -15,7 +14,7 @@ type User = {
 };
 
 type Issue = {
-  id: UUID;
+  id: number;
   equipmentName: string;
   description: Text;
   dateSubmitted: Date;
@@ -23,7 +22,7 @@ type Issue = {
 };
 
 type Equipment = {
-  id: UUID;
+  id: number;
   name: string;
   description: string;
   icon: {
@@ -35,24 +34,35 @@ type Equipment = {
   isPremium: boolean;
 };
 
+type Booking = {
+  id: number;
+  userEmail: string;
+  equipmentID: number;
+  bookingDateTime: Date;
+  bookingDuration: number;
+};
+
 function App() {
   const [count, setCount] = useState(0);
   const [users, setUsers] = useState<User[]>([]);
   const [issues, setIssues] = useState<Issue[]>([]);
   const [equipment, setEquipment] = useState<Equipment[]>([]);
+  const [bookings, setBookings] = useState<Booking[]>([]);
 
   // Effect hook for fetching data from the backend
   const fetchAPI = async () => {
     try {
-      const [usersResponse, issuesResponse, equipmentResponse] = await Promise.all([
+      const [usersResponse, issuesResponse, equipmentResponse, bookingsResponse] = await Promise.all([
         axios.get("http://localhost:8080/users"),
         axios.get("http://localhost:8080/issues"),
-        axios.get("http://localhost:8080/equipment")
+        axios.get("http://localhost:8080/equipment"),
+        axios.get("http://localhost:8080/bookings")
       ]);
 
       setUsers(usersResponse.data);
       setIssues(issuesResponse.data);
       setEquipment(equipmentResponse.data);
+      setBookings(bookingsResponse.data);
     } 
     catch (error) {
       console.error("Error fetching data (frontend):", error);
@@ -61,6 +71,7 @@ function App() {
 
   useEffect(() => {
     fetchAPI(); // Fetch data when the component mounts
+    console.log(bookings);
   }, []);
 
   // Helper function to convert icon data to base64
@@ -146,6 +157,25 @@ function App() {
             ))
           ) : (
             <p>No equipment found.</p>
+          )}
+        </div>
+
+        {/* Display bookings */}
+        <div>
+          <h2>Bookings List</h2>
+          {bookings.length > 0 ? (
+            bookings.map((booking, index) => (
+              <div key={index}>
+                <p>Booking ID: {booking.id}</p>
+                <p>User Email: {booking.userEmail}</p>
+                <p>Equipment ID: {booking.equipmentID}</p>
+                <p>Booking Date Time: {new Date(booking.bookingDateTime).toLocaleString()}</p>
+                <p>Booking Duration: {booking.bookingDuration} hours</p>
+                <br />
+              </div>
+            ))
+          ) : (
+            <p>No bookings found.</p>
           )}
         </div>
       </div>
