@@ -1,12 +1,13 @@
 const {DataTypes} = require('sequelize');
 const Equipment = require('./Equipment');
-const User = require('./User');
 module.exports = (sequelize) => {
+    const User = require('./User')(sequelize);
     const Request = sequelize.define('Request', {
         id: 
         {
-            type: DataTypes.UUID,
-            defaultValue: DataTypes.UUIDV4,
+            type: DataTypes.INTEGER,
+            defaultValue: DataTypes.INTEGER(),
+            autoIncrement: true,
             primaryKey: true,
         },
         userEmail:
@@ -36,7 +37,7 @@ module.exports = (sequelize) => {
     {
         tableName: 'Requests',
     });
-    User.hasMany(Request)
-    Request.belongsTo(User);
+    User.hasMany(Request, { foreignKey: 'userEmail', sourceKey: 'email' });
+    Request.belongsTo(User, { foreignKey: 'userEmail', targetKey: 'email' });
     return Request;
 };
