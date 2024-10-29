@@ -3,10 +3,10 @@ module.exports = (sequelize) => {
     const Equipment = sequelize.define('Equipment', {
         id: 
         {
-            type: DataTypes.INTEGER,
-            defaultValue: DataTypes.INTEGER(),
-            autoIncrement: true,
-            primaryKey: true,
+          type: DataTypes.INTEGER,
+          defaultValue: DataTypes.INTEGER(),
+          autoIncrement: true,
+          primaryKey: true,
         },
         name: 
         {

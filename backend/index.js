@@ -10,6 +10,8 @@ const seedDatabase = require("./seed");
 const userRoutes = require("./routes/users");
 const issueRoutes = require("./routes/issues");
 const equipmentRoutes = require("./routes/equipment");
+const bookingRoutes = require("./routes/bookings");
+const requestRoutes = require("./routes/requests");
 const listenPort = 8080; // must be the same as the LEFT part of the docker backend port. See the docker compose
 
 // localhost:{backend port} -> must match left half of line 8 in dockerfile;
@@ -22,6 +24,8 @@ seedDatabase();
 app.use("/users", userRoutes); //shouldn't this be "users", not "/users"?
 app.use("/issues", issueRoutes);
 app.use("/equipment", equipmentRoutes);
+app.use("/bookings", bookingRoutes);
+app.use("/requests", requestRoutes);
 
 app.listen(listenPort, () => {
 console.log(`Server started on port ${listenPort}`);

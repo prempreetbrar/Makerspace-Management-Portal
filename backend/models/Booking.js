@@ -1,13 +1,12 @@
-const {DataTypes} = require('sequelize');
-const EquipmentModel = require('./Equipment');
-const UserModel = require('./User');
+const {DataTypes, INTEGER} = require('sequelize');
 module.exports = (sequelize) => {
     const Booking = sequelize.define('Booking', {
         id: 
         {
-            type: DataTypes.UUID,
-            defaultValue: DataTypes.UUIDV4,
-            primaryKey: true,
+          type: DataTypes.INTEGER,
+          defaultValue: DataTypes.INTEGER(),
+          autoIncrement: true,
+          primaryKey: true,
         },
         userEmail:
         {
@@ -15,7 +14,7 @@ module.exports = (sequelize) => {
         },
         equipmentID:
         {
-            type: DataTypes.UUID,
+            type: DataTypes.INTEGER,
             allowNull: false,
         },
         bookingDateTime:
