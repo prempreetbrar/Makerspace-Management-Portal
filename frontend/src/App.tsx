@@ -61,11 +61,11 @@ function App() {
   const fetchAPI = async () => {
     try {
       const [usersResponse, issuesResponse, equipmentResponse, bookingsResponse, requestsResponse] = await Promise.all([
-        axios.get("http://localhost:8080/users"),
-        axios.get("http://localhost:8080/issues"),
-        axios.get("http://localhost:8080/equipment"),
-        axios.get("http://localhost:8080/bookings"),
-        axios.get("http://localhost:8080/requests")
+        axios.get("http://localhost:5001/users"),
+        axios.get("http://localhost:5001/issues"),
+        axios.get("http://localhost:5001/equipment"),
+        axios.get("http://localhost:5001/bookings"),
+        axios.get("http://localhost:5001/requests")
       ]);
 
       setUsers(usersResponse.data);
