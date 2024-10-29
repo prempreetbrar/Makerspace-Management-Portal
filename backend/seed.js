@@ -40,9 +40,9 @@ const seedDatabase = async (clear = true) => {
         const userCount = await User.count();
         if (userCount === 0) {
             await User.bulkCreate([
-                {email: "real_email1@email.com", firstName: "Conner", lastName: "McDavid", userRole: "Premium", password: "passwordpasswordpasswordpasswordpasswordpasswordpasswordpassword"},
-                {email: "real_email2@email.com", firstName: "Sidney", lastName: "Crosby", userRole: "Basic", password: "passwordpasswordpasswordpasswordpasswordpasswordpasswordpassword"},
-                {email: "real_email3@email.com", firstName: "Austin", lastName: "Matthews", userRole: "Premium", password: "passwordpasswordpasswordpasswordpasswordpasswordpasswordpassword"},
+                {email: "real_email1@email.com", firstName: "Conner", lastName: "McDavid", userRole: "Premium", password: "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8"}, // SHA-256 Hash of "password"
+                {email: "real_email2@email.com", firstName: "Sidney", lastName: "Crosby", userRole: "Basic", password: "c0e21a8ff85153deac82fe7f09c0da1b3bd90ac0ae204e78d7148753b4363c03"}, // SHA-256 Hash of "wordpass"
+                {email: "real_email3@email.com", firstName: "Austin", lastName: "Matthews", userRole: "Admin", password: "80d1159c872683756864281692bf8ffa330341cae85c8e188a2bf29edd7adbbe"}, // SHA-256 Hash of "extraSuperStrongP@s$W0Rd!"
             ]);
             console.log("Seeded user table");
         }
@@ -71,8 +71,8 @@ const seedDatabase = async (clear = true) => {
         const bookingCount = await Booking.count();
         if (bookingCount === 0) {
             await Booking.bulkCreate([
-                {id: 0, userEmail: "some_email@gmail.com", equipmentID: 0, bookingDateTime: new Date(), bookingDuration: 3},
-                {id: 1, userEmail: "some_other_email@gmail.com", equipmentID: 1, bookingDateTime: new Date(), bookingDuration: 2},
+                {id: 0, userEmail: "real_email1@gmail.com", equipmentID: 0, bookingDateTime: new Date(), bookingDuration: 3},
+                {id: 1, userEmail: "real_email2@gmail.com", equipmentID: 1, bookingDateTime: new Date(), bookingDuration: 2},
             ]);
             console.log("Seeded booking table");
         }

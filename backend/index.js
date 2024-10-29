@@ -21,7 +21,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 seedDatabase();
-app.use("/users", userRoutes); //shouldn't this be "users", not "/users"?
+app.use("/users", userRoutes); 
 app.use("/issues", issueRoutes);
 app.use("/equipment", equipmentRoutes);
 app.use("/bookings", bookingRoutes);
