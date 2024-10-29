@@ -111,7 +111,7 @@ function App() {
             issues.map((issue, index) => (
               <div key={index}>
                 <p>Equipment Name: {issue.equipmentName}</p>
-                <p>Description: {issue.description}</p>
+                <p>Description: {issue.description.wholeText}</p>
                 <p>Date Submitted: {new Date(issue.dateSubmitted).toLocaleString()}</p>
                 <p>Status: {issue.issueStatus ? "Resolved" : "Pending"}</p>
                 <br />
