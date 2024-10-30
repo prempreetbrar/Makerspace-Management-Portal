@@ -1,0 +1,252 @@
+/* Main container */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+  color: #333;
+  background-color: #f8f9fa;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Navbar */
+.navbar {
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  background-color: #fff;
+  border-bottom: 1px solid #ddd;
+  box-sizing: border-box;
+}
+
+.logo-container {
+  font-size: 1.5rem;
+}
+
+.nav-links {
+  list-style-type: none;
+  display: flex;
+  gap: 20px;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links li a {
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+.nav-links li a:hover {
+  color: #5f5084;
+}
+
+.auth-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+/* Main content layout */
+.content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  padding: 40px;
+  width: 100%;
+  max-width: 1200px;
+  box-sizing: border-box;
+}
+input[type="email"],
+input[type="password"] {
+  width: 100%;
+  max-width: 430px;
+  padding: 12px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  background-color: rgb(216, 216, 216);
+}
+
+/* Illustration */
+.illustration-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-right: 30px;
+}
+
+.illustration.desktop {
+  width: 100%;
+  max-width: 500px;
+  display: block;
+}
+
+.illustration.mobile {
+  width: 100%;
+  max-width: 400px;
+  display: none;
+}
+
+/* Text content */
+.text-content {
+  flex: 1;
+  max-width: 500px;
+  text-align: left;
+}
+
+.heading {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  color: #333;
+  font-weight: bold;
+  line-height: 1.2;
+  white-space: pre-line;
+  max-width: 500px;
+  text-align: left;
+}
+
+.subheading {
+  font-size: 1.2rem;
+  margin-bottom: 30px;
+  color: #555;
+}
+
+/* Buttons */
+.login-button,
+.create-account-button,
+.get-started-button {
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+.auth-buttons2 .login-button,
+.auth-buttons2 .create-account-button {
+  width: 350px;
+}
+
+.login-button {
+  background-color: #5f5084;
+  color: #fff;
+  border: none;
+}
+
+.create-account-button {
+  background-color: #fff;
+  color: #333;
+  border: 1px solid #333;
+}
+
+.get-started-button {
+  background-color: #5f5084;
+  color: #fff;
+  border: none;
+  margin-top: 15px;
+}
+
+/* Hover effects */
+.login-button:hover,
+.get-started-button:hover {
+  background-color: #5a54d1;
+}
+
+.create-account-button:hover {
+  background-color: #f0f0f0;
+}
+
+/* Responsive adjustments */
+@media (min-width: 769px) {
+  /* Desktop styles */
+  .container {
+    background-color: #e6e6fa; /* Light purple color */
+  }
+  .auth-buttons2 {
+    display: none;
+  }
+  .logo-container2 {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Mobile styles */
+  .container {
+    background-color: #f8f9fa; /* Reset to default background color */
+  }
+
+  .navbar {
+    display: none;
+  }
+
+  .illustration.desktop {
+    display: none;
+  }
+
+  .illustration.mobile {
+    display: block;
+    scale: 0.8;
+    margin-bottom: -20px;
+  }
+
+  .content {
+    flex-direction: column;
+    padding: 20px;
+    text-align: center;
+  }
+
+  .nav-links {
+    display: none;
+  }
+
+  .auth-buttons {
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .text-content {
+    text-align: center;
+  }
+
+  .heading {
+    font-size: 1.6rem;
+    text-align: center;
+  }
+  .subheading {
+    display: none;
+  }
+  .get-started-button {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Extra small devices */
+  .heading {
+    font-size: 1.5rem;
+  }
+
+  .subheading {
+    font-size: 0.9rem;
+  }
+
+  .illustration {
+    max-width: 250px;
+  }
+
+  .login-button,
+  .create-account-button,
+  .get-started-button {
+    width: 100%;
+    font-size: 0.9rem;
+  }
+}
