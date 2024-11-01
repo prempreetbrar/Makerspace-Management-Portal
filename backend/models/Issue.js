@@ -1,4 +1,5 @@
 const {DataTypes}  = require('sequelize');
+
 module.exports = (sequelize) => {
     const Issue = sequelize.define('Equipment', {
         id: 

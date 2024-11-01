@@ -49,3 +49,4 @@ Note that this is not a comprehensive guide and you will likely encounter issues
 - Run the containers by running ```docker-compose up```
 - Open a browser and go to http://localhost:8800/
   - The page should look the same as above
+  

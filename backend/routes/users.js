@@ -8,8 +8,6 @@ const sequelize = require("../config/database");
 const UserModel = require("../models/User")(sequelize); // use import instead of this syntax
 
 // Get all users
-
-//Handles http GET
 router.get("/", async (_req, res) => {
     try {
         const users = await UserModel.findAll();
@@ -20,6 +18,5 @@ router.get("/", async (_req, res) => {
         res.status(500).json({ error: "An error occurred while fetching users" });
     }
 });
-
 
 module.exports = router;

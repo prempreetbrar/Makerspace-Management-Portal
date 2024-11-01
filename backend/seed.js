@@ -5,7 +5,6 @@
  * the 'Add test data to tables' comment.
  */
 
-const { DataTypes, DATE } = require("sequelize");
 const sequelize = require("./config/database");
 const fs = require("fs");
 const path = require("path");

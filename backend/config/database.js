@@ -5,7 +5,7 @@
 
 const { Sequelize } = require("sequelize");
 
-// Set up database connection
+// Set up sqlite database connection
 const sequelize = new Sequelize({
     dialect: "sqlite",
     storage: "database.db",

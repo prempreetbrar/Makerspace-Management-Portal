@@ -4,6 +4,7 @@
 
 const DataTypes = require('sequelize');
 const crypto  = require('crypto');
+
 module.exports = (sequelize) => {
     const User = sequelize.define('User', {
         email: 

@@ -12,7 +12,7 @@ const issueRoutes = require("./routes/issues");
 const equipmentRoutes = require("./routes/equipment");
 const bookingRoutes = require("./routes/bookings");
 const requestRoutes = require("./routes/requests");
-const listenPort = 8080; // must be the same as the LEFT part of the docker backend port. See the docker compose
+const listenPort = 8080; // Must be the same as the LEFT part of the docker backend port. See the docker compose
 
 // localhost:{backend port} -> must match left half of line 8 in dockerfile;
 const corsOptions = {

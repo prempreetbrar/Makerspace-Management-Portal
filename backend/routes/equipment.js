@@ -7,7 +7,7 @@ const router = express.Router();
 const sequelize = require("../config/database");
 const EquipmentModel = require("../models/Equipment")(sequelize);
 
-// Get all Equipment
+// Get all equipment
 router.get("/", async (_req, res) => {
     try {
         const equipment = await EquipmentModel.findAll();
