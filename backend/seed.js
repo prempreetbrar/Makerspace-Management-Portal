@@ -13,6 +13,7 @@ const IssueModel = require("./models/Issue");
 const EquipmentModel = require("./models/Equipment");
 const BookingModel = require("./models/Booking");
 const RequestModel = require("./models/Request");
+const AttachmentModel = require("./models/Attachment");
 
 // Import models
 const User = UserModel(sequelize);
@@ -20,6 +21,7 @@ const Issue = IssueModel(sequelize);
 const Equipment = EquipmentModel(sequelize);
 const Booking = BookingModel(sequelize);
 const Request = RequestModel(sequelize);
+const Attachment = AttachmentModel(sequelize);
 
 // invoke code to define relationships
 Object.keys(sequelize.models).forEach((modelName) => {
@@ -114,8 +116,8 @@ const seedDatabase = async (clear = true) => {
         },
         {
           id: 2,
-          equipmentID: 2, // Relates to the Vending Machine
-          description: "Vending machine out of snacks",
+          equipmentID: 2, // Relates to the Stapler
+          description: "Stapler out of staples",
           dateSubmitted: new Date(),
           issueStatus: true,
         },
@@ -158,6 +160,28 @@ const seedDatabase = async (clear = true) => {
         },
       ]);
       console.log("Seeded request table");
+    }
+
+    // Attachments (with relationships to Requests by ID)
+    const attachmentCount = await Attachment.count();
+    if (attachmentCount === 0) {
+      await Attachment.bulkCreate([
+        {
+          id: 1,
+          requestID: 1, // Relates to the first request
+          file: fs.readFileSync(
+            path.join(__dirname, "attachments", "3d_printer_manual.pdf")
+          ),
+        },
+        {
+          id: 2,
+          requestID: 2, // Relates to the second request
+          file: fs.readFileSync(
+            path.join(__dirname, "attachments", "stapler.jpg")
+          ),
+        },
+      ]);
+      console.log("Seeded attachment table");
     }
   } catch (error) {
     console.error("Error seeding database:", error);
