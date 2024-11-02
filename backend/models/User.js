@@ -51,10 +51,39 @@ module.exports = (sequelize) => {
       },
     },
     {
-      tableName: "Users",
+      tableName: "User",
       // timestamp for creation and updates are automatically added.
     }
   );
+
+  /*
+    Sequelize only needs Model.belongsTo. The reason we've defined it inside of a method
+    is because we can call this method after all models have been loaded in the code. If we put
+    this code outside of a method, Sequelize tries to create the association as it's defining the method,
+    leading to circular reference issues where
+
+    Model A tries to import B
+    Model B tries to import A
+
+    even though neither have been fully defined in the code.
+
+    The name .associate is random, it could be anything. It's just a method we call. 
+  */
+  User.associate = (models) => {
+    User.hasMany(models.Request, {
+      foreignKey: "userEmail",
+      as: "Requests",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
+    });
+
+    User.hasMany(models.Booking, {
+      foreignKey: "userEmail",
+      as: "Bookings",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
+    });
+  };
 
   return User;
 };
