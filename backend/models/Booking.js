@@ -43,6 +43,24 @@ module.exports = (sequelize) => {
             );
           }
         },
+        async userCanBookPremiumEquipment() {
+          const Equipment = sequelize.models.Equipment;
+          const User = sequelize.models.User;
+
+          const equipment = await Equipment.findByPk(this.equipmentID);
+          const user = await User.findByPk(this.userEmail);
+
+          if (!equipment) {
+            throw new Error("Equipment not found");
+          }
+          if (!user) {
+            throw new Error("User not found");
+          }
+
+          if (equipment.isPremium && user.userRole !== "Premium") {
+            throw new Error("Only premium users can book premium equipment.");
+          }
+        },
       },
     }
   );
