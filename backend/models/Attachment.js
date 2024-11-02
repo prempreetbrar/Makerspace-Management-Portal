@@ -16,7 +16,8 @@ module.exports = (sequelize) => {
       },
       // relative path to file in a designated directory.
       file: {
-        type: DataTypes.STRING(320),
+        type: DataTypes.BLOB, // any sort of file asset
+        defaultValue: "",
         allowNull: false,
       },
     },
