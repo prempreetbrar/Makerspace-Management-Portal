@@ -145,13 +145,15 @@ const seedDatabase = async (clear = true) => {
         {
           id: 1,
           userEmail: "real_email1@email.com", // Relates to Connor McDavid
-          description: "Gimme that machine",
+          equipmentID: 1,
+          description: "I'd like to use the 3D printer",
           status: "approved",
         },
         {
           id: 2,
           userEmail: "real_email3@email.com", // Relates to Austin Matthews
-          description: "I likes it and I wants it",
+          equipmentID: 2,
+          description: "I'd like to use the stapler",
           status: "pending",
         },
       ]);
