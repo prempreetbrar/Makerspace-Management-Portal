@@ -21,6 +21,13 @@ const Equipment = EquipmentModel(sequelize);
 const Booking = BookingModel(sequelize);
 const Request = RequestModel(sequelize);
 
+// invoke code to define relationships
+Object.keys(sequelize.models).forEach((modelName) => {
+  if (sequelize.models[modelName].associate) {
+    sequelize.models[modelName].associate(sequelize.models);
+  }
+});
+
 // Sync the database and seed data
 // Set the clear = true to erase existing data from your database
 const seedDatabase = async (clear = true) => {
