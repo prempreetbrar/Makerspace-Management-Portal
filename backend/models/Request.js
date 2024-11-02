@@ -67,6 +67,13 @@ module.exports = (sequelize) => {
       onDelete: "CASCADE",
       onUpdate: "CASCADE",
     });
+
+    Request.hasMany(models.Attachment, {
+      foreignKey: "requestID",
+      as: "Attachments",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
+    });
   };
 
   return Request;
