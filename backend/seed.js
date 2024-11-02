@@ -134,13 +134,6 @@ const seedDatabase = async (clear = true) => {
           bookingDateTime: new Date(),
           bookingDuration: 3,
         },
-        {
-          id: 2,
-          userEmail: "real_email2@email.com", // Relates to Sidney Crosby
-          equipmentID: 2, // Relates to the Vending Machine
-          bookingDateTime: new Date(),
-          bookingDuration: 2,
-        },
       ]);
       console.log("Seeded booking table");
     }
