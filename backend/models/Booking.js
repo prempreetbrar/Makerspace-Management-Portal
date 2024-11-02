@@ -28,6 +28,22 @@ module.exports = (sequelize) => {
     },
     {
       tableName: "Booking",
+      validate: {
+        async equipmentIsBookable() {
+          const Equipment = sequelize.models.Equipment;
+          const equipment = await Equipment.findByPk(this.equipmentID);
+
+          if (!equipment) {
+            throw new Error("Equipment not found");
+          }
+
+          if (!equipment.isBookable) {
+            throw new Error(
+              "Booking cannot be created. The equipment is not bookable."
+            );
+          }
+        },
+      },
     }
   );
 
@@ -59,5 +75,6 @@ module.exports = (sequelize) => {
       onUpdate: "CASCADE",
     });
   };
+
   return Booking;
 };
