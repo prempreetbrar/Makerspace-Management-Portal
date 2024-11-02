@@ -34,7 +34,7 @@ module.exports = (sequelize) => {
   /*
     Sequelize only needs Model.belongsTo. The reason we've defined it inside of a method
     is because we can call this method after all models have been loaded in the code. If we put
-    this code outside of a method, Sequelize tries to create the association as it's defining the method,
+    this code outside of a method, Sequelize tries to create the association as it's invoking the code,
     leading to circular reference issues where
 
     Model A tries to import B
