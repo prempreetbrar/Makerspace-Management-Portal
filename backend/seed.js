@@ -47,52 +47,30 @@ const seedDatabase = async (clear = true) => {
       await User.bulkCreate([
         {
           email: "real_email1@email.com",
-          firstName: "Conner",
+          firstName: "Connor",
           lastName: "McDavid",
           userRole: "Premium",
           password:
-            "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8",
-        }, // SHA-256 Hash of "password"
+            "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8", // SHA-256 Hash of "password"
+        },
         {
           email: "real_email2@email.com",
           firstName: "Sidney",
           lastName: "Crosby",
           userRole: "Basic",
           password:
-            "c0e21a8ff85153deac82fe7f09c0da1b3bd90ac0ae204e78d7148753b4363c03",
-        }, // SHA-256 Hash of "wordpass"
+            "c0e21a8ff85153deac82fe7f09c0da1b3bd90ac0ae204e78d7148753b4363c03", // SHA-256 Hash of "wordpass"
+        },
         {
           email: "real_email3@email.com",
           firstName: "Austin",
           lastName: "Matthews",
           userRole: "Admin",
           password:
-            "80d1159c872683756864281692bf8ffa330341cae85c8e188a2bf29edd7adbbe",
-        }, // SHA-256 Hash of "extraSuperStrongP@s$W0Rd!"
+            "80d1159c872683756864281692bf8ffa330341cae85c8e188a2bf29edd7adbbe", // SHA-256 Hash of "extraSuperStrongP@s$W0Rd!"
+        },
       ]);
       console.log("Seeded user table");
-    }
-
-    // Issues
-    const issueCount = await Issue.count();
-    if (issueCount === 0) {
-      await Issue.bulkCreate([
-        {
-          id: 0,
-          equipmentName: "3D Printer",
-          description: "This machine prints things in three dimensions!",
-          dateSubmitted: new Date(),
-          issueStatus: false,
-        },
-        {
-          id: 1,
-          equipmentName: "Vending machine",
-          description: "Get ur snaks here!!!",
-          dateSubmitted: new Date(),
-          issueStatus: true,
-        },
-      ]);
-      console.log("Seeded issue table");
     }
 
     // Equipment
@@ -100,7 +78,7 @@ const seedDatabase = async (clear = true) => {
     if (equipmentCount === 0) {
       await Equipment.bulkCreate([
         {
-          id: 0,
+          id: 1,
           name: "3D Printer",
           description: "This machine prints things in three dimensions!",
           icon: fs.readFileSync(
@@ -111,7 +89,7 @@ const seedDatabase = async (clear = true) => {
           isPremium: true,
         },
         {
-          id: 1,
+          id: 2,
           name: "Stapler",
           description: "Staples stuff",
           icon: fs.readFileSync(path.join(__dirname, "icons", "stapler.png")),
@@ -123,21 +101,43 @@ const seedDatabase = async (clear = true) => {
       console.log("Seeded equipment table");
     }
 
-    // Bookings
+    // Issues (with relationships to Equipment by ID)
+    const issueCount = await Issue.count();
+    if (issueCount === 0) {
+      await Issue.bulkCreate([
+        {
+          id: 1,
+          equipmentID: 1, // Relates to the 3D Printer
+          description: "3D printer nozzle clogged",
+          dateSubmitted: new Date(),
+          issueStatus: false,
+        },
+        {
+          id: 2,
+          equipmentID: 2, // Relates to the Vending Machine
+          description: "Vending machine out of snacks",
+          dateSubmitted: new Date(),
+          issueStatus: true,
+        },
+      ]);
+      console.log("Seeded issue table");
+    }
+
+    // Bookings (with relationships to Equipment and User by ID)
     const bookingCount = await Booking.count();
     if (bookingCount === 0) {
       await Booking.bulkCreate([
         {
-          id: 0,
-          userEmail: "real_email1@gmail.com",
-          equipmentID: 0,
+          id: 1,
+          userEmail: "real_email1@email.com", // Relates to Connor McDavid
+          equipmentID: 1, // Relates to the 3D Printer
           bookingDateTime: new Date(),
           bookingDuration: 3,
         },
         {
-          id: 1,
-          userEmail: "real_email2@gmail.com",
-          equipmentID: 1,
+          id: 2,
+          userEmail: "real_email2@email.com", // Relates to Sidney Crosby
+          equipmentID: 2, // Relates to the Vending Machine
           bookingDateTime: new Date(),
           bookingDuration: 2,
         },
@@ -145,19 +145,19 @@ const seedDatabase = async (clear = true) => {
       console.log("Seeded booking table");
     }
 
-    // Requests
+    // Requests (with relationships to Users by email)
     const requestCount = await Request.count();
     if (requestCount === 0) {
       await Request.bulkCreate([
         {
-          id: 0,
-          userEmail: "real_email1@email.com",
+          id: 1,
+          userEmail: "real_email1@email.com", // Relates to Connor McDavid
           description: "Gimme that machine",
           status: "approved",
         },
         {
-          id: 1,
-          userEmail: "real_email2@email.com",
+          id: 2,
+          userEmail: "real_email3@email.com", // Relates to Austin Matthews
           description: "I likes it and I wants it",
           status: "pending",
         },
