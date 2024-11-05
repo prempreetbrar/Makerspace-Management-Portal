@@ -1,3 +1,5 @@
+
+//@ts-ignore react is unused
 import React from 'react';
 import './style.css';
 import illustrationDesktop from './assets/2.jpg';

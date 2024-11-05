@@ -1,3 +1,5 @@
+
+//@ts-ignore react is unused
 import React, { useState } from "react";
 
 import './style.css';
