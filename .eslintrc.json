@@ -1,0 +1,18 @@
+{
+  "env": {
+    "browser": true, // for frontend code -> catching errors and best practices (ie. alt-text)
+    "es2021": true, // enables modern features
+    "node": true
+  },
+  "extends": ["eslint:recommended", "plugin:prettier/recommended"],
+  "parserOptions": {
+    "ecmaVersion": 12, // allow parsing of modern ECMAScript features
+    "sourceType": "module" // enable ES Modules
+  },
+  "rules": {
+    "no-console": "warn", // warns on console usage, but doesn't error
+    "eqeqeq": ["error", "always"], // enforce strict equality (===)
+    "curly": ["error", "all"], // require curly braces for all control statements
+    "prettier/prettier": "error" // ensures Prettier rules are followed
+  }
+}

@@ -1,0 +1,9 @@
+// .vscode/extensions.json
+{
+  "recommendations": [
+    "dbaeumer.vscode-eslint", // ESLint
+    "esbenp.prettier-vscode", // Prettier
+    "mikestead.dotenv", // DotENV
+    "PKief.material-icon-theme" // Material Icon Theme
+  ]
+}
