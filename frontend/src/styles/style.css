@@ -4,19 +4,6 @@
  * then this file should be deleted
  */
 
-.container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
-  box-sizing: border-box;
-  font-family: Arial, sans-serif;
-  color: #333;
-  background-color: #f8f9fa;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
 /* Main content layout */
 .content {
   display: flex;
