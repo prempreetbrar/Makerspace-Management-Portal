@@ -3,7 +3,7 @@
  * Sets up middleware (CORS), initializes database seeding, then starts the server.
  */
 
-const express = require("express");
+const express = require('express');
 const app = express();
 const cors = require('cors');
 const seedDatabase = require('./seed');
@@ -12,7 +12,8 @@ const issueRoutes = require('./routes/issues');
 const equipmentRoutes = require('./routes/equipment');
 const bookingRoutes = require('./routes/bookings');
 const requestRoutes = require('./routes/requests');
-const util = require('./controllers/util');
+const utilsController = require('./controllers/utils');
+const errorsController = require('./controllers/errors');
 const listenPort = 8080; // Must be the same as the LEFT part of the docker backend port. See the docker compose
 
 // localhost:{backend port} -> must match left half of line 8 in dockerfile;
@@ -29,6 +30,14 @@ const corsOptions = {
     'http://localhost:5001',
   ],
 };
+// colorizes HTTP requests in logs
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev'));
+}
+// force usage of https in production
+if (process.env.NODE_ENV === 'production') {
+  app.use(utilsController.redirectUsingHTTPS);
+}
 app.use(cors(corsOptions));
 
 seedDatabase();
