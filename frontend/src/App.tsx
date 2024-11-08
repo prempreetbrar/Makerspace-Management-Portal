@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import reactLogo from './assets/react.svg';
 import viteLogo from '/vite.svg';
-import './App.css';
+import './styles/App.css';
 import axios from 'axios';
 
 // Define the structure of backend data
@@ -73,7 +73,7 @@ function App() {
       setEquipment(equipmentResponse.data);
       setBookings(bookingsResponse.data);
       setRequests(requestsResponse.data);
-    } 
+    }
     catch (error) {
       console.error("Error fetching data (frontend):", error);
     }
