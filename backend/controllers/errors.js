@@ -54,8 +54,8 @@ function handleError(error, request, response, next) {
 
     switch (errorItem.path) {
       // We don't want to return the value in the error (passwords are sensitive), so just put a period.
-      case 'Password':
-      case 'PasswordConfirm':
+      case 'password':
+      case 'confirmPassword':
         errorValue += '.';
         break;
       default:
