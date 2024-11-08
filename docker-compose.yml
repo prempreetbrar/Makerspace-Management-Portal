@@ -1,11 +1,11 @@
-version: "3.8"
+version: '3.8'
 
 services:
   frontend:
     build:
       context: ./frontend
     ports:
-      - "8800:80" #localport:docker port
+      - '8800:80' #localport:docker port
     depends_on:
       - backend
 
@@ -13,7 +13,7 @@ services:
     build:
       context: ./backend
     ports:
-      - "5001:8080" #database port : localport
+      - '5001:8080' #database port : localport
     env_file:
       - config.env
     volumes:
