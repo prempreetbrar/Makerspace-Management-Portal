@@ -2,12 +2,12 @@
  * Defines the User model representing the User table in the database.
  */
 
-const DataTypes = require("sequelize");
-const crypto = require("crypto");
+const DataTypes = require('sequelize');
+const bcrypt = require('bcrypt');
 
 module.exports = (sequelize) => {
   const User = sequelize.define(
-    "User",
+    'User',
     {
       email: {
         type: DataTypes.STRING(320),
@@ -19,21 +19,21 @@ module.exports = (sequelize) => {
       },
       firstName: {
         type: DataTypes.STRING(30),
-        defaultValue: "",
+        defaultValue: '',
         allowNull: false,
       },
       lastName: {
         type: DataTypes.STRING(50),
-        defaultValue: "",
+        defaultValue: '',
         allowNull: false,
       },
       userRole: {
         //, Premium, Basic
         type: DataTypes.STRING(15),
-        defaultValue: "Basic",
+        defaultValue: 'Basic',
         allowNull: false,
         validator: {
-          isIn: ["Admin", "Premium", "Basic"], // Making this an enum field
+          isIn: ['Admin', 'Premium', 'Basic'], // Making this an enum field
         },
       },
       password: {
@@ -46,15 +46,15 @@ module.exports = (sequelize) => {
         type: DataTypes.CHAR(64),
         validate: {
           matchesPassword(value) {
-            if (value !== this.Password) {
-              throw new Error('Please make sure your passwords match.', 401);
+            if (value !== this.password) {
+              throw new Error('Please make sure your passwords match', 401);
             }
           },
         },
       },
     },
     {
-      tableName: "User",
+      tableName: 'User',
       // timestamp for creation and updates are automatically added.
     }
   );
@@ -87,17 +87,17 @@ module.exports = (sequelize) => {
   */
   User.associate = (models) => {
     User.hasMany(models.Request, {
-      foreignKey: "userEmail",
-      as: "Requests",
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE",
+      foreignKey: 'userEmail',
+      as: 'Requests',
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
     });
 
     User.hasMany(models.Booking, {
-      foreignKey: "userEmail",
-      as: "Bookings",
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE",
+      foreignKey: 'userEmail',
+      as: 'Bookings',
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
     });
   };
 
