@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken');
 const sequelize = require('sequelize');
 
 /*
@@ -41,15 +42,16 @@ function catchAsync(asyncFunc) {
   environment you can see it).
 */
 function handleError(error, request, response, next) {
-  const errorItem = error.errors.pop();
-
   // the following conditional just formats our error so it's easier to read when developing and in the frontend.
   // it would still work even if we didn't have this, but the stack trace would be very nasty.
   if (error instanceof sequelize.Sequelize.UniqueConstraintError) {
+    const errorItem = error.errors.pop();
     error.message = `DUPLICATE FIELD. ${errorItem.message}: ${errorItem.value}. Please use another ${errorItem.path}.`;
     error.statusCode = 409;
   } else if (error instanceof sequelize.Sequelize.ValidationError) {
+    const errorItem = error.errors[0];
     let errorValue = '';
+
     switch (errorItem.path) {
       // We don't want to return the value in the error (passwords are sensitive), so just put a period.
       case 'Password':
@@ -63,6 +65,7 @@ function handleError(error, request, response, next) {
     error.message = `VALIDATION ERROR. ${errorItem.message}${errorValue}`;
     error.statusCode = 422;
   } else if (error instanceof sequelize.Sequelize.ForeignKeyConstraintError) {
+    const errorItem = error.errors[0];
     error.message = `FOREIGN KEY CONSTRAINT ERROR. ${errorItem.message}: ${errorItem.value}. Please ensure that ${errorItem.path} is not empty and refers to an existing ${errorItem.path}.`;
     error.statusCode = 400;
   } else if (error instanceof jwt.TokenExpiredError) {
