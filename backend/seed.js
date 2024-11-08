@@ -54,8 +54,7 @@ const seedDatabase = async (clear = false) => {
           userRole: 'Premium',
           password:
             '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', // SHA-256 Hash of "password"
-          confirmPassword:
-            '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8',
+          confirmPassword: null, // only null because Sequelize does not validate passwords match on bulk create (intentional, just how the ORM is implemented)
         },
         {
           email: 'real_email2@email.com',
@@ -64,8 +63,7 @@ const seedDatabase = async (clear = false) => {
           userRole: 'Basic',
           password:
             'c0e21a8ff85153deac82fe7f09c0da1b3bd90ac0ae204e78d7148753b4363c03', // SHA-256 Hash of "wordpass"
-          confirmPassword:
-            'c0e21a8ff85153deac82fe7f09c0da1b3bd90ac0ae204e78d7148753b4363c03',
+          confirmPassword: null, // only null because Sequelize does not validate passwords match on bulk create (intentional, just how the ORM is implemented)
         },
         {
           email: 'real_email3@email.com',
@@ -74,8 +72,7 @@ const seedDatabase = async (clear = false) => {
           userRole: 'Admin',
           password:
             '80d1159c872683756864281692bf8ffa330341cae85c8e188a2bf29edd7adbbe', // SHA-256 Hash of "extraSuperStrongP@s$W0Rd!"
-          confirmPassword:
-            '80d1159c872683756864281692bf8ffa330341cae85c8e188a2bf29edd7adbbe',
+          confirmPassword: null, // only null because Sequelize does not validate passwords match on bulk create (intentional, just how the ORM is implemented)
         },
       ]);
       console.log('Seeded user table');

@@ -3,9 +3,14 @@
  * Sets up middleware (CORS), initializes database seeding, then starts the server.
  */
 
+const dotenv = require('dotenv');
+dotenv.config({ path: `${__dirname}/config.env` });
+
 const express = require('express');
 const app = express();
 const cors = require('cors');
+const morgan = require('morgan');
+
 const seedDatabase = require('./seed');
 const userRoutes = require('./routes/users');
 const issueRoutes = require('./routes/issues');
