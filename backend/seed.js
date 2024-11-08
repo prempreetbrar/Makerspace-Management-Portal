@@ -84,7 +84,7 @@ const seedDatabase = async (clear = true) => {
           name: "3D Printer",
           description: "This machine prints things in three dimensions!",
           icon: fs.readFileSync(
-            path.join(__dirname, "icons", "3d_printer.png")
+            path.join(__dirname, "/assets/icons", "3d_printer.png")
           ),
           equipmentStatus: "good",
           isBookable: true,
@@ -94,7 +94,9 @@ const seedDatabase = async (clear = true) => {
           id: 2,
           name: "Stapler",
           description: "Staples stuff",
-          icon: fs.readFileSync(path.join(__dirname, "icons", "stapler.png")),
+          icon: fs.readFileSync(
+            path.join(__dirname, "/assets/icons", "stapler.png")
+          ),
           equipmentStatus: "really good",
           isBookable: false,
           isPremium: false,
@@ -170,14 +172,14 @@ const seedDatabase = async (clear = true) => {
           id: 1,
           requestID: 1, // Relates to the first request
           file: fs.readFileSync(
-            path.join(__dirname, "attachments", "3d_printer_manual.pdf")
+            path.join(__dirname, "/assets/attachments", "3d_printer_manual.pdf")
           ),
         },
         {
           id: 2,
           requestID: 2, // Relates to the second request
           file: fs.readFileSync(
-            path.join(__dirname, "attachments", "stapler.jpg")
+            path.join(__dirname, "/assets/attachments", "stapler.jpg")
           ),
         },
       ]);
