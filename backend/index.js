@@ -1,5 +1,5 @@
 /**
- * The entry point for the backend Express server. 
+ * The entry point for the backend Express server.
  * Sets up middleware (CORS), initializes database seeding, then starts the server.
  */
 
@@ -39,6 +39,7 @@ if (process.env.NODE_ENV === 'production') {
   app.use(utilsController.redirectUsingHTTPS);
 }
 app.use(cors(corsOptions));
+app.use(express.json()); // lets us have JSON bodies in our requests
 
 seedDatabase();
 app.use('/users', userRoutes);
@@ -46,7 +47,8 @@ app.use('/issues', issueRoutes);
 app.use('/equipment', equipmentRoutes);
 app.use('/bookings', bookingRoutes);
 app.use('/requests', requestRoutes);
+app.use(errorsController.handleError); // handles errors in any of the routes that come before it
 
 app.listen(listenPort, () => {
-console.log(`Server started on port ${listenPort}`);
+  console.log(`Server started on port ${listenPort}`);
 });
