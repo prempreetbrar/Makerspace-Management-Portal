@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   frontend:
@@ -14,5 +14,7 @@ services:
       context: ./backend
     ports:
       - "5001:8080" #database port : localport
+    env_file:
+      - config.env
     volumes:
       - ./backend/database.db:/app/database.db
