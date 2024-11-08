@@ -1,3 +1,4 @@
+//@ts-ignore react is unused
 import React from 'react';
 import './style.css';
 
