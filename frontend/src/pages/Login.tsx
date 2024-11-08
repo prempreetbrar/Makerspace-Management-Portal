@@ -1,6 +1,6 @@
 //@ts-ignore react is unused
 import React from 'react';
-import './style.css';
+import '../styles/style.css';
 import MainContainer from '../Components/MainContainer.tsx';
 import CredentialForm from '../Components/CredentialForm.tsx';
 
