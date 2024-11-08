@@ -9,9 +9,14 @@ const User = require('../models/User')(sequelize);
 const errorController = require('./errors');
 
 const signup = errorController.catchAsync(async (request, response) => {
+  /*
+    We can't just pass in request.body into User.create because we don't want a user giving themselves
+    a premium or admin role for example. For other models, we can just take the body as is.
+  */
   const newUser = await User.create({
-    name: request.body.name,
     email: request.body.email,
+    firstName: request.body.firstName,
+    lastName: request.body.lastName,
     password: request.body.password,
     confirmPassword: request.body.confirmPassword,
   });

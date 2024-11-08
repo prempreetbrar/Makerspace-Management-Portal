@@ -41,12 +41,15 @@ module.exports = (sequelize) => {
         // could add salts later, but probably overkill for a demo project
         type: DataTypes.CHAR(64), // 256-bit binary string
         allowNull: false,
-        set(value) {
-          this.setDataValue(
-            "password",
-            crypto.createHash("sha256").update(value).digest("hex")
-          );
-          // automatically hash the password
+      },
+      confirmPassword: {
+        type: DataTypes.CHAR(64),
+        validate: {
+          matchesPassword(value) {
+            if (value !== this.Password) {
+              throw new Error('Please make sure your passwords match.', 401);
+            }
+          },
         },
       },
     },
@@ -55,6 +58,19 @@ module.exports = (sequelize) => {
       // timestamp for creation and updates are automatically added.
     }
   );
+
+  /*
+    ALL HOOKS (the following section) are applied AFTER any validate functions in the schema.
+    For example, User.beforeSave FIRST checks if confirmPassword matches password, BEFORE going
+    ahead and hashing it.
+  */
+  User.beforeSave(async (user, options) => {
+    if (user.password && user.confirmPassword) {
+      user.password = await bcrypt.hash(user.password, 12);
+      // we don't want this returned back to the user in the HTTP response
+      user.confirmPassword = undefined;
+    }
+  });
 
   /*
     Sequelize only needs Model.belongsTo. The reason we've defined it inside of a method
