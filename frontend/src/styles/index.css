@@ -1,8 +1,7 @@
 /* 
  * Put global styles in this file
- * Put page specific styles in its own directory. Examples: styles/landing, styles/login, and styles/signup
- * Avoid putting component styles in this file, even if the component is used globally
- * Instead, create a new file for the component in this directory 
+ * Put page specific styles in the page's style directory. Example: styles/landing
+ * Do not put component styles in this file
  */
 
 :root {

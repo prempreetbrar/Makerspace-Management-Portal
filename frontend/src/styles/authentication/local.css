@@ -1,0 +1,16 @@
+/* 
+ * Put shared styles for the login and signup page in here 
+ * Do not put component styles in this file
+ */
+
+input[type="email"],
+input[type="password"] {
+  width: 100%;
+  max-width: 430px;
+  padding: 12px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  background-color: rgb(216, 216, 216);
+}

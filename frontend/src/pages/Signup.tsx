@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 
 import '../styles/style.css';
+import '../styles/authentication/local.css';
 import MainContainer from '../Components/MainContainer.tsx';
 import CredentialForm from '../Components/CredentialForm.tsx';
 
