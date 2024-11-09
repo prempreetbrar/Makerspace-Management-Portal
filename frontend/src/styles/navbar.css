@@ -39,3 +39,19 @@
   display: flex;
   gap: 10px;
 }
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .navbar {
+    display: none;
+  }
+
+  .nav-links {
+    display: none;
+  }
+
+  .auth-buttons {
+    flex-direction: column;
+    gap: 5px;
+  }
+}

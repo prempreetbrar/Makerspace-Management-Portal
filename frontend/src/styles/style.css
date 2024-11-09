@@ -131,10 +131,6 @@
     /* Reset to default background color */
   }
 
-  .navbar {
-    display: none;
-  }
-
   .illustration.desktop {
     display: none;
   }
@@ -149,15 +145,6 @@
     flex-direction: column;
     padding: 20px;
     text-align: center;
-  }
-
-  .nav-links {
-    display: none;
-  }
-
-  .auth-buttons {
-    flex-direction: column;
-    gap: 5px;
   }
 
   .text-content {
