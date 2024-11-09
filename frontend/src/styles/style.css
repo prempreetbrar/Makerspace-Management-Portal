@@ -109,11 +109,6 @@
 @media (min-width: 769px) {
 
   /* Desktop styles */
-  .container {
-    background-color: #e6e6fa;
-    /* Light purple color */
-  }
-
   .auth-buttons2 {
     display: none;
   }
@@ -126,11 +121,6 @@
 @media (max-width: 768px) {
 
   /* Mobile styles */
-  .container {
-    background-color: #f8f9fa;
-    /* Reset to default background color */
-  }
-
   .illustration.desktop {
     display: none;
   }

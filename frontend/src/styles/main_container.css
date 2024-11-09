@@ -12,3 +12,20 @@
   max-width: 1200px;
   margin: 0 auto;
 }
+
+/* Responsive adjustments */
+@media (min-width: 769px) {
+
+  /* Desktop styles */
+  .container {
+    background-color: #e6e6fa;
+  }
+}
+
+@media (max-width: 768px) {
+
+  /* Mobile styles */
+  .container {
+    background-color: #f8f9fa;
+  }
+}
