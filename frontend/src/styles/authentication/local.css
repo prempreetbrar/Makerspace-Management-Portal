@@ -3,6 +3,12 @@
  * Do not put component styles in this file
  */
 
+.logo-container {}
+
+.login-text {}
+
+.input-field {}
+
 input[type="email"],
 input[type="password"] {
   width: 100%;

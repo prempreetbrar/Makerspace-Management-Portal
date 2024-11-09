@@ -1,0 +1,32 @@
+/* 
+ * Default styles for the GetStartedButton component
+ * Overwrite or add styles in local.css to meet the needs of a specific page
+ */
+
+.get-started-button {
+  background-color: #5f5084;
+  color: #fff;
+  border: none;
+  margin-top: 15px;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.get-started-button:hover {
+  background-color: #5a54d1;
+}
+
+@media (max-width: 768px) {
+  .get-started-button {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .get-started-button {
+    width: 100%;
+    font-size: 0.9rem;
+  }
+}
