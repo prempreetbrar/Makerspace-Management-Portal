@@ -15,7 +15,7 @@ const NavBar = () => {
         <li><a href="#requests">View Requests</a></li>
       </ul>
       <div className="auth-buttons">
-        <LoginButton></LoginButton>
+        <LoginButton button_type='button'></LoginButton>
         <button className="create-account-button">Create Account</button>
       </div>
     </nav>
