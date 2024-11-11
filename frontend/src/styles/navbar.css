@@ -9,6 +9,8 @@
     background-color: #fff;
     border-bottom: 1px solid #ddd;
     box-sizing: border-box;
+    position: sticky;
+    z-index: 200;
 }
 
 .logo-container {
@@ -42,11 +44,12 @@
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .navbar {
-        display: none;
+        overflow: hidden;
+        /*display: none;*/
     }
 
     .nav-links {
-        display: none;
+        /*display: none;*/
     }
 
     .auth-buttons {
