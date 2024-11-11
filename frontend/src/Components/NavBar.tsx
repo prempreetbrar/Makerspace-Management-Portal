@@ -3,22 +3,23 @@
 import '../styles/navbar.css';
 
 const NavBar = () => {
-  return (
-    <nav className="navbar">
-      <div className="logo-container">
-        ✂️ {/* Logo Icon  will replace here*/}
-      </div>
-      <ul className="nav-links">
-        <li><a href="#home">Home</a></li>
-        <li><a href="#reserve">Reserve Equipment</a></li>
-        <li><a href="#requests">View Requests</a></li>
-      </ul>
-      <div className="auth-buttons">
-        <button className="login-button">Log In</button>
-        <button className="create-account-button">Create Account</button>
-      </div>
-    </nav>
-  );
+    return (
+        <nav className="navbar">
+            <div className="logo-container">
+                ✂️ {/* Logo Icon  will replace here*/}
+            </div>
+            <ul className="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#reserve">Reserve Equipment</a></li>
+                <li><a href="#requests">View Requests</a></li>
+            </ul>
+            <div className="auth-buttons">
+                { /* These need some adjusting for mobile */}
+                <button className="login-button">Log In</button>
+                <button className="create-account-button">Create Account</button>
+            </div>
+        </nav>
+    );
 };
 
 export default NavBar;
