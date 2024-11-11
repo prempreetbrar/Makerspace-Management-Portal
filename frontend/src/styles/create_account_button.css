@@ -1,0 +1,29 @@
+/* 
+ * Default styles for the CreateAccountButton component
+ * Overwrite or add styles in local.css to meet the needs of a specific page
+ */
+
+.create-account-button {
+  background-color: #fff;
+  color: #333;
+  border: 1px solid #333;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.create-account-button:hover {
+  background-color: #f0f0f0;
+}
+
+.auth-buttons2 .create-account-button {
+  width: 350px;
+}
+
+@media (max-width: 480px) {
+  .create-account-button {
+    width: 100%;
+    font-size: 0.9rem;
+  }
+}
