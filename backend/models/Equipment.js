@@ -1,8 +1,8 @@
-const { DataTypes } = require("sequelize");
+const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
   const Equipment = sequelize.define(
-    "Equipment",
+    'Equipment',
     {
       id: {
         type: DataTypes.INTEGER,
@@ -16,11 +16,11 @@ module.exports = (sequelize) => {
       },
       description: {
         type: DataTypes.TEXT,
-        defaultValue: "",
+        defaultValue: '',
       },
       icon: {
         type: DataTypes.BLOB, //image asset
-        defaultValue: "",
+        defaultValue: '',
       },
       equipmentStatus: {
         type: DataTypes.STRING(20),
@@ -37,7 +37,8 @@ module.exports = (sequelize) => {
       },
     },
     {
-      tableName: "Equipment",
+      tableName: 'Equipment',
+      timestamps: false,
     }
   );
 
@@ -56,24 +57,24 @@ module.exports = (sequelize) => {
   */
   Equipment.associate = (models) => {
     Equipment.hasMany(models.Booking, {
-      foreignKey: "equipmentID",
-      as: "Bookings",
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE",
+      foreignKey: 'equipmentID',
+      as: 'Bookings',
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
     });
 
     Equipment.hasMany(models.Request, {
-      foreignKey: "equipmentID",
-      as: "Requests",
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE",
+      foreignKey: 'equipmentID',
+      as: 'Requests',
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
     });
 
     Equipment.hasMany(models.Issue, {
-      foreignKey: "equipmentID",
-      as: "Issues",
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE",
+      foreignKey: 'equipmentID',
+      as: 'Issues',
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
     });
   };
   return Equipment;
