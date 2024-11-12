@@ -1,5 +1,3 @@
-//@ts-ignore react is unused
-import React from 'react';
 import '../styles/landing/local.css';
 import illustrationDesktop from '../assets/2.jpg';
 import illustrationMobile from '../assets/1.png';
@@ -8,8 +6,19 @@ import MainContainer from '../Components/MainContainer.tsx';
 import LoginButton from '../Components/LoginButton.tsx';
 import CreateAccountButton from '../Components/CreateAccountButton.tsx';
 import GetStartedButton from '../Components/GetStartedButton.tsx';
+import { useNavigate } from 'react-router-dom';
 
 const Landing = () => {
+  const navigate = useNavigate();
+
+  const goToLogin = () => {
+    navigate('/login');
+  };
+
+  const goToSignUp = () => {
+    navigate('/signup');
+  };
+
   return (
     <MainContainer>
       <NavBar></NavBar>
@@ -25,9 +34,9 @@ const Landing = () => {
             <p className="subheading">Bring your ideas to life by reserving tools, equipment, and workspace today.</p>
             <GetStartedButton></GetStartedButton>
             <div className="auth-buttons2">
-              <LoginButton button_type='button'></LoginButton>
+              <LoginButton button_type='button' onClick={goToLogin}></LoginButton>
               <br /><br />
-              <CreateAccountButton></CreateAccountButton>
+              <CreateAccountButton button_type='button' onClick={goToSignUp}></CreateAccountButton>
             </div>
           </div>
         </div>
