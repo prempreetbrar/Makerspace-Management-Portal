@@ -4,14 +4,14 @@ import illustrationDesktop from '../assets/2.jpg';
 import illustrationMobile from '../assets/1.png';
 import NavBar from '../Components/NavBar.tsx';
 import MainContainer from '../Components/MainContainer.tsx';
-import Tab from '@mui/material/Tab';
-import Tabs from '@mui/material/Tabs';
+import { Tab, Tabs } from '@mui/material';
 import { Stack, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles'
 import Box from '@mui/material/Box';
 import TabPanel from '@mui/lab/TabPanel';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
+import { UserProvider, useUser } from '../hooks/UserProvider.tsx';
 // like, really need to simplify these...
 
 const ResponsiveBox = styled(Box)(({ theme }) => ({
@@ -42,7 +42,8 @@ const Requests = () => {
         * Admin vs Normal User view
         * Getting a state
     */}
-
+    const { user, setUserByIndex } = useUser();
+    setUserByIndex(0); // basic user
     const [value, setValue] = React.useState('Approved'); // this is the default state I assume
     const handleChange = (_event: React.SyntheticEvent, newValue: string) => {
         setValue(newValue);
@@ -54,7 +55,7 @@ const Requests = () => {
                 {/* at some point, there should be a check for some sort of session token*/
                 /* also I don't know how to do media queries, so designing mobile first */}
                 <NavBar />
-                <div className='content'>
+                <div className='page-content'>
                     <TabContext value={value}>
                         <TabList onChange={handleChange} aria-label="lab API tabs example" centered>
                             <Tab label="Approved" value="Approved" />
@@ -65,7 +66,10 @@ const Requests = () => {
                             {/* TO DO: Make separate pages for each */}
                             <Box sx={{ width: '100%' }}>
                                 <Typography variant='h2' sx={{ padding: '30px' }}>
-                                    Approved Requests Tab
+                                    Approved Requests Tab <br />
+
+                                    Email: {user.email}
+
                                 </Typography>
                                 <Stack spacing={3}>
                                     {
