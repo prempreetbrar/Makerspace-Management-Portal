@@ -1,31 +1,33 @@
 /* Styles for the MainContainer component */
 
 .container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 0px;
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
-    color: #333;
-    background-color: #f8f9fa;
-    /*max-width: 1200px;*/
-    margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  padding: 20px;
+  width: 100%;
+  min-height: 100vh;
+  margin: 0 auto;
+  box-sizing: border-box;
+  color: #333;
+  background-color: #f8f9fa;
+  font-family: Arial, sans-serif;
 }
 
 /* Responsive adjustments */
 @media (min-width: 769px) {
 
-    /* Desktop styles */
-    .container {
-        background-color: #e6e6fa;
-    }
+  /* Desktop styles */
+  .container {
+    background-color: #e6e6fa;
+  }
 }
 
 @media (max-width: 768px) {
 
-    /* Mobile styles */
-    .container {
-        background-color: #f8f9fa;
-    }
+  /* Mobile styles */
+  .container {
+    background-color: #f8f9fa;
+  }
 }

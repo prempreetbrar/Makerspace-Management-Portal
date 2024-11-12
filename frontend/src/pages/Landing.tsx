@@ -11,15 +11,15 @@ import GetStartedButton from '../Components/GetStartedButton.tsx';
 
 const Landing = () => {
   return (
-    <div className='bg'>
-      <MainContainer>
-        <NavBar></NavBar>
-        <div className="content">
-          <div className="logo-container2">✂️ {/* Logo Icon */}</div>
-          <div className="illustration-container">
-            <img src={illustrationDesktop} alt="Makerspace Illustration" className="illustration desktop" />
-            <img src={illustrationMobile} alt="Makerspace Illustration" className="illustration mobile" />
-          </div>
+    <MainContainer>
+      <NavBar></NavBar>
+      <div className="content">
+        <div className="logo-container2">✂️ {/* Logo Icon */}</div>
+        <div className="illustration-container">
+          <img src={illustrationDesktop} alt="Makerspace Illustration" className="illustration desktop" />
+          <img src={illustrationMobile} alt="Makerspace Illustration" className="illustration mobile" />
+        </div>
+        <div className='text-container'>
           <div className="text-content">
             <h1 className="heading">DESIGN. DEVELOP. DISCOVER. INSIDE THE MAKERSPACE.</h1>
             <p className="subheading">Bring your ideas to life by reserving tools, equipment, and workspace today.</p>
@@ -31,8 +31,8 @@ const Landing = () => {
             </div>
           </div>
         </div>
-      </MainContainer>
-    </div>
+      </div>
+    </MainContainer>
   );
 };
 
