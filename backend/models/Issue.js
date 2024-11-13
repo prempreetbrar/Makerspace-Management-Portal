@@ -6,7 +6,6 @@ module.exports = (sequelize) => {
     {
       id: {
         type: DataTypes.INTEGER,
-        defaultValue: DataTypes.INTEGER(),
         autoIncrement: true,
         primaryKey: true,
       },
@@ -18,10 +17,7 @@ module.exports = (sequelize) => {
         type: DataTypes.TEXT,
         defaultValue: '',
       },
-      dateSubmitted: {
-        type: DataTypes.DATE,
-      },
-      issueStatus: {
+      isResolved: {
         type: DataTypes.BOOLEAN, // resolved or not resolved
         allowNull: false,
         defaultValue: false,
@@ -29,7 +25,9 @@ module.exports = (sequelize) => {
     },
     {
       tableName: 'Issue',
-      timestamps: false,
+      timestamps: true,
+      // an issue will never be edited
+      updatedAt: false,
     }
   );
 

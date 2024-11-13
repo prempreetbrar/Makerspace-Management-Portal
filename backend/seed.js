@@ -90,6 +90,7 @@ const seedDatabase = async (clear = false) => {
             icon: fs.readFileSync(
               path.join(__dirname, '/assets/icons', '3d_printer.png')
             ),
+            isUnderMaintenance: true,
             isBookable: true,
             isPremium: true,
           },
@@ -100,6 +101,7 @@ const seedDatabase = async (clear = false) => {
             icon: fs.readFileSync(
               path.join(__dirname, '/assets/icons', 'stapler.png')
             ),
+            isUnderMaintenance: false,
             isBookable: false,
             isPremium: false,
           },
@@ -117,15 +119,13 @@ const seedDatabase = async (clear = false) => {
           id: 1,
           equipmentID: 1, // Relates to the 3D Printer
           description: '3D printer nozzle clogged',
-          dateSubmitted: new Date(),
-          issueStatus: false,
+          isResolved: false,
         },
         {
           id: 2,
           equipmentID: 2, // Relates to the Stapler
           description: 'Stapler out of staples',
-          dateSubmitted: new Date(),
-          issueStatus: true,
+          isResolved: true,
         },
       ]);
       console.log('Seeded issue table');

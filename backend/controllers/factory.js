@@ -14,6 +14,17 @@ const errorsController = require('./errors');
   This reduces the amount of code we need to write in each controller class.
 */
 
+const createOne = (Model) => {
+  return errorsController.catchAsync(async (request, response) => {
+    const instance = await Model.create(request.body);
+
+    response.status(201).json({
+      status: 'success',
+      [Model.name.toLowerCase()]: instance,
+    });
+  });
+};
+
 const getAll = (Model) => {
   return errorsController.catchAsync(async (request, response) => {
     // sequelize doesn't like an undefined "where", so if there was no filter just default to an
@@ -39,11 +50,12 @@ const getAll = (Model) => {
     response.status(200).json({
       status: 'success',
       count: instances.length,
-      [pluralize(Model.modelName || Model.name).toLowerCase()]: instances,
+      [pluralize(Model.name).toLowerCase()]: instances,
     });
   });
 };
 
 module.exports = {
+  createOne,
   getAll,
 };

@@ -166,8 +166,25 @@ const isUserLoggedIn = errorsController.catchAsync(
   }
 );
 
+/*
+  The reason this isn't in catchAsync is because nothing async is happening here -- we aren't reading or writing to the
+  DB.
+*/
+const isUserAuthorized = (...userRoles) => {
+  return (request, response, next) => {
+    if (!userRoles.includes(request.body.user.userRole))
+      throw new errorsController.ErrorWithStatusCode(
+        'You do not have permission to perform this action.',
+        403
+      );
+
+    next();
+  };
+};
+
 module.exports = {
   signup,
   login,
   isUserLoggedIn,
+  isUserAuthorized,
 };
