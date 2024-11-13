@@ -34,7 +34,6 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     const setUserByIndex = (index: number) => {
         setCurrentUserIndex(index % users.length);
     };
-
     return (
         <UserContext.Provider value={{ user: users[currentUserIndex], setUserByIndex }}>
             {children}
