@@ -7,13 +7,14 @@ const sequelize = require('../config/database');
 const User = require('../models/User')(sequelize);
 
 // controllers
-const errorController = require('./errors');
+const errorsController = require('./errors');
 
 function _getAuthenticatedToken(user) {
   const token = jwt.sign(
     {
-      // sequelize assigns an id implicitly behind the scenes
-      id: user.id,
+      // we use the user's primary key. Since it's unique, this ensures that no two tokens are the same, and
+      // that no two users can impersonate each other.
+      email: user.email,
     },
     // we encrypt and decrypt tokens using this secret. If it's leaked, then someone knows
     // how to make a "fake" token and log-in as this user. This is why it's secret.
@@ -44,7 +45,7 @@ function _getAuthenticatedCookie() {
   return cookieOptions;
 }
 
-const signup = errorController.catchAsync(async (request, response) => {
+const signup = errorsController.catchAsync(async (request, response) => {
   /*
     We can't just pass in request.body into User.create because we don't want a user giving themselves
     a premium or admin role for example. For other models, we can just take the body as is.
@@ -70,9 +71,9 @@ const signup = errorController.catchAsync(async (request, response) => {
   });
 });
 
-const login = errorController.catchAsync(async (request, response) => {
+const login = errorsController.catchAsync(async (request, response) => {
   if (!request.body.email || !request.body.password) {
-    throw new errorController.ErrorWithStatusCode(
+    throw new errorsController.ErrorWithStatusCode(
       'Please provide both a username and password!',
       400
     );
@@ -92,7 +93,7 @@ const login = errorController.catchAsync(async (request, response) => {
     !user ||
     !(await user.isPasswordCorrect(request.body.password, user.password))
   ) {
-    throw new errorController.ErrorWithStatusCode(
+    throw new errorsController.ErrorWithStatusCode(
       'Incorrect username or password',
       401
     );
@@ -111,7 +112,7 @@ const login = errorController.catchAsync(async (request, response) => {
   });
 });
 
-const isUserLoggedIn = errorController.catchAsync(
+const isUserLoggedIn = errorsController.catchAsync(
   async (request, response, next) => {
     // 1) check if the JWT token was sent with the request. Either sent as header "Bearer: Token" or by browser as a cookie
     let token;
@@ -126,7 +127,7 @@ const isUserLoggedIn = errorController.catchAsync(
     }
 
     if (!token)
-      throw new errorController.ErrorWithStatusCode(
+      throw new errorsController.ErrorWithStatusCode(
         'You are not logged in. Please log in to get access.',
         401
       );
@@ -144,9 +145,9 @@ const isUserLoggedIn = errorController.catchAsync(
       3) check if user has been deleted. If so, they shouldn't be
       able to interact with our database.
     */
-    const user = await User.findByPk(decodedPayload.id);
+    const user = await User.findByPk(decodedPayload.email);
     if (!user) {
-      throw new errorController.ErrorWithStatusCode(
+      throw new errorsController.ErrorWithStatusCode(
         'The user belonging to this token no longer exists.',
         401
       );

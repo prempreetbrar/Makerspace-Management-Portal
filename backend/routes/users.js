@@ -10,10 +10,10 @@ const sequelize = require('../config/database');
 const UserModel = require('../models/User')(sequelize); // use import instead of this syntax
 
 // controllers
-const userController = require('../controllers/users');
+const usersController = require('../controllers/users');
 
-// Get all users
-router.post('/signup', userController.signup);
-router.post('/login', userController.login);
+// routes
+router.post('/signup', usersController.signup);
+router.post('/login', usersController.login);
 
 module.exports = router;

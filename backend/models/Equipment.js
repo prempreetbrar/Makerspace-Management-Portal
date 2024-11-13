@@ -19,11 +19,12 @@ module.exports = (sequelize) => {
         defaultValue: '',
       },
       icon: {
-        type: DataTypes.BLOB, //image asset
+        type: DataTypes.TEXT, //base64 encoded string
         defaultValue: '',
       },
-      equipmentStatus: {
-        type: DataTypes.STRING(20),
+      isUnderMaintenance: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
       },
       isBookable: {
         // if false, users need to submit a special request
@@ -41,6 +42,19 @@ module.exports = (sequelize) => {
       timestamps: false,
     }
   );
+
+  // We want to store the icon as a base 64 string so that the frontend can serve it easily by doing src={equipment.icon}
+  Equipment.beforeCreate(async (equipment, options) => {
+    if (equipment.icon && Buffer.isBuffer(equipment.icon)) {
+      equipment.icon = `data:image/png;base64,${equipment.icon.toString('base64')}`;
+    }
+  });
+
+  Equipment.beforeUpdate(async (equipment, options) => {
+    if (equipment.icon && Buffer.isBuffer(equipment.icon)) {
+      equipment.icon = `data:image/png;base64,${equipment.icon.toString('base64')}`;
+    }
+  });
 
   /*
     Sequelize only needs Model.belongsTo. The reason we've defined it inside of a method
