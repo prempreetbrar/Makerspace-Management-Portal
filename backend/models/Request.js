@@ -18,6 +18,11 @@ module.exports = (sequelize) => {
           isEmail: true,
         },
       },
+      title:
+      {
+        type: DataTypes.STRING(75),
+        allowNull: false,
+      },
       description: {
         type: DataTypes.TEXT,
         defaultValue: '',
