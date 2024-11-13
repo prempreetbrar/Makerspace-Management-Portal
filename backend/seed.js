@@ -81,30 +81,33 @@ const seedDatabase = async (clear = false) => {
     // Equipment
     const equipmentCount = await Equipment.count();
     if (equipmentCount === 0) {
-      await Equipment.bulkCreate([
-        {
-          id: 1,
-          name: '3D Printer',
-          description: 'This machine prints things in three dimensions!',
-          icon: fs.readFileSync(
-            path.join(__dirname, '/assets/icons', '3d_printer.png')
-          ),
-          equipmentStatus: 'good',
-          isBookable: true,
-          isPremium: true,
-        },
-        {
-          id: 2,
-          name: 'Stapler',
-          description: 'Staples stuff',
-          icon: fs.readFileSync(
-            path.join(__dirname, '/assets/icons', 'stapler.png')
-          ),
-          equipmentStatus: 'really good',
-          isBookable: false,
-          isPremium: false,
-        },
-      ]);
+      await Equipment.bulkCreate(
+        [
+          {
+            id: 1,
+            name: '3D Printer',
+            description: 'This machine prints things in three dimensions!',
+            icon: fs.readFileSync(
+              path.join(__dirname, '/assets/icons', '3d_printer.png')
+            ),
+            equipmentStatus: 'good',
+            isBookable: true,
+            isPremium: true,
+          },
+          {
+            id: 2,
+            name: 'Stapler',
+            description: 'Staples stuff',
+            icon: fs.readFileSync(
+              path.join(__dirname, '/assets/icons', 'stapler.png')
+            ),
+            equipmentStatus: 'really good',
+            isBookable: false,
+            isPremium: false,
+          },
+        ],
+        { individualHooks: true }
+      );
       console.log('Seeded equipment table');
     }
 
