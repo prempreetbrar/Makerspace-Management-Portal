@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useContext, useState } from 'react'
+import { createContext, ReactNode, useContext, useEffect, useState } from 'react'
 const adminUser = {
     email: 'real_email3@email.com',
     firstName: 'Austin',
@@ -29,14 +29,10 @@ const UserContext = createContext({
 });
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
-    const [currentUserIndex, setCurrentUserIndex] = useState(0);
 
+    const [currentUserIndex, setCurrentUserIndex] = useState(0);
     const setUserByIndex = (index: number) => {
-        if (index >= 0 && index < users.length) {
-            setCurrentUserIndex(index);
-        } else {
-            console.error(`Index ${index} is out of range.`);
-        }
+        setCurrentUserIndex(index % users.length);
     };
 
     return (
