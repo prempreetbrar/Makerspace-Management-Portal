@@ -154,6 +154,7 @@ const seedDatabase = async (clear = false) => {
           id: 1,
           userEmail: 'real_email1@email.com', // Relates to Connor McDavid
           equipmentID: 1,
+          title: "3D Printing Request",
           description: "I'd like to use the 3D printer",
           status: 'approved',
         },
@@ -161,6 +162,7 @@ const seedDatabase = async (clear = false) => {
           id: 2,
           userEmail: 'real_email3@email.com', // Relates to Austin Matthews
           equipmentID: 2,
+          title: "Let me use the stapler",
           description: "I'd like to use the stapler",
           status: 'pending',
         },
