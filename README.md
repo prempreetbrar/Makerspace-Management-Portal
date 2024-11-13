@@ -61,3 +61,4 @@ Note that this is not a comprehensive guide and you will likely encounter issues
 - All schema files and associated relationships are defined in `backend/models/`'. A visual diagram can be seen at `models/schema-diagram.png`.
 - The seeding is done in `backend/seed.js`. By default, the entire DB is wiped and re-seeded on container startup. This default will be changed in the future.
 - As soon as you run the containers, both the schema and seeding will occur automatically.
+- If the schema is changed, the database needs to be deleted and reset. 
