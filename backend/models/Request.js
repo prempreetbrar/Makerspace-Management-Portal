@@ -1,9 +1,9 @@
-const { DataTypes } = require("sequelize");
-const Equipment = require("./Equipment");
+const { DataTypes } = require('sequelize');
+const Equipment = require('./Equipment');
 
 module.exports = (sequelize) => {
   const Request = sequelize.define(
-    "Request",
+    'Request',
     {
       id: {
         type: DataTypes.INTEGER,
@@ -18,15 +18,20 @@ module.exports = (sequelize) => {
           isEmail: true,
         },
       },
+      title:
+      {
+        type: DataTypes.STRING(75),
+        allowNull: false,
+      },
       description: {
         type: DataTypes.TEXT,
-        defaultValue: "",
+        defaultValue: '',
       },
       status: {
         type: DataTypes.STRING(10),
-        defaultValue: "pending",
+        defaultValue: 'pending',
         validator: {
-          oneOf: ["approved", "denied", "pending"],
+          oneOf: ['approved', 'denied', 'pending'],
         },
       },
       // foreign key
@@ -36,7 +41,8 @@ module.exports = (sequelize) => {
       },
     },
     {
-      tableName: "Request",
+      tableName: 'Request',
+      timestamps: false,
     }
   );
 
@@ -55,24 +61,24 @@ module.exports = (sequelize) => {
   */
   Request.associate = (models) => {
     Request.belongsTo(models.User, {
-      foreignKey: "userEmail",
-      as: "User",
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE",
+      foreignKey: 'userEmail',
+      as: 'User',
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
     });
 
     Request.belongsTo(models.Equipment, {
-      foreignKey: "equipmentID",
-      as: "Equipment",
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE",
+      foreignKey: 'equipmentID',
+      as: 'Equipment',
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
     });
 
     Request.hasMany(models.Attachment, {
-      foreignKey: "requestID",
-      as: "Attachments",
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE",
+      foreignKey: 'requestID',
+      as: 'Attachments',
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
     });
   };
 

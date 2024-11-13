@@ -1,8 +1,8 @@
-const { DataTypes, INTEGER } = require("sequelize");
+const { DataTypes, INTEGER } = require('sequelize');
 
 module.exports = (sequelize) => {
   const Booking = sequelize.define(
-    "Booking",
+    'Booking',
     {
       id: {
         type: DataTypes.INTEGER,
@@ -27,19 +27,21 @@ module.exports = (sequelize) => {
       },
     },
     {
-      tableName: "Booking",
+      tableName: 'Booking',
+      timestamps: false,
+
       validate: {
         async equipmentIsBookable() {
           const Equipment = sequelize.models.Equipment;
           const equipment = await Equipment.findByPk(this.equipmentID);
 
           if (!equipment) {
-            throw new Error("Equipment not found");
+            throw new Error('Equipment not found');
           }
 
           if (!equipment.isBookable) {
             throw new Error(
-              "Booking cannot be created. The equipment is not bookable."
+              'Booking cannot be created. The equipment is not bookable.'
             );
           }
         },
@@ -51,14 +53,14 @@ module.exports = (sequelize) => {
           const user = await User.findByPk(this.userEmail);
 
           if (!equipment) {
-            throw new Error("Equipment not found");
+            throw new Error('Equipment not found');
           }
           if (!user) {
-            throw new Error("User not found");
+            throw new Error('User not found');
           }
 
-          if (equipment.isPremium && user.userRole !== "Premium") {
-            throw new Error("Only premium users can book premium equipment.");
+          if (equipment.isPremium && user.userRole !== 'Premium') {
+            throw new Error('Only premium users can book premium equipment.');
           }
         },
       },
@@ -80,17 +82,17 @@ module.exports = (sequelize) => {
   */
   Booking.associate = (models) => {
     Booking.belongsTo(models.User, {
-      foreignKey: "userEmail",
-      as: "User",
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE",
+      foreignKey: 'userEmail',
+      as: 'User',
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
     });
 
     Booking.belongsTo(models.Equipment, {
-      foreignKey: "equipmentID",
-      as: "Equipment",
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE",
+      foreignKey: 'equipmentID',
+      as: 'Equipment',
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
     });
   };
 

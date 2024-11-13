@@ -3,14 +3,16 @@
 .container {
     display: flex;
     flex-direction: column;
+    justify-content: start;
     align-items: center;
     padding: 0px;
+    width: 100%;
+    min-height: 100vh;
+    margin: 0 auto;
     box-sizing: border-box;
-    font-family: Arial, sans-serif;
     color: #333;
     background-color: #f8f9fa;
-    /*max-width: 1200px;*/
-    margin: 0 auto;
+    font-family: Arial, sans-serif;
 }
 
 /* Responsive adjustments */

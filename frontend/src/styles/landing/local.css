@@ -2,6 +2,9 @@
  * Put styles for the landing page in here 
  * Do not put component styles in this file
  */
+.container {
+    background-color: #e6e6fa;
+}
 
 .content {
     display: flex;
@@ -36,6 +39,14 @@
 }
 
 /* Text content */
+.text-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-right: 30px;
+}
+
 .text-content {
     flex: 1;
     max-width: 500px;

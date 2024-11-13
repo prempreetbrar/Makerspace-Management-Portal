@@ -1,8 +1,18 @@
+// This component should probably be split into two but it works so we can leave it
+
 import '../styles/login_button.css';
 
-const LoginButton = ({ button_type }: { button_type: React.ButtonHTMLAttributes<HTMLButtonElement>['type'] }) => {
+interface LoginButtonProps {
+  text?: string;
+  button_type: React.ButtonHTMLAttributes<HTMLButtonElement>['type'];
+  onClick?: () => void;
+}
+
+const LoginButton = ({ text, button_type, onClick }: LoginButtonProps) => {
   return (
-    <button type={button_type} className="login-button">Log In</button>
+    <button type={button_type} className="login-button" onClick={button_type === 'submit' ? undefined : onClick}>
+      {text || 'Login'}
+    </button>
   );
 };
 

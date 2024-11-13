@@ -55,7 +55,16 @@ module.exports = (sequelize) => {
     },
     {
       tableName: 'User',
-      // timestamp for creation and updates are automatically added.
+      timestamps: false,
+
+      /*
+      We don't want to be returning the password through queries unless needed in specific
+      cases (like checking login or authentication). In those cases, we'll manually override this.
+      Why? Returning passwords from a query (even hashed) is a security risk.
+    */
+      defaultScope: {
+        attributes: { exclude: ['password'] },
+      },
     }
   );
 
@@ -71,6 +80,13 @@ module.exports = (sequelize) => {
       user.confirmPassword = undefined;
     }
   });
+
+  User.prototype.isPasswordCorrect = async function (
+    givenPassword,
+    actualPassword
+  ) {
+    return await bcrypt.compare(givenPassword, actualPassword);
+  };
 
   /*
     Sequelize only needs Model.belongsTo. The reason we've defined it inside of a method

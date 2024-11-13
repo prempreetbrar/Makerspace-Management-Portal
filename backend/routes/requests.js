@@ -19,4 +19,17 @@ router.get("/", async (_req, res) => {
     }
 });
 
+router.get("/:userEmail", async (req, res) => {
+    const userEmail = req.params.userEmail;
+    try {
+        const requestsForUser = await RequestModel.findAll({where: {userEmail}});
+        res.status(200).json(requestsForUser);
+    } 
+    catch (error) {
+        console.error("Error fetching requests", error);
+        res.status(500).json({ 
+            error: "An error occurred while fetching requests for user:" + userEmail
+         });
+    }
+});
 module.exports = router;

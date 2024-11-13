@@ -1,7 +1,7 @@
 /* Responsive adjustments */
-
 @media (min-width: 769px) {
-    .content {
+    .page-content {
+        background-color: #ffffff;
         display: initial;
         padding: 0;
         text-align: center;
@@ -33,7 +33,7 @@
         margin-bottom: -20px;
     }
 
-    .content {
+    .page-content {
         display: block;
         flex-direction: column;
         padding: 0;
