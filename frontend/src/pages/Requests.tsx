@@ -1,19 +1,99 @@
 import '../styles/requests/local.css';
 import * as React from 'react';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import NavBar from '../Components/NavBar.tsx';
 import MainContainer from '../Components/MainContainer.tsx';
-import { Fab, Tab, Tabs, Stack, Typography, Button, Card, CardContent } from '@mui/material';
+import { Fab, Tab, Tabs, Stack, Typography, Button, Card, CardContent, CardActionArea, CardActions, Accordion } from '@mui/material';
 import { createTheme, styled, ThemeProvider, useTheme } from '@mui/material/styles'
 import Box from '@mui/material/Box';
+import AddIcon from '@mui/icons-material/Add'
 import TabPanel from '@mui/lab/TabPanel';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import { UserProvider, useUser } from '../hooks/UserProvider.tsx';
 import { RequestsProvider } from '../hooks/RequestsProvider.tsx';
+import { request } from 'http';
+import { describe } from 'node:test';
 // like, really need to simplify these...
 
 
+const requestTemplate1 =
+{
+    userEmail: "real_email1@email.com",
+    title: "Request Title",
+    description: "This is the request description. It might be very long or short.",
+    status: "approved"
+}
+const requestTemplate2 =
+{
+    userEmail: "real_email1@email.com",
+    title: "Request Title2",
+    description: "This is the request description. It might be very long or short.",
+    status: "pending",
+}
+const requestTemplate3 =
+{
+    userEmail: "real_email1@email.com",
+    title: "Request Title3",
+    description: "This is the request description. It might be very long or short.",
+    status: "denied",
+}
+
+const templateRequests = [requestTemplate1, requestTemplate1, requestTemplate2, requestTemplate2, requestTemplate3, requestTemplate3];
+
 const theme = createTheme();
+interface RequestBoxProps {
+    children?: React.ReactNode,
+    userRole?: string
+}
+
+const DangerousActionButton = styled(Button)({
+    backgroundColor: theme.palette.error.main,
+    color: theme.palette.primary.contrastText,
+    flexGrow: 0
+});
+const PositiveActionButton = styled(Button)({
+    backgroundColor: theme.palette.success.main,
+    color: theme.palette.primary.contrastText,
+    flexGrow: 0
+})
+const RequestBox = ({ children, userRole }: RequestBoxProps) => (
+    <Card
+        sx={{
+            border: '1px solid black',
+            backgroundColor: 'white',
+            width: '80vw',
+            minHeight:
+            {
+                xs: '100px',
+            },
+            display: 'flex',
+            borderRadius: '20px',
+            flexDirection: 'column'
+        }}>
+        <CardContent sx={{ padding: '3px' }}>
+            {children}
+        </CardContent>
+        <CardActions>
+            {userRole === "Admin" ? (
+                <>
+                    <PositiveActionButton>
+                        Approve
+                    </PositiveActionButton>
+                    <DangerousActionButton>
+                        Deny
+                    </DangerousActionButton>
+                </>
+            ) : (
+                <></>
+            )}
+
+        </CardActions>
+    </Card>
+);
 
 const Requests = () => {
 
@@ -27,10 +107,12 @@ const Requests = () => {
     */}
     const { user, setUserByIndex } = useUser();
     const [currentUserIndex, setCurrentUserIndex] = React.useState(0);
+    const [currentUserRole, setCurrentUserRole] = React.useState(user.userRole);
     const handleChangeUser = () => {
         const nextIndex = currentUserIndex + 1 % 3;
         setCurrentUserIndex(nextIndex);
         setUserByIndex(nextIndex);
+        setCurrentUserRole(user.userRole);
     }
 
     const [value, setValue] = React.useState('Approved'); // this is the default state I assume
@@ -53,17 +135,38 @@ const Requests = () => {
                             <Tab label="Denied" value="Denied" />
                         </TabList>
                         <TabPanel value="Approved">
-                            {/* TO DO: Make separate pages for each */}
-                            <Box sx={{ width: '100%' }}>
-                                <Typography variant='h2' sx={{ padding: '30px' }}>
-                                    Approved Requests Tab <br />
-                                    {user.email}
-                                </Typography>
-                                <Stack spacing={3}>
+                            <Box sx={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                width: '100%',
+                            }}>
+                                <Stack spacing={3} sx={{ alignSelf: 'center' }}>
                                     {
-                                        randomList.map(
-                                            (item, index) =>
-                                                <Typography key={index} variant='body2'> {item} </Typography>
+                                        templateRequests.filter(item => item.status === "approved").map((item, index) =>
+                                            <RequestBox>
+                                                <Box>
+                                                    <Typography key={index} variant='body2' sx={{
+                                                        color: 'black',
+                                                        fontWeight: 'bold',
+                                                        fontSize: '20pt',
+                                                    }}> {item.title}
+                                                    </Typography>
+                                                </Box>
+                                                <Box>
+                                                    <Accordion sx={{ boxShadow: 0 }}>
+                                                        <AccordionSummary>
+                                                            <Typography variant='body2'>
+                                                                View Details
+                                                            </Typography>
+                                                        </AccordionSummary>
+                                                        <AccordionDetails>
+                                                            <Typography variant='body1' sx={{ textAlign: 'left' }}>
+                                                                {item.description}
+                                                            </Typography>
+                                                        </AccordionDetails>
+                                                    </Accordion>
+                                                </Box>
+                                            </RequestBox>
                                         )
                                     }
                                 </Stack>
@@ -73,61 +176,82 @@ const Requests = () => {
                             <Box sx={{
                                 display: 'flex',
                                 flexDirection: 'column',
-                                width: '100%'
+                                width: '100%',
                             }}>
-                                <Typography variant='h2' sx={{ padding: '30px' }}>
-                                    Pending Requests Tab
-                                </Typography>
-                                <Box sx={{
-                                    alignSelf: 'center',
-                                    alignContent: 'center',
-                                }}>
-                                    <Stack spacing={3}>
-                                        {
-                                            randomList.map((item, index) =>
-                                                <Card key={index}
-                                                    sx={{
-                                                        backgroundColor: theme.palette.secondary.main,
-                                                        width: '80vw',
-                                                        height:
-                                                        {
-                                                            xs: '100px',
-                                                            md: '120px',
-                                                        },
-                                                        borderRadius: '20px'
-                                                    }}>
-                                                    <CardContent>
-                                                        <Typography key={index} variant='body2' sx={{
-                                                            color: theme.palette.secondary.contrastText,
-                                                            fontWeight: 'bold',
-                                                            fontSize: '24pt',
-                                                        }}> {item}
-                                                        </Typography>
-                                                    </CardContent>
-                                                </Card>
-                                            )
-                                        }
-                                    </Stack>
-                                </Box>
+                                <Stack spacing={3} sx={{ alignSelf: 'center' }}>
+                                    {
+                                        templateRequests.filter(item => item.status === "pending").map((item, index) =>
+                                            <RequestBox userRole={user.userRole}>
+                                                <Box>
+                                                    <Typography key={index} variant='body2' sx={{
+                                                        color: 'black',
+                                                        fontWeight: 'bold',
+                                                        fontSize: '20pt',
+                                                    }}> {item.title}
+                                                    </Typography>
+                                                </Box>
+                                                <Box>
+                                                    <Accordion sx={{ boxShadow: 0 }}>
+                                                        <AccordionSummary>
+                                                            <Typography variant='body2'>
+                                                                View Details
+                                                            </Typography>
+                                                        </AccordionSummary>
+                                                        <AccordionDetails>
+                                                            <Typography variant='body1' sx={{ textAlign: 'left' }}>
+                                                                {item.description}
+                                                            </Typography>
+                                                        </AccordionDetails>
+                                                    </Accordion>
+                                                </Box>
+                                            </RequestBox>
+                                        )
+                                    }
+                                </Stack>
                             </Box>
                         </TabPanel>
                         <TabPanel value="Denied">
-                            <Box sx={{ width: '100%' }}>
-                                <Typography variant='h2' sx={{ padding: '30px' }}>
-                                    Denied Requests Tab
-                                </Typography>
-                                <Stack spacing={3}>
+                            <Box sx={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                width: '100%',
+                            }}>
+                                <Stack spacing={3} sx={{ alignSelf: 'center' }}>
                                     {
-                                        randomList.map(
-                                            (item, index) =>
-                                                <Typography key={index} variant='body2'> {item} </Typography>
+                                        templateRequests.filter(item => item.status === "denied").map((item, index) =>
+                                            <RequestBox>
+                                                <Box>
+                                                    <Typography key={index} variant='body2' sx={{
+                                                        color: 'black',
+                                                        fontWeight: 'bold',
+                                                        fontSize: '20pt',
+                                                    }}> {item.title}
+                                                    </Typography>
+                                                </Box>
+                                                <Box>
+                                                    <Accordion sx={{ boxShadow: 0 }}>
+                                                        <AccordionSummary>
+                                                            <Typography variant='body2'>
+                                                                View Details
+                                                            </Typography>
+                                                        </AccordionSummary>
+                                                        <AccordionDetails>
+                                                            <Typography variant='body1' sx={{ textAlign: 'left' }}>
+                                                                {item.description}
+                                                            </Typography>
+                                                        </AccordionDetails>
+                                                    </Accordion>
+                                                </Box>
+                                            </RequestBox>
                                         )
                                     }
                                 </Stack>
                             </Box>
                         </TabPanel>
                     </TabContext>
-                    <Fab />
+                    <Fab>
+                        <AddIcon />
+                    </Fab>
                 </div>
             </ThemeProvider >
             {/* at some point, there should be a check for some sort of session token*/

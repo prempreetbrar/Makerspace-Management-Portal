@@ -6,32 +6,31 @@ import CreateAccountButton from './CreateAccountButton';
 import { useNavigate } from 'react-router-dom';
 
 const NavBar = () => {
-  const navigate = useNavigate();
+    const navigate = useNavigate();
 
-  const goToLogin = () => {
-    navigate('/login');
-  };
+    const goToLogin = () => {
+        navigate('/login');
+    };
 
-  const goToSignUp = () => {
-    navigate('/signup');
-  };
-
-  return (
-    <nav className="navbar">
-      <div className="logo-container">
-        ✂️ {/* Logo Icon  will replace here*/}
-      </div>
-      <ul className="nav-links">
-        <li><a href="home">Home</a></li>
-        <li><a href="#reserve">Reserve Equipment</a></li>
-        <li><a href="requests">View Requests</a></li>
-      </ul>
-      <div className="auth-buttons">
-        <LoginButton button_type='button' onClick={goToLogin}></LoginButton>
-        <CreateAccountButton button_type='button' onClick={goToSignUp}></CreateAccountButton>
-      </div>
-    </nav>
-  );
+    const goToSignUp = () => {
+        navigate('/signup');
+    };
+    return (
+        <nav className="navbar">
+            <div className="logo-container">
+                ✂️ {/* Logo Icon  will replace here*/}
+            </div>
+            <ul className="nav-links">
+                <li><a href="home">Home</a></li>
+                <li><a href="#reserve">Reserve Equipment</a></li>
+                <li><a href="requests">View Requests</a></li>
+            </ul>
+            <div className="auth-buttons">
+                <LoginButton button_type='button' onClick={goToLogin}></LoginButton>
+                <CreateAccountButton button_type='button' onClick={goToSignUp}></CreateAccountButton>
+            </div>
+        </nav>
+    );
 };
 
 export default NavBar;
