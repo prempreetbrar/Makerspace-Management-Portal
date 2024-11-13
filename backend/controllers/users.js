@@ -1,5 +1,6 @@
 // external packages
 const jwt = require('jsonwebtoken');
+const util = require('util');
 
 // models
 const sequelize = require('../config/database');
@@ -110,7 +111,62 @@ const login = errorController.catchAsync(async (request, response) => {
   });
 });
 
+const isUserLoggedIn = errorController.catchAsync(
+  async (request, response, next) => {
+    // 1) check if the JWT token was sent with the request. Either sent as header "Bearer: Token" or by browser as a cookie
+    let token;
+    if (
+      request.headers.authorization &&
+      request.headers.authorization.startsWith('Bearer') &&
+      request.headers.authorization.split(' ')[1] !== null
+    ) {
+      token = request.headers.authorization.split(' ')[1];
+    } else if (request.cookies.jwt) {
+      token = request.cookies.jwt;
+    }
+
+    if (!token)
+      throw new errorController.ErrorWithStatusCode(
+        'You are not logged in. Please log in to get access.',
+        401
+      );
+
+    /*
+       2) check if the JWT token is valid. We use promisify because
+       it allows us to use await (rather than have a messy try catch block).
+    */
+    const decodedPayload = await util.promisify(jwt.verify)(
+      token,
+      process.env.JWT_SECRET
+    );
+
+    /*
+      3) check if user has been deleted. If so, they shouldn't be
+      able to interact with our database.
+    */
+    const user = await User.findByPk(decodedPayload.id);
+    if (!user) {
+      throw new errorController.ErrorWithStatusCode(
+        'The user belonging to this token no longer exists.',
+        401
+      );
+    }
+
+    /*
+        4) add the user onto the request object. This allows anything afterwards in the middleware
+        stack to access the user (by doing request.body.user). 
+        
+        For example, if you need to create a booking for a user, you could do router.post("/bookings", checkIfLoggedIn, createBooking),
+        which would allow your createBooking function (which comes after checkIfLoggedIn in the middleware
+        stack) to access the user (and the user's attributes).
+    */
+    request.body.user = user;
+    next();
+  }
+);
+
 module.exports = {
   signup,
   login,
+  isUserLoggedIn,
 };
