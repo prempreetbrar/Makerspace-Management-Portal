@@ -1,5 +1,4 @@
 import { createContext, ReactNode, useContext, useState } from 'react'
-
 const adminUser = {
     email: 'real_email3@email.com',
     firstName: 'Austin',
