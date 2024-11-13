@@ -81,6 +81,13 @@ module.exports = (sequelize) => {
     }
   });
 
+  User.prototype.isPasswordCorrect = async function (
+    givenPassword,
+    actualPassword
+  ) {
+    return await bcrypt.compare(givenPassword, actualPassword);
+  };
+
   /*
     Sequelize only needs Model.belongsTo. The reason we've defined it inside of a method
     is because we can call this method after all models have been loaded in the code. If we put
