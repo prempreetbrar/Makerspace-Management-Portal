@@ -90,7 +90,6 @@ const seedDatabase = async (clear = false) => {
             icon: fs.readFileSync(
               path.join(__dirname, '/assets/icons', '3d_printer.png')
             ),
-            equipmentStatus: 'good',
             isBookable: true,
             isPremium: true,
           },
@@ -101,7 +100,6 @@ const seedDatabase = async (clear = false) => {
             icon: fs.readFileSync(
               path.join(__dirname, '/assets/icons', 'stapler.png')
             ),
-            equipmentStatus: 'really good',
             isBookable: false,
             isPremium: false,
           },
