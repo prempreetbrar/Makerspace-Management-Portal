@@ -1,0 +1,99 @@
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.popup-content {
+  background-color: white;
+  padding: 20px;
+  width: 80%;
+  max-width: 600px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  position: relative;
+  border: solid red;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 1.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  border: solid blue;
+}
+
+.calendar-container {
+  background-color: #e6e1ea;
+  padding: 10px;
+  border-radius: 8px;
+  text-align: center;
+  border: solid green;
+}
+
+.time-slots {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  border: solid black;
+}
+
+.time-slots p {
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  text-align: center;
+  margin: 0 0 0 0;
+  border: solid orange;
+}
+
+.reservation-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border: solid red;
+}
+
+.reservation-form input,
+.reservation-form textarea {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.report-issue,
+.submit-request {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.report-issue {
+  background-color: #f5f5f5;
+  color: #000;
+}
+
+.submit-request {
+  background-color: #000;
+  color: #fff;
+}
