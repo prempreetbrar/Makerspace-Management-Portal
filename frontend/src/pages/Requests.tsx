@@ -6,7 +6,7 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import NavBar from '../Components/NavBar.tsx';
 import MainContainer from '../Components/MainContainer.tsx';
-import { Fab, Tab, Tabs, Stack, Typography, Button, Card, CardContent, CardActionArea, CardActions, Accordion } from '@mui/material';
+import { Fab, Tab, Tabs, Stack, Typography, Button, Card, CardContent, CardActionArea, CardActions, Accordion, ButtonGroup } from '@mui/material';
 import { createTheme, styled, ThemeProvider, useTheme } from '@mui/material/styles'
 import Box from '@mui/material/Box';
 import AddIcon from '@mui/icons-material/Add'
@@ -17,6 +17,7 @@ import { UserProvider, useUser } from '../hooks/UserProvider.tsx';
 import { RequestsProvider } from '../hooks/RequestsProvider.tsx';
 import { request } from 'http';
 import { describe } from 'node:test';
+import RequestCard from '../Components/Requests/RequestCard.tsx';
 // like, really need to simplify these...
 
 
@@ -45,56 +46,6 @@ const requestTemplate3 =
 const templateRequests = [requestTemplate1, requestTemplate1, requestTemplate2, requestTemplate2, requestTemplate3, requestTemplate3];
 
 const theme = createTheme();
-interface RequestBoxProps {
-    children?: React.ReactNode,
-    userRole?: string
-}
-
-const DangerousActionButton = styled(Button)({
-    backgroundColor: theme.palette.error.main,
-    color: theme.palette.primary.contrastText,
-    flexGrow: 0
-});
-const PositiveActionButton = styled(Button)({
-    backgroundColor: theme.palette.success.main,
-    color: theme.palette.primary.contrastText,
-    flexGrow: 0
-})
-const RequestBox = ({ children, userRole }: RequestBoxProps) => (
-    <Card
-        sx={{
-            border: '1px solid black',
-            backgroundColor: 'white',
-            width: '80vw',
-            minHeight:
-            {
-                xs: '100px',
-            },
-            display: 'flex',
-            borderRadius: '20px',
-            flexDirection: 'column'
-        }}>
-        <CardContent sx={{ padding: '3px' }}>
-            {children}
-        </CardContent>
-        <CardActions>
-            {userRole === "Admin" ? (
-                <>
-                    <PositiveActionButton>
-                        Approve
-                    </PositiveActionButton>
-                    <DangerousActionButton>
-                        Deny
-                    </DangerousActionButton>
-                </>
-            ) : (
-                <></>
-            )}
-
-        </CardActions>
-    </Card>
-);
-
 const Requests = () => {
 
     {/* TO DO: 
@@ -143,7 +94,7 @@ const Requests = () => {
                                 <Stack spacing={3} sx={{ alignSelf: 'center' }}>
                                     {
                                         templateRequests.filter(item => item.status === "approved").map((item, index) =>
-                                            <RequestBox>
+                                            <RequestCard>
                                                 <Box>
                                                     <Typography key={index} variant='body2' sx={{
                                                         color: 'black',
@@ -166,7 +117,7 @@ const Requests = () => {
                                                         </AccordionDetails>
                                                     </Accordion>
                                                 </Box>
-                                            </RequestBox>
+                                            </RequestCard>
                                         )
                                     }
                                 </Stack>
@@ -181,7 +132,7 @@ const Requests = () => {
                                 <Stack spacing={3} sx={{ alignSelf: 'center' }}>
                                     {
                                         templateRequests.filter(item => item.status === "pending").map((item, index) =>
-                                            <RequestBox userRole={user.userRole}>
+                                            <RequestCard userRole={user.userRole}>
                                                 <Box>
                                                     <Typography key={index} variant='body2' sx={{
                                                         color: 'black',
@@ -204,7 +155,7 @@ const Requests = () => {
                                                         </AccordionDetails>
                                                     </Accordion>
                                                 </Box>
-                                            </RequestBox>
+                                            </RequestCard>
                                         )
                                     }
                                 </Stack>
@@ -219,7 +170,7 @@ const Requests = () => {
                                 <Stack spacing={3} sx={{ alignSelf: 'center' }}>
                                     {
                                         templateRequests.filter(item => item.status === "denied").map((item, index) =>
-                                            <RequestBox>
+                                            <RequestCard>
                                                 <Box>
                                                     <Typography key={index} variant='body2' sx={{
                                                         color: 'black',
@@ -242,7 +193,7 @@ const Requests = () => {
                                                         </AccordionDetails>
                                                     </Accordion>
                                                 </Box>
-                                            </RequestBox>
+                                            </RequestCard>
                                         )
                                     }
                                 </Stack>
