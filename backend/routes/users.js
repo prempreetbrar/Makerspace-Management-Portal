@@ -16,4 +16,13 @@ const usersController = require('../controllers/users');
 router.post('/signup', usersController.signup);
 router.post('/login', usersController.login);
 
+// all routes from this point onwards are only available to logged in, basic users
+router.use(
+  usersController.isUserLoggedIn,
+  usersController.isUserAuthorized('Basic')
+);
+
+router.get('/checkout', usersController.checkout);
+router.get('/checkout/:STRIPE_SECRET_KEY', usersController.setUserPremium);
+
 module.exports = router;

@@ -1,6 +1,8 @@
 // external packages
 const jwt = require('jsonwebtoken');
 const util = require('util');
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const dollarsToCents = require('dollars-to-cents');
 
 // models
 const sequelize = require('../config/database');
@@ -182,9 +184,77 @@ const isUserAuthorized = (...userRoles) => {
   };
 };
 
+/*
+  As part of Stripe, we need to create a checkout "session". This occurs when the user clicks
+  on the buy premium button and starts the "session".
+
+  https://docs.stripe.com/api/checkout/sessions/create
+*/
+const checkout = errorsController.catchAsync(
+  async (request, response, next) => {
+    const session = await stripe.checkout.sessions.create({
+      mode: 'payment',
+      customer_email: request.body.user.email, // recorded in the stripe dashboard
+      client_reference_id: request.body.user.email, // a way for us to get back to this session if the user closes their browser rather than creating a new one
+      line_items: [
+        {
+          quantity: 1,
+          price_data: {
+            currency: 'cad',
+            unit_amount: dollarsToCents('$49.99'), // stripe wants it in cents
+            // stripe wants this for the stripe dashboard, not really necessary for us
+            product_data: {
+              name: `Premium Membership for ${request.body.user.email}!`,
+              description: `This membership allows you to book equipment for 2 hours instead of 1, and gives you access to special premium equipment! Take your work to the next level!`,
+              images: ['https://imgur.com/a/UqCP7cg'],
+            },
+          },
+        },
+      ],
+      // Stripe redirects to this URL, and we upgrade the user's status when they're redirected to this URL
+      success_url: `${request.protocol}://${request.get('host')}/checkout/${process.env.STRIPE_SECRET_KEY}`,
+    });
+
+    response.status(200).json({
+      status: 'success',
+      session,
+    });
+  }
+);
+
+/*
+  When the user makes the payment, they are redirected to the URL handled by this controller. This controller
+  then upgrades their state in the DB.
+*/
+const setUserPremium = errorsController.catchAsync(
+  async (request, response, next) => {
+    // we have to make sure a user didn't just type in this URL to try to make themselves premium
+    if (
+      !request.params.STRIPE_SECRET_KEY ||
+      request.params.STRIPE_SECRET_KEY !== process.env.STRIPE_SECRET_KEY
+    ) {
+      throw new errorsController.ErrorWithStatusCode(
+        'The provided Stripe key is invalid.',
+        401
+      );
+    }
+
+    const user = await User.findByPk(request.body.user.email);
+    user.userRole = 'Premium';
+    await user.save();
+
+    response.status(200).json({
+      status: 'success',
+      message: `Congratulations ${request.body.user.email}, you are now a premium user!`,
+    });
+  }
+);
+
 module.exports = {
   signup,
   login,
   isUserLoggedIn,
   isUserAuthorized,
+  checkout,
+  setUserPremium,
 };
