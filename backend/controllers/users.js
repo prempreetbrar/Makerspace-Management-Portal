@@ -206,7 +206,7 @@ const checkout = errorsController.catchAsync(
             product_data: {
               name: `Premium Membership for ${request.body.user.email}!`,
               description: `This membership allows you to book equipment for 2 hours instead of 1, and gives you access to special premium equipment! Take your work to the next level!`,
-              images: ['https://imgur.com/a/UqCP7cg'],
+              images: ['https://i.imgur.com/pLscibH.png'],
             },
           },
         },
