@@ -8,6 +8,7 @@ import Landing from './Landing.tsx'
 import Login from './Login.tsx'
 import Signup from './Signup.tsx'
 import Requests from "./Requests.tsx";
+import ReserveEquipment from "./ReserveEquipment.tsx";
 import '../styles/index.css'
 import { UserProvider } from "../hooks/UserProvider.tsx";
 
@@ -27,6 +28,11 @@ const router = createBrowserRouter([
     {
         path: "requests",
         element: <Requests />
+    },
+    {
+        path: "reserve",
+        element: <ReserveEquipment />
+
     },
     {
         path: "home",

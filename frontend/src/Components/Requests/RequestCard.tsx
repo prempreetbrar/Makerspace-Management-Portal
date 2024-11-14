@@ -24,7 +24,7 @@ const RequestCard = ({ children, userRole }: RequestCardProps) => (
     <Card
         sx={{
             border: '1px solid black',
-            backgroundColor: 'white',
+            backgroundColor: theme.palette.secondary.main,
             width: '80vw',
             minHeight:
             {
@@ -34,9 +34,11 @@ const RequestCard = ({ children, userRole }: RequestCardProps) => (
             borderRadius: '20px',
             flexDirection: 'column'
         }}>
-        <CardContent sx={{ padding: '3px' }}>
-            {children}
-        </CardContent>
+        <CardActionArea>
+            <CardContent sx={{ padding: '3px' }}>
+                {children}
+            </CardContent>
+        </CardActionArea>
         <CardActions>
             {userRole === "Admin" ? (
                 <>
@@ -54,6 +56,6 @@ const RequestCard = ({ children, userRole }: RequestCardProps) => (
                 </>
             )}
         </CardActions>
-    </Card>
+    </Card >
 );
 export default RequestCard

@@ -14,7 +14,7 @@ const usersController = require('../controllers/users');
 const equipmentController = require('../controllers/equipment');
 
 // routes
-router.use(usersController.isUserLoggedIn);
+//router.use(usersController.isUserLoggedIn);
 router
   .route('/')
   .get(

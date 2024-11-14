@@ -22,7 +22,7 @@ const NavBar = () => {
             </div>
             <ul className="nav-links">
                 <li><a href="home">Home</a></li>
-                <li><a href="#reserve">Reserve Equipment</a></li>
+                <li><a href="reserve">Reserve Equipment</a></li>
                 <li><a href="requests">View Requests</a></li>
             </ul>
             <div className="auth-buttons">
