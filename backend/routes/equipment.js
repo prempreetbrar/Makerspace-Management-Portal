@@ -2,21 +2,28 @@
  * Defines routes related to the Equipment resource and handles HTTP requests for equipment-related operations.
  */
 
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const sequelize = require("../config/database");
-const EquipmentModel = require("../models/Equipment")(sequelize);
 
-// Get all equipment
-router.get("/", async (_req, res) => {
-    try {
-        const equipment = await EquipmentModel.findAll();
-        res.status(200).json(equipment);
-    } 
-    catch (error) {
-        console.error("Error fetching equipment", error);
-        res.status(500).json({ error: "An error occurred while fetching equipment" });
-    }
-});
+// models
+const User = require('../models/User');
+
+// controllers
+const usersController = require('../controllers/users');
+const equipmentController = require('../controllers/equipment');
+
+// routes
+router.use(usersController.isUserLoggedIn);
+router
+  .route('/')
+  .get(
+    equipmentController.extractEquipmentFilters,
+    equipmentController.getAllEquipment
+  )
+  .patch(
+    usersController.isUserAuthorized(User.ADMIN),
+    equipmentController.extractEquipmentFilters,
+    equipmentController.updateEquipment
+  );
 
 module.exports = router;
