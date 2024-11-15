@@ -4,7 +4,7 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import NavBar from '../Components/NavBar.tsx';
+import NavBar from '../Components/NavBar';
 import MainContainer from '../Components/MainContainer.tsx';
 import { Fab, Tab, Tabs, Stack, Typography, Button, Card, CardContent, CardActionArea, CardActions, Accordion, ButtonGroup } from '@mui/material';
 import { createTheme, styled, ThemeProvider, useTheme } from '@mui/material/styles'

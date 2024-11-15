@@ -35,7 +35,6 @@ const BookingCalendar = () => {
     const today = dayjs();
     const threeMonthsFromNow = today.add(3, "month");
     return (
-
         <LocalizationProvider dateAdapter={AdapterDayjs}>
             <Box display={"flex"} sx={{
                 alignSelf: 'center',
@@ -46,10 +45,8 @@ const BookingCalendar = () => {
                 },
                 margin: '10px',
                 maxWidth: 600,
-                backgroundColor: theme.palette.primary.main,
             }}>
-                <Box bgcolor={'white'} height={'auto'} width={'inherit'}>
-                    <DateCalendar disablePast={true} defaultValue={dayjs(today)} minDate={today} maxDate={threeMonthsFromNow} />
+                    <DateCalendar disablePast={true} sx={{}} defaultValue={dayjs(today)} minDate={today} maxDate={threeMonthsFromNow} />
                     <Box display={"flex"} justifyContent={'center'}>
                         <TimePicker sx={{
                             marginTop: {
@@ -59,7 +56,6 @@ const BookingCalendar = () => {
                         }
                         } />
                     </Box>
-                </Box>
             </Box>
         </LocalizationProvider>
     )

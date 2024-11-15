@@ -17,7 +17,10 @@ import { useUser } from '../hooks/UserProvider.tsx';
 import RequestCard from '../Components/Requests/RequestCard.tsx';
 import axios from 'axios';
 import BookingCalendar from './CalendarPage.tsx';
+import ReservePopup from '../Components/ReservePopup.tsx';
+import Modal from '@mui/material/Modal';
 // like, really need to simplify these...
+
 
 type Equipment = {
     id: number,
@@ -50,27 +53,100 @@ const equipmentModel: Equipment[] = [
     { id: 12, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: false },
     { id: 13, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: false },
     { id: 14, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: false },
-    { id: 15, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: false },
-    { id: 16, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: false },
-    { id: 17, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: false },
-    { id: 18, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: false },
-    { id: 19, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: false },
-    { id: 20, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: false },
-    { id: 21, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: false },
-    { id: 22, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: false },
-    { id: 23, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: false },
-    { id: 24, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: false },
-    { id: 25, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: false },
-    { id: 26, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: false },
-    { id: 27, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: false },
+    { id: 15, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: true },
+    { id: 16, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: true },
+    { id: 17, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: true },
+    { id: 18, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: true },
+    { id: 19, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: true },
+    { id: 20, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: true },
+    { id: 21, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: true },
+    { id: 22, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: true },
+    { id: 23, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: true },
+    { id: 24, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: true },
+    { id: 25, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: true },
+    { id: 26, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: true },
+    { id: 27, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: true },
     { id: 28, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: false },
     { id: 29, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: false },
     { id: 30, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: false },
 ];
 
 const theme = createTheme();
+interface EquipmentCardProps
+{
+    children?: React.ReactNode,
+    userRole?: string,
+}
+interface BookingModalProps
+{
+    userRole?: string
+}
+
+
+const BookingModal = ({userRole}: BookingModalProps) => 
+{
+   
+}
+
+
+
+const EquipmentCard = ({children, userRole}:EquipmentCardProps) =>
+{
+    <Card
+        sx={{
+            border: '1px solid black',
+            backgroundColor: theme.palette.secondary.main,
+            width: '80vw',
+            minHeight:
+            {
+                xs: '100px',
+            },
+            display: 'flex',
+            borderRadius: '20px',
+            flexDirection: 'column'
+        }}>
+        <CardActionArea>
+            <CardContent sx={{ padding: '3px' }}>
+                {children}
+            </CardContent>
+        </CardActionArea>
+    </Card >
+}
+const ModalStyle = 
+{
+    position: 'absolute',
+    display: 'flex',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 
+    {
+        xs: 400,
+        md: 900,
+    },
+    height:
+    {
+        xs: '80vh',
+        md: 500,
+    },
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+}
 const ReserveEquipment = () => {
 
+    const [isOpen, setIsOpen] = useState(false);
+    const togglePopup = () => {
+        setIsOpen(!isOpen);
+    }
+    const [open, setOpen] = React.useState(false);
+    const handleOpen = () => {
+        setOpen(true);
+    }
+    const handleClose = () => {
+        setOpen(false);
+    }
     const handleChangeUser = () => {
         const nextIndex = currentUserIndex + 1 % 3;
         setCurrentUserIndex(nextIndex);
@@ -84,6 +160,13 @@ const ReserveEquipment = () => {
 
     return (
         <MainContainer>
+                <div className="reserve-test-page">
+                    <button type='button' className="open-menu-button" onClick={togglePopup}>
+                    Open Menu
+                    </button>
+                    {isOpen && <ReservePopup onClose={togglePopup} />}
+                </div>
+                
             <ThemeProvider theme={theme}>
                 <NavBar />
                 <Button variant={"contained"} onClick={handleChangeUser}> Change User: {currentUserRole} </Button>
@@ -93,14 +176,43 @@ const ReserveEquipment = () => {
                         flexDirection: 'column',
                         width: '100%',
                     }}>
-                        <BookingCalendar>
-
-                        </BookingCalendar>
+                      
+                
+                    <Modal open={open} onClose={handleClose}>
+                        <Box sx={ModalStyle}>
+                            {currentUserRole === 'Admin'?
+                            (
+                            <Typography variant='body1'>
+                                Admins see this
+                            </Typography>
+                            ):(
+                                <Typography variant='body2'>
+                                     <BookingCalendar>
+                                    </BookingCalendar>
+                                </Typography>
+                            )}
+                        </Box>
+                    </Modal>
                         < Stack spacing={3} sx={{ alignSelf: 'center' }}>
                             {
                                 equipmentModel.map((item, index) =>
                                 (
-                                    <RequestCard key={index}>
+
+                                    <Card
+                                    sx={{
+                                        border: '1px solid black',
+                                        backgroundColor: theme.palette.secondary.main,
+                                        width: '80vw',
+                                        minHeight:
+                                        {
+                                            xs: '100px',
+                                        },
+                                        display: 'flex',
+                                        borderRadius: '20px',
+                                        flexDirection: 'column'
+                                    }}>
+                                    <CardActionArea onClick={handleOpen}>
+                                        <CardContent sx={{ padding: '3px' }}>
                                         <Box>
                                             <Typography variant='body2' sx={{
                                                 color: 'black',
@@ -114,6 +226,11 @@ const ReserveEquipment = () => {
                                                 <AccordionSummary>
                                                     <Typography variant='body2'>
                                                         View Details
+                                                        {/*
+                                                            *  I need to link the modal to each component via the card action
+                                                            *  Admins also need a different view for approval
+                                                            *  This means the schema needs to be updated
+                                                            * */}
                                                     </Typography>
                                                 </AccordionSummary>
                                                 <AccordionDetails>
@@ -123,7 +240,9 @@ const ReserveEquipment = () => {
                                                 </AccordionDetails>
                                             </Accordion>
                                         </Box>
-                                    </RequestCard>
+                                        </CardContent>
+                                    </CardActionArea>
+                                </Card >
                                 ))
                             }
                         </Stack>
@@ -139,4 +258,6 @@ const ReserveEquipment = () => {
 
 export default ReserveEquipment;
 
-/**/
+/*
+    
+    */
