@@ -4,3 +4,72 @@
   cursor: pointer;
   font-size: 1rem;
 }
+
+.calendar-container {
+  background-color: #e6e1ea;
+  padding: 10px;
+  border-radius: 8px;
+  text-align: center;
+  border: solid green;
+}
+
+.time-slots {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  border: solid black;
+}
+
+.time-slots p {
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  text-align: center;
+  margin: 0 0 0 0;
+  border: solid orange;
+}
+
+.reservation-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: white;
+  border: solid red;
+}
+
+.reservation-form input,
+.reservation-form textarea {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.report-issue,
+.submit-request {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  width: 100px;
+}
+
+.report-issue {
+  background-color: #000;
+  color: #fff;
+}
+
+.submit-request {
+  background-color: #000;
+  color: #fff;
+}
+
+@media (max-width: 768px) {}
+
+@media (max-width: 480px) {}
