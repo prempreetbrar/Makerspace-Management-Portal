@@ -1,22 +1,84 @@
-import '../styles/authentication/local.css';
-import MainContainer from '../Components/MainContainer.tsx';
-import CredentialForm from '../Components/CredentialForm.tsx';
-import LoginButton from "../Components/LoginButton.tsx";
+import React from 'react';
+import { Button, TextField, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
+import "../styles/authentication/login/Login-mobile.css"; 
 
-const Signup = () => {
+interface CreateAccountProps {
+  onClose: () => void;
+}
+
+const CreateAccount: React.FC<CreateAccountProps> = ({ onClose }) => {
   return (
-    <MainContainer>
-      <div className="logo-container">✂️<h2>MAKERSPACE</h2></div>
-      <CredentialForm>
-        <h4 className="login-text">Create Account</h4>
-        <div className="input-field"><input type="email" id="email" placeholder="Email" /></div>
-        <div className="input-field"><input type="password" id="password" placeholder="Password" /></div>
-        <div className="input-field"><input type="password" id="password" placeholder="Confirm Password" /></div>
-        <LoginButton text='Sign Up' button_type='submit'></LoginButton>
-        <p>Already have an account?<a href="/login" className="login-link">Log</a></p>
-      </CredentialForm>
-    </MainContainer>
+    <Dialog open={true} onClose={onClose} PaperProps={{ className: 'dialog-paper' }}>
+      <DialogTitle className="dialog-title">Create Account</DialogTitle>
+      <DialogContent className="dialog-content">
+      <TextField
+ className="text-field"
+          margin="normal"
+          label="First Name"
+          type="text"
+          fullWidth
+          variant="outlined"
+     
+
+        />
+        <TextField
+        className="text-field"
+          margin="normal"
+          label="Last Name"
+          type="text"
+          fullWidth
+          variant="outlined"
+
+
+        />
+        <TextField
+        className="text-field"
+          margin="normal"
+          label="Student Number"
+          type="text"
+          fullWidth
+          variant="outlined"
+          
+
+        />
+        <TextField
+        className="text-field"
+          margin="normal"
+          label="Email Address"
+          type="email"
+          fullWidth
+          variant="outlined"
+
+
+        />
+        <TextField
+        className="text-field"
+          margin="normal"
+          label="Password"
+          type="password"
+          fullWidth
+          variant="outlined"
+
+
+        />
+        <TextField
+        className="text-field"
+          margin="normal"
+          label="Confirm Password"
+          type="password"
+          fullWidth
+          variant="outlined"
+
+
+        />
+      </DialogContent>
+      <DialogActions className="button-container">
+      <Button color="primary" className="sign-up-button">Sign Up</Button>
+        <Button onClick={onClose} color="primary" className="cancel-button">Cancel</Button>
+
+      </DialogActions>
+    </Dialog>
   );
 };
 
-export default Signup;
+export default CreateAccount;

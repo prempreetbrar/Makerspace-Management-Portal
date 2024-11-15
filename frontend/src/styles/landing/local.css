@@ -1,20 +1,107 @@
 /* 
  * Put styles for the landing page in here 
  * Do not put component styles in this file
- */
+ */* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.heading2 {
+  text-align: center;
+  margin: 0 auto;
+  width: 100%;
+  font-weight: bold !important;
+}
+.logo-outlined {
+  margin-bottom: px;
+  padding: 20px;
+  background-color: transparent;
+
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+  padding: 0;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  color: #333;
+  background-color: #e8def8;
+  box-sizing: border-box;
+}
+
+.navbar {
+  width: 95%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 5%;
+
+
+  background-color: #fff;
+  border-bottom: 1px solid #ddd;
+  box-sizing: border-box;
+  z-index: 1000;
+}
+.create-account-button,
+.get-started-button {
+  background-color: black !important;
+}
+
+.heading .line {
+  display: block;
+}
+
+.heading .design {
+  opacity: 0.4;
+}
+
+.heading .develop {
+  opacity: 0.6;
+}
+
+.heading .discover {
+  opacity: 0.8;
+}
+.heading .inside {
+  opacity: 1;
+}
+.logo-container {
+  font-size: 1.5rem;
+}
+
+.nav-links {
+  display: flex;
+  gap: 20px;
+}
+
+.auth-buttons,
+.auth-buttons-mobile {
+  display: flex;
+  gap: 10px;
+}
 
 .content {
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-around;
-  padding: 40px;
   width: 100%;
-  max-width: 1200px;
+  padding: 40px;
   box-sizing: border-box;
 }
 
-/* Illustration */
 .illustration-container {
   flex: 1;
   display: flex;
@@ -26,22 +113,16 @@
 .illustration.desktop {
   width: 100%;
   max-width: 500px;
+  height: auto;
+  aspect-ratio: 1/0.8389;
+  object-fit: cover;
   display: block;
+  opacity: 0.7;
 }
 
 .illustration.mobile {
-  width: 100%;
-  max-width: 400px;
+  width: 300px;
   display: none;
-}
-
-/* Text content */
-.text-container {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding-right: 30px;
 }
 
 .text-content {
@@ -51,14 +132,13 @@
 }
 
 .heading {
-  font-size: 2.5rem;
+  font-size: clamp(1.8rem, 2.5vw + 1rem, 2.8rem);
   margin-bottom: 20px;
   color: #333;
   font-weight: bold;
   line-height: 1.2;
-  white-space: pre-line;
-  max-width: 500px;
   text-align: left;
+  font-weight: bold !important;
 }
 
 .subheading {
@@ -67,22 +147,69 @@
   color: #555;
 }
 
-/* Responsive adjustments */
-@media (min-width: 769px) {
+.login-button {
+  border: none !important;
+  box-shadow: none !important;
+  text-transform: none !important;
+  color: black !important;
+}
+.create-account-button,
+.get-started-button {
+  padding: 10px 20px;
+  border-radius: 10px !important;
+  cursor: pointer;
+  font-size: 1rem;
+  text-transform: none !important;
+}
 
-  /* Desktop styles */
-  .auth-buttons2 {
+.auth-buttons-mobile {
+  display: flex;
+  flex-direction: column;
+}
+.auth-buttons-mobile .create-account-button-mobile {
+  background-color: white !important;
+  color: #65558f !important;
+  font-weight: bold !important;
+}
+
+.auth-buttons-mobile .login-button-mobile,
+.auth-buttons-mobile .create-account-button-mobile {
+  height: 51px;
+  border-radius: 10px;
+  width: 100%;
+  color: white;
+  background-color: #65558f;
+  text-transform: none !important;
+}
+
+@media (min-width: 899px) {
+  /* Desktop */
+  .auth-buttons-mobile {
     display: none;
   }
-
-  .logo-container2 {
+  .logo-outlined {
     display: none;
+  }
+  .heading2 {
+    display: none !important;
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
+  /* Mobile */
+  .heading {
+    display: none;
+  }
+  .container {
+    background-color: rgb(255, 255, 255);
+  }
+  .navbar {
+    display: none !important;
+  }
 
-  /* Mobile styles */
+  .logo-outlined {
+    display: block;
+  }
   .illustration.desktop {
     display: none;
   }
@@ -99,32 +226,49 @@
     text-align: center;
   }
 
-  .text-content {
-    text-align: center;
+  .auth-buttons {
+    display: none;
+  }
+
+  .nav-links {
+    display: none;
   }
 
   .heading {
-    font-size: 1.6rem;
+    font-size: clamp(1.4rem, 5vw + 1rem, 2rem) !important;
     text-align: center;
+    white-space: nowrap;
+    opacity: 1;
   }
 
   .subheading {
     display: none;
   }
+
+  .get-started-button {
+    visibility: hidden;
+  }
 }
 
 @media (max-width: 480px) {
-
-  /* Extra small devices */
   .heading {
-    font-size: 1.5rem;
-  }
-
-  .subheading {
-    font-size: 0.9rem;
+    display: none;
   }
 
   .illustration {
     max-width: 250px;
+  }
+
+  .heading2 {
+    text-align: center;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .login-button,
+  .create-account-button,
+  .get-started-button {
+    width: 100%;
+    font-size: 0.9rem;
   }
 }

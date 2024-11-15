@@ -3,6 +3,7 @@
 import '../styles/navbar.css';
 import LoginButton from './LoginButton';
 import CreateAccountButton from './CreateAccountButton';
+import LogoGrayscale from '../assets/logo_grayscale.svg';
 import { useNavigate } from 'react-router-dom';
 
 const NavBar = () => {
@@ -19,7 +20,7 @@ const NavBar = () => {
   return (
     <nav className="navbar">
       <div className="logo-container">
-        ✂️ {/* Logo Icon  will replace here*/}
+      <img src={LogoGrayscale} alt="React Logo" className="logo" />
       </div>
       <ul className="nav-links">
         <li><a href="home">Home</a></li>
