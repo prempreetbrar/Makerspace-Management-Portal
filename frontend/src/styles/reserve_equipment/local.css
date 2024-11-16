@@ -1,3 +1,7 @@
+#reserve {
+  display: flex;
+}
+
 .open-menu-button {
   padding: 10px 20px;
   border-radius: 5px;
@@ -70,6 +74,10 @@
   color: #fff;
 }
 
-@media (max-width: 768px) {}
+@media (max-width: 768px) {
+  #reserve {
+    display: flex;
+  }
+}
 
 @media (max-width: 480px) {}

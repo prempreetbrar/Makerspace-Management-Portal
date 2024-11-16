@@ -74,7 +74,7 @@ const Requests = () => {
     const randomList: Array<String> = ["Apples", "Bananas", "Oranges", "Celery", "Carrots", "Avocados", "Pineapples", "Mangoes", "Potatoes", "Tomatoes", "Beans"];
     return (
         <MainContainer>
-            <NavBar />
+            <NavBar id='request'></NavBar>
             <Button onClick={handleChangeUser}> Change User </Button>
             <ThemeProvider theme={theme}>
                 <div className='page-content'>
