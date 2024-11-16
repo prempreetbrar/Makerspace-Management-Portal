@@ -1,6 +1,8 @@
 // .vscode/settings.json
 {
   "editor.formatOnSave": true, // Enables formatting on save
+  "editor.autoClosingBrackets": "never",
+  "editor.autoClosingOvertype": "never",
   "[javascript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },

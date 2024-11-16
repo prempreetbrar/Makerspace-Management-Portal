@@ -129,6 +129,7 @@ const ModalStyle =
         xs: '80vh',
         md: 500,
     },
+    padding: 0,
     bgcolor: 'background.paper',
     border: '2px solid #000',
     boxShadow: 24,
@@ -166,18 +167,15 @@ const ReserveEquipment = () => {
                     </button>
                     {isOpen && <ReservePopup onClose={togglePopup} />}
                 </div>
-                
             <ThemeProvider theme={theme}>
                 <NavBar />
                 <Button variant={"contained"} onClick={handleChangeUser}> Change User: {currentUserRole} </Button>
-                <div className='page-content'>
                     <Box sx={{
                         display: 'flex',
                         flexDirection: 'column',
                         width: '100%',
+                        padding: 0,
                     }}>
-                      
-                
                     <Modal open={open} onClose={handleClose}>
                         <Box sx={ModalStyle}>
                             {currentUserRole === 'Admin'?
@@ -186,22 +184,20 @@ const ReserveEquipment = () => {
                                 Admins see this
                             </Typography>
                             ):(
-                                <Typography variant='body2'>
-                                     <BookingCalendar>
-                                    </BookingCalendar>
-                                </Typography>
+                                <BookingCalendar onClose={handleClose} userRole={currentUserRole}>
+                                </BookingCalendar>
                             )}
-                        </Box>
+                            </Box>
+     
                     </Modal>
                         < Stack spacing={3} sx={{ alignSelf: 'center' }}>
                             {
                                 equipmentModel.map((item, index) =>
                                 (
-
-                                    <Card
+                                    <Card key={index}
                                     sx={{
                                         border: '1px solid black',
-                                        backgroundColor: theme.palette.secondary.main,
+                                        backgroundColor: theme.palette.primary.main,
                                         width: '80vw',
                                         minHeight:
                                         {
@@ -215,12 +211,15 @@ const ReserveEquipment = () => {
                                         <CardContent sx={{ padding: '3px' }}>
                                         <Box>
                                             <Typography variant='body2' sx={{
-                                                color: 'black',
+                                                color: theme.palette.primary.contrastText,
                                                 fontWeight: 'bold',
                                                 fontSize: '20pt',
                                             }}> {item.name}
                                             </Typography>
                                         </Box>
+                                        </CardContent>
+                                        </CardActionArea>
+                                        <CardContent sx={{}}>
                                         <Box>
                                             <Accordion sx={{ boxShadow: 0 }}>
                                                 <AccordionSummary>
@@ -241,13 +240,12 @@ const ReserveEquipment = () => {
                                             </Accordion>
                                         </Box>
                                         </CardContent>
-                                    </CardActionArea>
+                             
                                 </Card >
                                 ))
                             }
                         </Stack>
                     </Box>
-                </div>
             </ThemeProvider >
             {/* at some point, there should be a check for some sort of session token*/
                 /* also I don't know how to do media queries, so designing mobile first */

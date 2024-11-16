@@ -7,7 +7,7 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import NavBar from '../Components/NavBar.tsx';
 import MainContainer from '../Components/MainContainer.tsx';
-import { Fab, Tab, Tabs, Stack, Typography, Button, Card, CardContent, CardActionArea, CardActions, Accordion, ButtonGroup, CircularProgress } from '@mui/material';
+import { Fab, Tab, Tabs, Stack, Typography, Button, Card, CardContent, CardActionArea, CardActions, Accordion, ButtonGroup, CircularProgress, Grid2, IconButton } from '@mui/material';
 import { createTheme, styled, ThemeProvider, useTheme } from '@mui/material/styles'
 import Box from '@mui/material/Box';
 import AddIcon from '@mui/icons-material/Add'
@@ -23,39 +23,91 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import dayjs from "dayjs";
 import { TimePicker } from "@mui/x-date-pickers";
+import { CancelRounded } from "@mui/icons-material";
 const theme = createTheme();
+type TimeEntry = {
+    time: string,
+    premiumOnly: boolean,
+}
 
-const BookingCalendar = () => {
+const timesArray: TimeEntry[] = [
+    { time: "10:00 AM", premiumOnly: false },
+    { time: "11:00 AM", premiumOnly: false },
+    { time: "10:00 AM", premiumOnly: false },
+    { time: "11:00 AM", premiumOnly: false },
+    { time: "12:00 PM", premiumOnly: false },
+    { time: "1:00 PM", premiumOnly: false },
+    { time: "2:00 PM", premiumOnly: false },
+    { time: "3:00 PM", premiumOnly: false },
+    { time: "4:00 PM", premiumOnly: false },
+    { time: "5:00 PM", premiumOnly: false },
+    { time: "6:00 PM", premiumOnly: false },
+    { time: "7:00 PM", premiumOnly: true },
+    { time: "8:00 PM", premiumOnly: true }];
+
+interface BookingCalendarProps 
+{
+    userRole: string,
+    onClose: ()=> void,
+}
+
+const BookingCalendar = ({userRole, onClose}:BookingCalendarProps) => {
+   
     const [jsSelectedDate, setJSSelectedDate] = useState()
     const [selectedDay, setSelectedDay] = useState(dayjs());
     const handleDateSelection = (newDate: React.SetStateAction<dayjs.Dayjs>) => {
         setSelectedDay(newDate);
-
+        
     }
+    // Empty dependency array ensures it runs only once
+    
     const today = dayjs();
     const threeMonthsFromNow = today.add(3, "month");
     return (
+       
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <Box display={"flex"} sx={{
-                alignSelf: 'center',
-                justifyContent: 'space-around',
-                flexDirection: {
-                    xs: 'column',
-                    md: 'row',
-                },
-                margin: '10px',
-                maxWidth: 600,
-            }}>
-                    <DateCalendar disablePast={true} sx={{}} defaultValue={dayjs(today)} minDate={today} maxDate={threeMonthsFromNow} />
-                    <Box display={"flex"} justifyContent={'center'}>
-                        <TimePicker sx={{
-                            marginTop: {
-                                xs: '20px',
-                                md: '50%',
-                            }
-                        }
-                        } />
+            <Box display="flex" flexDirection={"column"} alignContent={'center'}>
+                <Box display="flex" flexDirection="row" justifyContent={'space-between'}>
+                    <Typography variant={"h3"}>
+                        Book a Time
+                    </Typography>   
+                    <IconButton sx={{width: 60}} size="large" onClick={onClose}>
+                        <CancelRounded />
+                    </IconButton>
+                </Box>
+                <Box display={"flex"} sx={{
+                    alignSelf: 'center',
+                    justifyContent: 'space-between',
+                    flexDirection: {
+                        xs: 'column',
+                        md: 'row',
+                    },
+                    margin: '10px',
+                }}>
+                    <DateCalendar disablePast={true} sx={{minWidth: 300}} defaultValue={dayjs(today)} minDate={today} maxDate={threeMonthsFromNow} />
+                    <Box display={"flex"} overflow={'scroll'} justifyContent={'center'}>
+                        <Grid2 rowSpacing={8} justifyContent={"space-between"}>
+                            {
+                            timesArray.map((listing, index)=>(
+                                listing.premiumOnly ? 
+                                ( 
+                                    userRole == "Premium" ?
+                                    (
+                                        <Button variant={'contained'} sx={{width: 95, margin: '2px', fontSize: 11}} key={index}>
+                                            {listing.time}
+                                        </Button>
+                                    ):(
+                                        <></>
+                                    )
+                                ):(
+                                    <Button variant={'contained'} sx={{width: 95, margin: '2px', fontSize: 11}} key={index}>
+                                            {listing.time}
+                                        </Button>
+                                ))
+                            )}
+                        </Grid2>
                     </Box>
+                </Box>
             </Box>
         </LocalizationProvider>
     )

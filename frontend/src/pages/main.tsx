@@ -32,7 +32,6 @@ const router = createBrowserRouter([
     {
         path: "reserve",
         element: <ReserveEquipment />
-
     },
     {
         path: "home",
