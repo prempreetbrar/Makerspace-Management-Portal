@@ -1,4 +1,3 @@
-import '../styles/reserve_equipment/local.css';
 import React, { useState, useEffect } from 'react';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
@@ -18,8 +17,8 @@ import { useUser } from '../hooks/UserProvider.tsx';
 import RequestCard from '../Components/Requests/RequestCard.tsx';
 import axios from 'axios';
 import BookingCalendar from './BookingModal.tsx';
-import ReservePopup from '../Components/ReservePopup.tsx';
 import Modal from '@mui/material/Modal';
+import '../styles/reserve_equipment/local.css';
 // like, really need to simplify these...
 
 
@@ -119,7 +118,7 @@ const ReserveEquipment = () => {
     return (
         <MainContainer>
             <ThemeProvider theme={theme}>
-                <NavBar />
+                <NavBar id='reserve'></NavBar>
                 <Button variant={"contained"} onClick={handleChangeUser}> Change User: {currentUserRole} </Button>
                     <Box sx={{
                         display: 'flex',
