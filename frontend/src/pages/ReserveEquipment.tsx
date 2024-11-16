@@ -4,9 +4,10 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import ErrorIcon from '@mui/icons-material/Error'
 import NavBar from '../Components/NavBar.tsx';
 import MainContainer from '../Components/MainContainer.tsx';
-import { Fab, Tab, Tabs, Stack, Typography, Button, Card, CardContent, CardActionArea, CardActions, Accordion, ButtonGroup, CircularProgress } from '@mui/material';
+import { Fab, Tab, Tabs, Stack, Typography, Button, Card, CardContent, CardActionArea, CardActions, Accordion, ButtonGroup, CircularProgress, IconButton } from '@mui/material';
 import { createTheme, styled, ThemeProvider, useTheme } from '@mui/material/styles'
 import Box from '@mui/material/Box';
 import AddIcon from '@mui/icons-material/Add'
@@ -16,7 +17,7 @@ import TabList from '@mui/lab/TabList';
 import { useUser } from '../hooks/UserProvider.tsx';
 import RequestCard from '../Components/Requests/RequestCard.tsx';
 import axios from 'axios';
-import BookingCalendar from './CalendarPage.tsx';
+import BookingCalendar from './BookingModal.tsx';
 import ReservePopup from '../Components/ReservePopup.tsx';
 import Modal from '@mui/material/Modal';
 // like, really need to simplify these...
@@ -72,46 +73,6 @@ const equipmentModel: Equipment[] = [
 ];
 
 const theme = createTheme();
-interface EquipmentCardProps
-{
-    children?: React.ReactNode,
-    userRole?: string,
-}
-interface BookingModalProps
-{
-    userRole?: string
-}
-
-
-const BookingModal = ({userRole}: BookingModalProps) => 
-{
-   
-}
-
-
-
-const EquipmentCard = ({children, userRole}:EquipmentCardProps) =>
-{
-    <Card
-        sx={{
-            border: '1px solid black',
-            backgroundColor: theme.palette.secondary.main,
-            width: '80vw',
-            minHeight:
-            {
-                xs: '100px',
-            },
-            display: 'flex',
-            borderRadius: '20px',
-            flexDirection: 'column'
-        }}>
-        <CardActionArea>
-            <CardContent sx={{ padding: '3px' }}>
-                {children}
-            </CardContent>
-        </CardActionArea>
-    </Card >
-}
 const ModalStyle = 
 {
     position: 'absolute',
@@ -121,12 +82,13 @@ const ModalStyle =
     transform: 'translate(-50%, -50%)',
     width: 
     {
-        xs: 400,
+        xs: "100%",
         md: 900,
     },
     height:
     {
-        xs: '80vh',
+        xs: '100%',
+        s: '80%',
         md: 500,
     },
     padding: 0,
@@ -136,11 +98,7 @@ const ModalStyle =
     p: 4,
 }
 const ReserveEquipment = () => {
-
     const [isOpen, setIsOpen] = useState(false);
-    const togglePopup = () => {
-        setIsOpen(!isOpen);
-    }
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => {
         setOpen(true);
@@ -154,19 +112,12 @@ const ReserveEquipment = () => {
         setUserByIndex(nextIndex);
         setCurrentUserRole(user.userRole);
     }
-
     const { user, setUserByIndex } = useUser();
     const [currentUserIndex, setCurrentUserIndex] = React.useState(0);
     const [currentUserRole, setCurrentUserRole] = React.useState(user.userRole);
 
     return (
         <MainContainer>
-                <div className="reserve-test-page">
-                    <button type='button' className="open-menu-button" onClick={togglePopup}>
-                    Open Menu
-                    </button>
-                    {isOpen && <ReservePopup onClose={togglePopup} />}
-                </div>
             <ThemeProvider theme={theme}>
                 <NavBar />
                 <Button variant={"contained"} onClick={handleChangeUser}> Change User: {currentUserRole} </Button>
@@ -188,13 +139,12 @@ const ReserveEquipment = () => {
                                 </BookingCalendar>
                             )}
                             </Box>
-     
                     </Modal>
-                        < Stack spacing={3} sx={{ alignSelf: 'center' }}>
+                        <Stack spacing={3} sx={{ alignSelf: 'center' }}>
                             {
                                 equipmentModel.map((item, index) =>
-                                (
-                                    <Card key={index}
+                                ( // this NEEDS to be optimized
+                                <Card key={index}
                                     sx={{
                                         border: '1px solid black',
                                         backgroundColor: theme.palette.primary.main,
@@ -207,22 +157,16 @@ const ReserveEquipment = () => {
                                         borderRadius: '20px',
                                         flexDirection: 'column'
                                     }}>
-                                    <CardActionArea onClick={handleOpen}>
-                                        <CardContent sx={{ padding: '3px' }}>
-                                        <Box>
-                                            <Typography variant='body2' sx={{
-                                                color: theme.palette.primary.contrastText,
-                                                fontWeight: 'bold',
-                                                fontSize: '20pt',
-                                            }}> {item.name}
-                                            </Typography>
-                                        </Box>
-                                        </CardContent>
-                                        </CardActionArea>
-                                        <CardContent sx={{}}>
-                                        <Box>
-                                            <Accordion sx={{ boxShadow: 0 }}>
-                                                <AccordionSummary>
+                                    <CardContent>
+                                        <Typography variant='body2' sx={{
+                                            color: theme.palette.primary.contrastText,
+                                            fontWeight: 'bold',
+                                            fontSize: '20pt',
+                                            padding: '5px'
+                                        }}> {item.name}
+                                        </Typography>
+                                        <Accordion sx={{ boxShadow: 0 }}>
+                                            <AccordionSummary>
                                                     <Typography variant='body2'>
                                                         View Details
                                                         {/*
@@ -231,16 +175,17 @@ const ReserveEquipment = () => {
                                                             *  This means the schema needs to be updated
                                                             * */}
                                                     </Typography>
-                                                </AccordionSummary>
-                                                <AccordionDetails>
-                                                    <Typography variant='body1' sx={{ textAlign: 'left' }}>
-                                                        {item.description}
-                                                    </Typography>
-                                                </AccordionDetails>
-                                            </Accordion>
-                                        </Box>
-                                        </CardContent>
-                             
+                                            </AccordionSummary>
+                                            <AccordionDetails>
+                                                <Typography variant='body1' sx={{ textAlign: 'left' }}>
+                                                    {item.description}
+                                                </Typography>
+                                            </AccordionDetails>
+                                        </Accordion>
+                                        <CardActions sx={{paddingLeft: 0, paddingRight: 0}}>
+                                            <Button variant="contained" sx={{backgroundColor: theme.palette.action.active}} onClick={handleOpen}>Book Now</Button> 
+                                        </CardActions>
+                                    </CardContent>
                                 </Card >
                                 ))
                             }

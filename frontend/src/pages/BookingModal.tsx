@@ -7,7 +7,7 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import NavBar from '../Components/NavBar.tsx';
 import MainContainer from '../Components/MainContainer.tsx';
-import { Fab, Tab, Tabs, Stack, Typography, Button, Card, CardContent, CardActionArea, CardActions, Accordion, ButtonGroup, CircularProgress, Grid2, IconButton } from '@mui/material';
+import { Fab, Tab, Tabs, Stack, Typography, Button, Card, CardContent, CardActionArea, CardActions, Accordion, ButtonGroup, CircularProgress, Grid2, IconButton, TextField, FormGroup } from '@mui/material';
 import { createTheme, styled, ThemeProvider, useTheme } from '@mui/material/styles'
 import Box from '@mui/material/Box';
 import AddIcon from '@mui/icons-material/Add'
@@ -57,22 +57,24 @@ const BookingCalendar = ({userRole, onClose}:BookingCalendarProps) => {
     const [selectedDay, setSelectedDay] = useState(dayjs());
     const handleDateSelection = (newDate: React.SetStateAction<dayjs.Dayjs>) => {
         setSelectedDay(newDate);
-        
     }
-    // Empty dependency array ensures it runs only once
+    const [inputText, setInputText] = useState("");
+    const handleTextUpdate = (event:React.ChangeEvent<HTMLInputElement>) =>
+    {
+        setInputText(event.target.value);
+    }
     
     const today = dayjs();
     const threeMonthsFromNow = today.add(3, "month");
     return (
-       
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <Box display="flex" flexDirection={"column"} alignContent={'center'}>
+            <Box display="flex" flexDirection={"column"} alignContent={'center'} overflow="hidden">
                 <Box display="flex" flexDirection="row" justifyContent={'space-between'}>
                     <Typography variant={"h3"}>
                         Book a Time
                     </Typography>   
                     <IconButton sx={{width: 60}} size="large" onClick={onClose}>
-                        <CancelRounded />
+                        <CancelRounded fontSize="large"/>
                     </IconButton>
                 </Box>
                 <Box display={"flex"} sx={{
@@ -84,29 +86,47 @@ const BookingCalendar = ({userRole, onClose}:BookingCalendarProps) => {
                     },
                     margin: '10px',
                 }}>
-                    <DateCalendar disablePast={true} sx={{minWidth: 300}} defaultValue={dayjs(today)} minDate={today} maxDate={threeMonthsFromNow} />
-                    <Box display={"flex"} overflow={'scroll'} justifyContent={'center'}>
-                        <Grid2 rowSpacing={8} justifyContent={"space-between"}>
-                            {
-                            timesArray.map((listing, index)=>(
-                                listing.premiumOnly ? 
-                                ( 
-                                    userRole == "Premium" ?
-                                    (
-                                        <Button variant={'contained'} sx={{width: 95, margin: '2px', fontSize: 11}} key={index}>
-                                            {listing.time}
-                                        </Button>
-                                    ):(
-                                        <></>
-                                    )
-                                ):(
-                                    <Button variant={'contained'} sx={{width: 95, margin: '2px', fontSize: 11}} key={index}>
-                                            {listing.time}
-                                        </Button>
-                                ))
-                            )}
-                        </Grid2>
-                    </Box>
+                        <Box>
+                            <DateCalendar disablePast={true} sx={{minWidth: 300}} defaultValue={dayjs(today)} minDate={today} maxDate={threeMonthsFromNow} />
+                        </Box>
+                        <Box display="flex" flexDirection="column" sx={{overflowY: 'scroll'}}>
+                                <Typography variant='h6'>
+                                    Available Times
+                                </Typography>
+                            <Box display={"flex"} justifyContent={'center'}>
+                                <Grid2 rowSpacing={8} justifyContent={"space-between"}>
+                                    {
+                                    timesArray.map((listing, index)=>(
+                                        listing.premiumOnly ? 
+                                        ( 
+                                            userRole == "Premium" ?
+                                            (
+                                                <Button variant={'contained'} sx={{width: 95, margin: '2px', fontSize: 11}} key={index}>
+                                                    {listing.time}
+                                                </Button>
+                                            ):(
+                                                <></>
+                                            )
+                                        ):(
+                                            <Button variant={'contained'} sx={{width: 95, margin: '2px', fontSize: 11}} key={index}>
+                                                    {listing.time}
+                                                </Button>
+                                        ))
+                                    )}
+                                </Grid2>
+                            </Box>
+                            <Box component="form" sx={{paddingTop: 1}}>    
+                                <Typography>
+                                    Reason for booking
+                                </Typography>
+                                <TextField id="DescriptionField" multiline sx={{fontSize: 12}} fullWidth variant="filled" onChange={handleTextUpdate}>
+                                        Share your ideas
+                                </TextField>
+                            </Box>
+                            <Button sx={{marginTop: 4}} onClick={onClose}>
+                                Submit
+                            </Button>
+                        </Box>
                 </Box>
             </Box>
         </LocalizationProvider>
