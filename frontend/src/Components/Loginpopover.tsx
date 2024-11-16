@@ -26,10 +26,8 @@ const LoginPopover: React.FC<LoginPopoverProps> = ({ anchorEl, openLogin, handle
     const handleOpenLogin = () => {
         setOpenCreateAccount(false);
     };
-
     return (
         <>
-
             <Popover
                 open={openLogin}
                 anchorEl={anchorEl}

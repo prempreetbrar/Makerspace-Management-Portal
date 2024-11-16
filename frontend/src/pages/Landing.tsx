@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button, Grid, Toolbar, Typography } from '@mui/material';
 import Logobnw from "../assets/logo_grayscale.svg"
 import React, { useState } from 'react';
-import LoginPopover from '../Components/LoginPopover';
+import LoginPopover from '../Components/Loginpopover';
 import CreateAccountPopover from '../Components/CreateAccountPopover';
 import Login from './Login';
 import CreateAccount from './Signup';
@@ -53,7 +53,7 @@ const Landing = () => {
   };
 
   return (
-    <MainContainer className="container">
+    <MainContainer>
         <Toolbar className="navbar">
                 <div className="logo-container">
                     <img src={Logobnw} alt="React Logo" className="logo" />
@@ -111,10 +111,11 @@ const Landing = () => {
                 handleCloseLogin={handleCloseLogin}
             />
              <CreateAccountPopover 
-                anchorEl={anchorElCreate}
-                openCreateAccount={openCreateAccount}
-                handleCloseCreateAccount={handleCloseCreateAccount}
-            />
+                  anchorEl={anchorElCreate}
+                  openCreateAccount={openCreateAccount}
+                  handleCloseCreateAccount={handleCloseCreateAccount} handleOpenLogin={function (): void {
+                      throw new Error('Function not implemented.');
+                  } }            />
 
 
 

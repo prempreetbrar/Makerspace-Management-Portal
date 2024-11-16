@@ -18,11 +18,15 @@ const router = createBrowserRouter([
   },
   {
     path: "login",
-    element: <Login />,
+    element: <Login onClose={function (): void {
+        throw new Error("Function not implemented.");
+    } } />,
   },
   {
     path: "signup",
-    element: <Signup />,
+    element: <Signup onClose={function (): void {
+        throw new Error("Function not implemented.");
+    } } />,
   },
   {
     path: "requests",
