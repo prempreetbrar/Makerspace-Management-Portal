@@ -17,8 +17,7 @@ import TabList from '@mui/lab/TabList';
 import { useUser } from '../hooks/UserProvider.tsx';
 import RequestCard from '../Components/Requests/RequestCard.tsx';
 import axios from 'axios';
-import BookingCalendar from './BookingModal.tsx';
-import ReservePopup from '../Components/ReservePopup.tsx';
+import BookingCalendar from '../Components/BookingModal.tsx';
 import Modal from '@mui/material/Modal';
 // like, really need to simplify these...
 
@@ -39,6 +38,7 @@ type Booking = {
   bookingDateTime: Date;
   bookingDuration: number;
 };
+
 const equipmentModel: Equipment[] = [
   { id: 1, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: false },
   { id: 2, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: false },
@@ -75,6 +75,7 @@ const equipmentModel: Equipment[] = [
 const theme = createTheme();
 const ModalStyle = 
 {
+    overflow: 'hidden',
     position: 'absolute',
     display: 'flex',
     top: '50%',
@@ -91,12 +92,18 @@ const ModalStyle =
         s: '80%',
         md: 500,
     },
-    padding: 0,
     bgcolor: 'background.paper',
-    border: '2px solid #000',
+    border: '2px solid #fffff',
+    
     boxShadow: 24,
-    p: 4,
+    p: 
+    {
+        xs: 1,
+        s: 2,
+        md: 4
+    }
 }
+
 const ReserveEquipment = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [open, setOpen] = React.useState(false);
@@ -128,7 +135,7 @@ const ReserveEquipment = () => {
                         padding: 0,
                     }}>
                     <Modal open={open} onClose={handleClose}>
-                        <Box sx={ModalStyle}>
+                        <Box sx={ModalStyle} borderColor={"white"}>
                             {currentUserRole === 'Admin'?
                             (
                             <Typography variant='body1'>
