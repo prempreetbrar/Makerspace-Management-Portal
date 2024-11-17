@@ -1,3 +1,42 @@
+.profile-link-container {
+  position: relative;
+  display: inline-block;
+}
+
+.link-image {
+  cursor: pointer;
+  width: 40px;
+  height: 40px; 
+}
+
+.popup-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  border: 1px solid #ccc;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  z-index: 1000;
+  padding: 10px;
+}
+
+.popup-menu ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.popup-menu li {
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.popup-menu li:hover {
+  background-color: #f0f0f0;
+}
+
+
 .link-image {
   content:url("../assets/profile_link_desktop.svg");
 }

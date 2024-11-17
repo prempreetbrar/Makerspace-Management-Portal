@@ -98,6 +98,10 @@
     order: 2;
     align-self: flex-start;
   }
+
+  #reserve .logo {
+    content:url("../../assets/logo_greyscale_big.svg");
+  }
 }
 
 @media (max-width: 480px) {}

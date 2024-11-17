@@ -1,5 +1,6 @@
 #request {
   display: flex;
+
 }
 
 /* Responsive adjustments */
@@ -48,6 +49,10 @@
   #request .auth-buttons {
     order: 2;
     align-self: flex-start;
+  }
+
+  #request .logo {
+    content:url("../../assets/logo_greyscale_big.svg");
   }
 
   .illustration.desktop {

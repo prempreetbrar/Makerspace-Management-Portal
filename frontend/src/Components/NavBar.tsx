@@ -45,13 +45,17 @@ const NavBar = ({id}: { id: string }) => {
     };
 
     // For testing
-    var isLoggedIn = false;
+    var isLoggedIn = true
     var isAdmin = false;
     return (
+      <header className="nav-bar-container">
         <nav className="navbar" id={id}>
             <div className='left'>
               <div className="logo-container">
-                <img src={NavLogo} alt="React Logo" className="logo" />
+                <div className="logo-wrapper">
+                  <img className="logo" src={NavLogo} alt="React Logo" />
+                </div>
+                <p className='logo-text'>&nbsp;Makerspace</p>
               </div>
               <ul className="nav-links">
                   <li className='home'><a href="home">Home</a></li>
@@ -61,7 +65,7 @@ const NavBar = ({id}: { id: string }) => {
             </div>
             <div className="auth-buttons">
               {isLoggedIn ? (
-                <ProfileLink onClick={handleOpenProfile} />
+                <ProfileLink />
               ) : (
                 <>
                   <LoginButton button_type="button" onClick={handleOpenLogin} />
@@ -69,26 +73,18 @@ const NavBar = ({id}: { id: string }) => {
                 </>
               )}
             </div>
-
-
-
             <LoginPopover 
                 anchorEl={anchorElLogin}
                 openLogin={openLogin}
                 handleCloseLogin={handleCloseLogin}
             />
-
-
-
             <CreateAccountPopover 
             anchorEl={anchorElCreate}
             openCreateAccount={openCreateAccount}
             handleCloseCreateAccount={handleCloseCreateAccount} 
                 />
-
-
-
         </nav>
+      </header>
     );
 };
 

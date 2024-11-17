@@ -1,14 +1,28 @@
+import React, { useState } from 'react';
 import '../styles/profile_link.css';
 
-interface ProfileLinkProps {
-  onClick?: () => void;
-}
+const ProfileLink = () => {
+  const [isPopupVisible, setIsPopupVisible] = useState(false);
 
-// Change href when profile page is created
-const LoginButton = ({ onClick }: ProfileLinkProps) => {
+  const togglePopup = () => {
+    setIsPopupVisible((prev) => !prev);
+  };
+
   return (
-    <a href="home"><img className='link-image' alt="React Logo"></img></a>
+    <div className="profile-link-container">
+      <a onClick={togglePopup}>
+        <img className="link-image" alt="React Logo" />
+      </a>
+      {isPopupVisible && (
+        <div className="popup-menu">
+          <ul>
+            <li>Profile</li>
+            <li>Logout</li>
+          </ul>
+        </div>
+      )}
+    </div>
   );
 };
 
-export default LoginButton;
+export default ProfileLink;
