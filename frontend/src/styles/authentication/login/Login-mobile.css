@@ -1,0 +1,37 @@
+.dialog-paper {
+    min-width: 0px;
+    padding: 20px;
+  }
+  
+  .dialog-title {
+    font-weight: bold;
+    text-align: center;
+  }
+  
+  .dialog-content {
+    padding-bottom: 10px;
+  }
+  
+  .text-field {
+    margin-bottom: 16px;
+    background-color: #e5e5ea;
+    border-radius: 1px;
+  }
+  
+  .button-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 16px;
+  }
+  
+  .button-container button {
+    width: 48%;
+  }
+  
+ 
+  
+  .cancel-button:hover,
+  .loginbutton:hover {
+    opacity: 0.8;
+  }
+  

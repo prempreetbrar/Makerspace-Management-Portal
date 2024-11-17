@@ -1,21 +1,214 @@
-import '../styles/authentication/local.css';
-import MainContainer from '../Components/MainContainer.tsx';
-import CredentialForm from '../Components/CredentialForm.tsx';
-import LoginButton from "../Components/LoginButton.tsx";
+import React, { useState } from 'react';
+import { Button, TextField, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
+import "../styles/authentication/login/Login-mobile.css";
 
-const Signup = () => {
+
+interface SignupProps {
+  onClose: () => void;
+}
+
+const Signup: React.FC<SignupProps> = ({ onClose }) => {
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    studentNumber: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
+
+  const [error, setError] = useState<string | null>(null);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [studentNumberError, setStudentNumberError] = useState<string | null>(null);
+  const [touched, setTouched] = useState({
+    firstName: false,
+    lastName: false,
+    studentNumber: false,
+    email: false,
+    password: false,
+    confirmPassword: false,
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+    setError(null); 
+    setPasswordError(null); 
+    setStudentNumberError(null); 
+  };
+
+  const handleBlur = (field: string) => {
+    setTouched((prev) => ({
+      ...prev,
+      [field]: true,
+    }));
+  };
+
+  const validatePassword = (password: string) => {
+    if (password.length < 8) {
+      setPasswordError('Password must be at least 8 characters.');
+      return false;
+    }
+    return true;
+  };
+
+  const validateStudentNumber = (studentNumber: string) => {
+    if (!/^\d+$/.test(studentNumber)) {
+      setStudentNumberError('Student number must be numeric.');
+      return false;
+    }
+    return true;
+  };
+
+  const handleSignup = () => {
+   
+    if (
+      !formData.firstName ||
+      !formData.lastName ||
+      !formData.studentNumber ||
+      !formData.email ||
+      !formData.password ||
+      !formData.confirmPassword
+    ) {
+      setError('All fields are required.');
+      return;
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      setPasswordError('Passwords do not match.');
+      return;
+    }
+
+    
+    if (!validatePassword(formData.password)) {
+      return;
+    }
+
+   
+    if (!validateStudentNumber(formData.studentNumber)) {
+      return;
+    }
+
+    console.log('User Data:', formData);
+    onClose();
+  };
+
   return (
-    <MainContainer>
-      <div className="logo-container">✂️<h2>MAKERSPACE</h2></div>
-      <CredentialForm>
-        <h4 className="login-text">Create Account</h4>
-        <div className="input-field"><input type="email" id="email" placeholder="Email" /></div>
-        <div className="input-field"><input type="password" id="password" placeholder="Password" /></div>
-        <div className="input-field"><input type="password" id="password" placeholder="Confirm Password" /></div>
-        <LoginButton text='Sign Up' button_type='submit'></LoginButton>
-        <p>Already have an account?<a href="/login" className="login-link">Log</a></p>
-      </CredentialForm>
-    </MainContainer>
+    <Dialog open={true} onClose={onClose} className="dialog">
+      <DialogTitle className="dialog-title">Create Account</DialogTitle>
+      <DialogContent className="dialog-content">
+        <TextField
+          margin="normal"
+          label="First Name"
+          type="text"
+          name="firstName"
+          value={formData.firstName}
+          onChange={handleChange}
+          onBlur={() => handleBlur('firstName')}
+          fullWidth
+          variant="outlined"
+          className="text-field"
+          required
+          error={(touched.firstName || error) && !formData.firstName}
+          helperText={(touched.firstName || error) && !formData.firstName ? 'This field is required.' : ''}
+        />
+        <TextField
+          margin="normal"
+          label="Last Name"
+          type="text"
+          name="lastName"
+          value={formData.lastName}
+          onChange={handleChange}
+          onBlur={() => handleBlur('lastName')}
+          fullWidth
+          variant="outlined"
+          className="text-field"
+          required
+          error={(touched.lastName || error) && !formData.lastName}
+          helperText={(touched.lastName || error) && !formData.lastName ? 'This field is required.' : ''}
+        />
+        <TextField
+          margin="normal"
+          label="Student Number"
+          type="text"
+          name="studentNumber"
+          value={formData.studentNumber}
+          onChange={handleChange}
+          onBlur={() => handleBlur('studentNumber')}
+          fullWidth
+          variant="outlined"
+          className="text-field"
+          required
+          error={(touched.studentNumber || error || studentNumberError) && !formData.studentNumber}
+          helperText={(touched.studentNumber || error || studentNumberError) && !formData.studentNumber
+            ? 'This field is required.'
+            : studentNumberError}
+        />
+        <TextField
+          margin="normal"
+          label="Email Address"
+          type="email"
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
+          onBlur={() => handleBlur('email')}
+          fullWidth
+          variant="outlined"
+          className="text-field"
+          required
+          error={(touched.email || error) && !formData.email}
+          helperText={(touched.email || error) && !formData.email ? 'This field is required.' : ''}
+        />
+        <TextField
+          margin="normal"
+          label="Password"
+          type="password"
+          name="password"
+          value={formData.password}
+          onChange={handleChange}
+          onBlur={() => handleBlur('password')}
+          fullWidth
+          variant="outlined"
+          className="text-field"
+          required
+          error={(touched.password || error || passwordError) && !formData.password}
+          helperText={(touched.password || error || passwordError) && !formData.password
+            ? 'This field is required.'
+            : passwordError}
+        />
+        <TextField
+          margin="normal"
+          label="Confirm Password"
+          type="password"
+          name="confirmPassword"
+          value={formData.confirmPassword}
+          onChange={handleChange}
+          onBlur={() => handleBlur('confirmPassword')}
+          fullWidth
+          variant="outlined"
+          className="text-field"
+          required
+          error={(touched.confirmPassword || passwordError)}
+          helperText={passwordError || (touched.confirmPassword && !formData.confirmPassword ? 'This field is required.' : '')}
+        />
+      </DialogContent>
+      <DialogActions className="button-container">
+        <Button
+          onClick={handleSignup}
+          className="sign-up-button"
+          sx={{ backgroundColor: '#65558f' , color:'white' }}
+   
+        >
+          Sign Up
+        </Button>
+        <Button onClick={onClose} className="cancel-button"  sx={{backgroundColor: 'white' , color:'#65558f' }}>
+          Cancel
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 };
 

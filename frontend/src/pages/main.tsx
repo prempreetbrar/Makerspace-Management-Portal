@@ -10,36 +10,39 @@ import Signup from './Signup.tsx'
 import Requests from "./Requests.tsx";
 import ReserveEquipment from "./ReserveEquipment.tsx";
 import '../styles/index.css'
+import { UserProvider } from "../hooks/UserProvider.tsx";
 
 const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <Landing />,
-  },
-  {
-    path: "login",
-    element: <Login />,
-  },
-  {
-    path: "signup",
-    element: <Signup />,
-  },
-  {
-    path: "requests",
-    element: <Requests />
-  },
-  {
-    path: "home",
-    element: <Landing />,
-  },
-  {
-    path: "reserve",
-    element: <ReserveEquipment />,
-  }
+    {
+        path: "/",
+        element: <Landing />,
+    },
+    {
+        path: "login",
+        element: <Login />,
+    },
+    {
+        path: "signup",
+        element: <Signup />,
+    },
+    {
+        path: "requests",
+        element: <Requests />
+    },
+    {
+        path: "reserve",
+        element: <ReserveEquipment />
+    },
+    {
+        path: "home",
+        element: <Landing />,
+    }
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
-    <RouterProvider router={router} />
-  </React.StrictMode>
+    <React.StrictMode>
+        <UserProvider>
+            <RouterProvider router={router} />
+        </UserProvider>
+    </React.StrictMode>
 );

@@ -24,6 +24,12 @@
   background-color: #5a54d1;
 }
 
+@media (min-width: 1600px) {
+  .navbar .login-button {
+    font-size: 20px;
+  }
+}
+
 @media (max-width: 480px) {
   .login-button {
     width: 100%;

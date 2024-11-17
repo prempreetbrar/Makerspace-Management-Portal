@@ -1,12 +1,38 @@
-#reserve {
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
 }
 
-.open-menu-button {
-  padding: 10px 20px;
-  border-radius: 5px;
+.popup-content {
+  background-color: white;
+  padding: 20px;
+  width: 80%;
+  max-width: 600px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  position: relative;
+  border: solid red;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 1.5rem;
+  background: none;
+  border: none;
   cursor: pointer;
-  font-size: 1rem;
+  border: solid blue;
 }
 
 .calendar-container {
@@ -36,7 +62,6 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  background-color: white;
   border: solid red;
 }
 
@@ -61,23 +86,14 @@
   border-radius: 5px;
   font-size: 1rem;
   cursor: pointer;
-  width: 100px;
 }
 
 .report-issue {
-  background-color: #000;
-  color: #fff;
+  background-color: #f5f5f5;
+  color: #000;
 }
 
 .submit-request {
   background-color: #000;
   color: #fff;
 }
-
-@media (max-width: 768px) {
-  #reserve {
-    display: flex;
-  }
-}
-
-@media (max-width: 480px) {}
