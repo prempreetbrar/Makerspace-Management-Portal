@@ -15,8 +15,8 @@ const Login: React.FC<LoginProps> = ({ onClose }) => {
         <TextField label="Password" type="password" fullWidth margin="normal" className="text-field" />
       </DialogContent>
       <DialogActions className="button-container">
-      <Button  className="loginbutton">Log In</Button>
-        <Button onClick={onClose}  className="cancelbutton">Cancel</Button>
+      <Button  className="loginbutton" sx={{backgroundColor: '#65558f' , color:'white' }}>Log In</Button>
+        <Button onClick={onClose}  className="cancelbutton" sx={{ color:'#65558f' }}>Cancel</Button>
 
       </DialogActions>
     </Dialog>

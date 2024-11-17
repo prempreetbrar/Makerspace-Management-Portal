@@ -28,11 +28,7 @@
     width: 48%;
   }
   
-  .loginbutton,
-  .sign-up-button {
-    background-color: #65558f !important;
-    color: white !important;
-  }
+ 
   
   .cancel-button:hover,
   .loginbutton:hover {
