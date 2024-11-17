@@ -77,6 +77,26 @@
 @media (max-width: 768px) {
   #reserve {
     display: flex;
+    background-color: #65558f;
+  }
+
+  #reserve .left {
+    flex-direction: column;
+    order: 1;
+    align-items: flex-start;
+  }
+
+  #reserve .home {
+    display: none;
+  }
+
+  #reserve .nav-links li a {
+    color: white;
+  }
+
+  #reserve .auth-buttons {
+    order: 2;
+    align-self: flex-start;
   }
 }
 

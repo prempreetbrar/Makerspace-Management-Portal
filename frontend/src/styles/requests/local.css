@@ -26,7 +26,30 @@
 
 @media (max-width: 768px) {
 
-  /* Mobile styles */
+  #request {
+    display: flex;
+    background-color: #65558f;
+  }
+
+  #request .left {
+    flex-direction: column;
+    order: 1;
+    align-items: flex-start;
+  }
+
+  #request .home {
+    display: none;
+  }
+
+  #request .nav-links li a {
+    color: white;
+  }
+
+  #request .auth-buttons {
+    order: 2;
+    align-self: flex-start;
+  }
+
   .illustration.desktop {
     display: none;
   }
@@ -58,10 +81,6 @@
 
   .subheading {
     display: none;
-  }
-
-  #request {
-    display: flex;
   }
 }
 
