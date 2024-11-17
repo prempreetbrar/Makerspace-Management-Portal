@@ -1,8 +1,8 @@
-const { DataTypes, INTEGER } = require("sequelize");
+const { DataTypes, INTEGER } = require('sequelize');
 
 module.exports = (sequelize) => {
   const Attachment = sequelize.define(
-    "Attachment",
+    'Attachment',
     {
       id: {
         type: DataTypes.INTEGER,
@@ -17,12 +17,13 @@ module.exports = (sequelize) => {
       // relative path to file in a designated directory.
       file: {
         type: DataTypes.BLOB, // any sort of file asset
-        defaultValue: "",
+        defaultValue: '',
         allowNull: false,
       },
     },
     {
-      tableName: "Attachment",
+      tableName: 'Attachment',
+      timestamps: false,
     }
   );
 
@@ -42,10 +43,10 @@ module.exports = (sequelize) => {
 
   Attachment.associate = (models) => {
     Attachment.belongsTo(models.Request, {
-      foreignKey: "requestID",
-      as: "Request",
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE",
+      foreignKey: 'requestID',
+      as: 'Request',
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
     });
   };
   return Attachment;

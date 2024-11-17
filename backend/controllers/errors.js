@@ -2,6 +2,25 @@ const jwt = require('jsonwebtoken');
 const sequelize = require('sequelize');
 
 /*
+  We want to be able to add a status code to our errors. Without this class, we would have to manually do
+  that every time.
+
+  Before:
+    const error = new Error(message);
+    error.statusCode = 4xx;
+    throw error;
+
+  After:
+    throw new ErrorWithStatusCode(message, 4xx);
+*/
+class ErrorWithStatusCode extends Error {
+  constructor(message, statusCode) {
+    super(message);
+    this.statusCode = statusCode;
+  }
+}
+
+/*
   This function takes in another function and executes it, catching any
   errors it throws using "throw". This way, a try block is not
   needed in the asyncFunction, and we can have a single "catch" function
@@ -83,11 +102,11 @@ function handleError(error, request, response, next) {
   return response.status(error.statusCode || 500).json({
     message: error.message,
     stack: error.stack,
-    status: error.status || 'error',
   });
 }
 
 module.exports = {
+  ErrorWithStatusCode,
   catchAsync,
   handleError,
 };

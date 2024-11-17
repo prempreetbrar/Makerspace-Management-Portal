@@ -21,6 +21,12 @@
   width: 350px;
 }
 
+@media (min-width: 1600px) {
+  .navbar .create-account-button {
+    font-size: 20px;
+  }
+}
+
 @media (max-width: 480px) {
   .create-account-button {
     width: 100%;

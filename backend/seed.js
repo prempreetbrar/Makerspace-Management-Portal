@@ -81,30 +81,33 @@ const seedDatabase = async (clear = false) => {
     // Equipment
     const equipmentCount = await Equipment.count();
     if (equipmentCount === 0) {
-      await Equipment.bulkCreate([
-        {
-          id: 1,
-          name: '3D Printer',
-          description: 'This machine prints things in three dimensions!',
-          icon: fs.readFileSync(
-            path.join(__dirname, '/assets/icons', '3d_printer.png')
-          ),
-          equipmentStatus: 'good',
-          isBookable: true,
-          isPremium: true,
-        },
-        {
-          id: 2,
-          name: 'Stapler',
-          description: 'Staples stuff',
-          icon: fs.readFileSync(
-            path.join(__dirname, '/assets/icons', 'stapler.png')
-          ),
-          equipmentStatus: 'really good',
-          isBookable: false,
-          isPremium: false,
-        },
-      ]);
+      await Equipment.bulkCreate(
+        [
+          {
+            id: 1,
+            name: '3D Printer',
+            description: 'This machine prints things in three dimensions!',
+            icon: fs.readFileSync(
+              path.join(__dirname, '/assets/icons', '3d_printer.png')
+            ),
+            isUnderMaintenance: true,
+            isBookable: true,
+            isPremium: true,
+          },
+          {
+            id: 2,
+            name: 'Stapler',
+            description: 'Staples stuff',
+            icon: fs.readFileSync(
+              path.join(__dirname, '/assets/icons', 'stapler.png')
+            ),
+            isUnderMaintenance: false,
+            isBookable: false,
+            isPremium: false,
+          },
+        ],
+        { individualHooks: true }
+      );
       console.log('Seeded equipment table');
     }
 
@@ -116,15 +119,13 @@ const seedDatabase = async (clear = false) => {
           id: 1,
           equipmentID: 1, // Relates to the 3D Printer
           description: '3D printer nozzle clogged',
-          dateSubmitted: new Date(),
-          issueStatus: false,
+          isResolved: false,
         },
         {
           id: 2,
           equipmentID: 2, // Relates to the Stapler
           description: 'Stapler out of staples',
-          dateSubmitted: new Date(),
-          issueStatus: true,
+          isResolved: true,
         },
       ]);
       console.log('Seeded issue table');
@@ -153,6 +154,7 @@ const seedDatabase = async (clear = false) => {
           id: 1,
           userEmail: 'real_email1@email.com', // Relates to Connor McDavid
           equipmentID: 1,
+          title: "3D Printing Request",
           description: "I'd like to use the 3D printer",
           status: 'approved',
         },
@@ -160,6 +162,7 @@ const seedDatabase = async (clear = false) => {
           id: 2,
           userEmail: 'real_email3@email.com', // Relates to Austin Matthews
           equipmentID: 2,
+          title: "Let me use the stapler",
           description: "I'd like to use the stapler",
           status: 'pending',
         },

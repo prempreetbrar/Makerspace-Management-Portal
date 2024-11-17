@@ -1,12 +1,11 @@
-const { DataTypes } = require("sequelize");
+const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
   const Issue = sequelize.define(
-    "Issue",
+    'Issue',
     {
       id: {
         type: DataTypes.INTEGER,
-        defaultValue: DataTypes.INTEGER(),
         autoIncrement: true,
         primaryKey: true,
       },
@@ -16,19 +15,19 @@ module.exports = (sequelize) => {
       },
       description: {
         type: DataTypes.TEXT,
-        defaultValue: "",
+        defaultValue: '',
       },
-      dateSubmitted: {
-        type: DataTypes.DATE,
-      },
-      issueStatus: {
+      isResolved: {
         type: DataTypes.BOOLEAN, // resolved or not resolved
         allowNull: false,
         defaultValue: false,
       },
     },
     {
-      tableName: "Issue",
+      tableName: 'Issue',
+      timestamps: true,
+      // an issue will never be edited
+      updatedAt: false,
     }
   );
 
@@ -47,10 +46,10 @@ module.exports = (sequelize) => {
   */
   Issue.associate = (models) => {
     Issue.belongsTo(models.Equipment, {
-      foreignKey: "equipmentID",
-      as: "Equipment",
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE",
+      foreignKey: 'equipmentID',
+      as: 'Equipment',
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
     });
   };
   return Issue;

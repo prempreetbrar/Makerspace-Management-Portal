@@ -10,9 +10,19 @@ const sequelize = require('../config/database');
 const UserModel = require('../models/User')(sequelize); // use import instead of this syntax
 
 // controllers
-const userController = require('../controllers/users');
+const usersController = require('../controllers/users');
 
-// Get all users
-router.post('/signup', userController.signup);
+// routes
+router.post('/signup', usersController.signup);
+router.post('/login', usersController.login);
+
+// all routes from this point onwards are only available to logged in, basic users
+router.use(
+  usersController.isUserLoggedIn,
+  usersController.isUserAuthorized('Basic')
+);
+
+router.get('/checkout', usersController.checkout);
+router.get('/checkout/:STRIPE_SECRET_KEY', usersController.setUserPremium);
 
 module.exports = router;
