@@ -8,7 +8,7 @@ import NavLogo from "../assets/logo_grayscale.svg";
 import { useState } from 'react';
 import LoginPopover from './LoginPopover.tsx';
 import CreateAccountPopover from './CreateAccountPopover.tsx';
-
+import ProfileLink from './ProfileLink.tsx';
 
 const NavBar = ({id}: { id: string }) => {
 
@@ -19,6 +19,9 @@ const NavBar = ({id}: { id: string }) => {
         setAnchorElCreate(null); 
     };
     const handleCloseLogin = () => setAnchorElLogin(null);
+    const handleOpenProfile = (event: React.MouseEvent<HTMLElement>) => {
+      console.log("Opening profile page...");
+    };
     const openLogin = Boolean(anchorElLogin);
 
     const [anchorElCreate, setAnchorElCreate] = useState<HTMLElement | null>(null);
@@ -40,22 +43,33 @@ const NavBar = ({id}: { id: string }) => {
     const goToSignUp = () => {
         navigate('/signup');
     };
+
+    // For testing
+    var isLoggedIn = false;
+    var isAdmin = false;
     return (
         <nav className="navbar" id={id}>
             <div className='left'>
               <div className="logo-container">
-              <img src={NavLogo} alt="React Logo" className="logo" />
+                <img src={NavLogo} alt="React Logo" className="logo" />
               </div>
               <ul className="nav-links">
-                  <li><a href="home">Home</a></li>
-                  <li><a href="reserve">Reserve Equipment</a></li>
-                  <li><a href="requests">View Requests</a></li>
+                  <li className='home'><a href="home">Home</a></li>
+                  <li><a href="reserve">{isAdmin ? 'Manage Equipment' : 'Reserve Equipment'}</a></li>
+                  <li><a href="requests">{isAdmin ? 'Manage Requests' : 'View Requests'}</a></li>
               </ul>
             </div>
             <div className="auth-buttons">
-                <LoginButton button_type='button' onClick={handleOpenLogin}></LoginButton>
-                <CreateAccountButton button_type='button' onClick={handleOpenCreateAccount}></CreateAccountButton>
+              {isLoggedIn ? (
+                <ProfileLink onClick={handleOpenProfile} />
+              ) : (
+                <>
+                  <LoginButton button_type="button" onClick={handleOpenLogin} />
+                  <CreateAccountButton button_type="button" onClick={handleOpenCreateAccount} />
+                </>
+              )}
             </div>
+
 
 
             <LoginPopover 

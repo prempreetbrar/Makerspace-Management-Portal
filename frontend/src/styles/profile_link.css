@@ -1,0 +1,9 @@
+.link-image {
+  content:url("../assets/profile_link_desktop.svg");
+}
+
+@media (max-width: 768px) {
+  .link-image {
+    content:url("../assets/profile_link_mobile.svg");
+  }
+}
