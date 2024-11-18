@@ -3,10 +3,10 @@
 import '../styles/navbar.css';
 import LoginButton from './LoginButton';
 import CreateAccountButton from './CreateAccountButton';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import NavLogo from "../assets/logo_grayscale.svg";
 import { useState } from 'react';
-import LoginPopover from './LoginPopover.tsx';
+import LoginPopover from './Loginpopover.tsx';
 import CreateAccountPopover from './CreateAccountPopover.tsx';
 import ProfileLink from './ProfileLink.tsx';
 
@@ -58,9 +58,9 @@ const NavBar = ({id}: { id: string }) => {
                 <p className='logo-text'>&nbsp;Makerspace</p>
               </div>
               <ul className="nav-links">
-                  <li className='home'><a href="home">Home</a></li>
-                  <li><a href="reserve">{isAdmin ? 'Manage Equipment' : 'Reserve Equipment'}</a></li>
-                  <li><a href="requests">{isAdmin ? 'Manage Requests' : 'View Requests'}</a></li>
+                  <li className='home'><Link to="/home">Home</Link></li>
+                  <li><Link to="/reserve">{isAdmin ? 'Manage Equipment' : 'Reserve Equipment'}</Link></li>
+                  <li><Link to="/requests">{isAdmin ? 'Manage Bookings' : 'My Reservations'}</Link></li>
               </ul>
             </div>
             <div className="auth-buttons">
@@ -79,10 +79,11 @@ const NavBar = ({id}: { id: string }) => {
                 handleCloseLogin={handleCloseLogin}
             />
             <CreateAccountPopover 
-            anchorEl={anchorElCreate}
-            openCreateAccount={openCreateAccount}
-            handleCloseCreateAccount={handleCloseCreateAccount} 
-                />
+                    anchorEl={anchorElCreate}
+                    openCreateAccount={openCreateAccount}
+                    handleCloseCreateAccount={handleCloseCreateAccount} handleOpenLogin={function (): void {
+                        throw new Error('Function not implemented.');
+                    } }                />
         </nav>
       </header>
     );
