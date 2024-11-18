@@ -6,7 +6,7 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ErrorIcon from '@mui/icons-material/Error'
 import NavBar from '../Components/NavBar.tsx';
 import MainContainer from '../Components/MainContainer.tsx';
-import { Fab, Tab, Tabs, Stack, Typography, Button, Card, CardContent, CardActionArea, CardActions, Accordion, ButtonGroup, CircularProgress, IconButton } from '@mui/material';
+import { Fab, Tab, Tabs, Stack, Typography, Button, Card, CardContent, CardActionArea, CardActions, Accordion, ButtonGroup, CircularProgress, IconButton, TextField } from '@mui/material';
 import { createTheme, styled, ThemeProvider, useTheme } from '@mui/material/styles'
 import Box from '@mui/material/Box';
 import AddIcon from '@mui/icons-material/Add'
@@ -19,6 +19,7 @@ import axios from 'axios';
 import BookingCalendar from '../Components/BookingModal.tsx';
 import Modal from '@mui/material/Modal';
 import '../styles/reserve_equipment/local.css';
+import zIndex from '@mui/material/styles/zIndex';
 // like, really need to simplify these...
 
 
@@ -61,7 +62,7 @@ const equipmentModel: Equipment[] = [
   { id: 19, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: true },
   { id: 20, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: true },
   { id: 21, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: true },
-  { id: 22, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: true },
+  { id: 22, name: "4D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: true },
   { id: 23, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: true },
   { id: 24, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: true },
   { id: 25, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: true },
@@ -104,7 +105,32 @@ const ModalStyle =
     }
 }
 
+const SearchBarStyle = 
+{
+    top: 0,
+    alignSelf: 'center',
+    width: 
+    { 
+        xs: '300px'
+
+    }
+}
+const searchBarBoxStyle = 
+{
+    backgroundColor: '#e6e6fa',
+    zIndex: 10000,
+    display: 'flex',
+    flexDirection: 'column',
+    position: 'sticky',
+    top: 0,
+    padding: 2,
+    alignItems: 'center',
+    textAlign: 'middle',
+}
+
 const ReserveEquipment = () => {
+    const [resultsFound, setResultsFound] = useState(true);
+    const [searchText, setSearchText] = useState("");
     const [isOpen, setIsOpen] = useState(false);
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => {
@@ -119,38 +145,63 @@ const ReserveEquipment = () => {
         setUserByIndex(nextIndex);
         setCurrentUserRole(user.userRole);
     }
+    const [displayModel, setDisplayModel] = useState(equipmentModel);
+    const handleSearch = (event:React.ChangeEvent<HTMLInputElement>) =>
+    {
+        setSearchText(event.target.value);
+        if(event.target.value === "")
+        {
+            setDisplayModel(equipmentModel)
+        }
+        else
+        {
+            // Some sort of query would probably go here.
+            const searchExpr = (input: Equipment, searchTerm:string) =>
+            {
+                const normalizedName = input.name.toLowerCase();
+                const normalizedSearchTerm = searchTerm.toLowerCase();
+                return normalizedName.includes(normalizedSearchTerm);
+            }
+            setDisplayModel(displayModel.filter((elem)=>searchExpr(elem, event.target.value)));
+            setResultsFound(displayModel.length > 0)
+        }
+    }
     const { user, setUserByIndex } = useUser();
     const [currentUserIndex, setCurrentUserIndex] = React.useState(0);
     const [currentUserRole, setCurrentUserRole] = React.useState(user.userRole);
+    const ChangeUserButton = ()=>(<Button id="debugButton" fullWidth={false} sx={{ width: '250px', position: 'sticky', bottom: 2, zIndex: 1000}} variant={"contained"} onClick={handleChangeUser}> Change User: {currentUserRole} </Button>);
 
     return (
       <>
         <NavBar id='reserve'></NavBar>
         <MainContainer>
-            <ThemeProvider theme={theme}>
-                <Button variant={"contained"} onClick={handleChangeUser}> Change User: {currentUserRole} </Button>
-                    <Box sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        width: '100%',
-                        padding: 0,
-                    }}>
-                    <Modal open={open} onClose={handleClose}>
-                        <Box sx={ModalStyle} borderColor={"white"}>
-                            {currentUserRole === 'Admin'?
-                            (
-                            <Typography variant='body1'>
-                                Admins see this
+            <ThemeProvider theme={theme}>  
+               
+                    <Box id="contentBox" sx={{position: 'fixed', display: 'flex', flexDirection: 'column', width: '100%', height: '100%', overflowX:"hidden", overflowY: "scroll", padding: 0}}>
+                        <Box id="searchBarBox" sx={searchBarBoxStyle}>
+                            <ChangeUserButton />
+                            <Typography>
+                                Search
                             </Typography>
-                            ):(
-                                <BookingCalendar onClose={handleClose} userRole={currentUserRole}>
-                                </BookingCalendar>
-                            )}
+                            <TextField sx={SearchBarStyle} onChange={handleSearch}>
+                            </TextField>
+                        </Box>
+                        <Modal open={open} onClose={handleClose}>
+                            <Box sx={ModalStyle} borderColor={"white"}>
+                                {currentUserRole === 'Admin'?
+                                (
+                                <Typography variant='body1'>
+                                    Admins see this
+                                </Typography>
+                                ):(
+                                    <BookingCalendar onClose={handleClose} userRole={currentUserRole}>
+                                    </BookingCalendar>
+                                )}
                             </Box>
-                    </Modal>
+                        </Modal>
                         <Stack spacing={3} sx={{ alignSelf: 'center' }}>
                             {
-                                equipmentModel.map((item, index) =>
+                                displayModel.map((item, index) =>
                                 ( // this NEEDS to be optimized
                                 <Card key={index}
                                     sx={{
@@ -200,9 +251,6 @@ const ReserveEquipment = () => {
                         </Stack>
                     </Box>
             </ThemeProvider >
-            {/* at some point, there should be a check for some sort of session token*/
-                /* also I don't know how to do media queries, so designing mobile first */
-            }
         </MainContainer >
       </>
     )

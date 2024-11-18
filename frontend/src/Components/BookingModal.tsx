@@ -7,7 +7,7 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import NavBar from '../Components/NavBar.tsx';
 import MainContainer from '../Components/MainContainer.tsx';
-import { Fab, Tab, Tabs, Stack, Typography, Button, Card, CardContent, CardActionArea, CardActions, Accordion, ButtonGroup, CircularProgress, Grid2, IconButton, TextField, FormGroup } from '@mui/material';
+import { Fab, Tab, Tabs, Stack, Typography, Button, Card, CardContent, CardActionArea, CardActions, Accordion, ButtonGroup, CircularProgress, Grid2, IconButton, TextField, FormGroup, Tooltip } from '@mui/material';
 import { createTheme, styled, ThemeProvider, useTheme } from '@mui/material/styles'
 import Box from '@mui/material/Box';
 import AddIcon from '@mui/icons-material/Add'
@@ -36,8 +36,8 @@ type DateEntry =
 }
 
 const timesArray: TimeEntry[] = [
-    { time: "10:00 AM", premiumOnly: false },
-    { time: "11:00 AM", premiumOnly: false },
+    { time: "8:00 AM", premiumOnly: true},
+    { time: "9:00 AM", premiumOnly: true },
     { time: "10:00 AM", premiumOnly: false },
     { time: "11:00 AM", premiumOnly: false },
     { time: "12:00 PM", premiumOnly: false },
@@ -54,17 +54,21 @@ interface BookingCalendarProps
 {
     userRole: string,
     onClose: ()=> void,
+    externalProps?: any,
 }
 const timeButtonStyle = { width: 100, margin: '2px', fontSize: 11 };
-
 // Need to link clicking off the modal to the close event. For now, linked to the close button only.
-const BookingCalendar = ({userRole, onClose}:BookingCalendarProps) => {
-   
+const BookingCalendar = ({userRole, onClose, externalProps}:BookingCalendarProps) => {
+    //@ts-ignore
+    const passedInProps = externalProps;
+
     // all event listeners would need to be exposed at some point via Props. 
+    
+    //@ts-ignore
     const [jsSelectedDate, setJSSelectedDate] = useState() // this would eventually convert dayJS into a string format
     const [selectedTime, setSelectedTime] = useState("");
-
     const [selectedDay, setSelectedDay] = useState(dayjs());
+    //@ts-ignore
     const handleDateSelection = (newDate: React.SetStateAction<dayjs.Dayjs>) => {
         setSelectedDay(newDate);
     }
@@ -92,15 +96,14 @@ const BookingCalendar = ({userRole, onClose}:BookingCalendarProps) => {
     }
 
     const today = dayjs();
-    const threeMonthsFromNow = today.add(3, "month");
-
+    const nMonthsFromNow = today.add(2, "month");
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
             <Box sx={{overflow: 'hidden', overflowY: 'scroll'}} display="flex" flexDirection={"column"} alignContent={'center'}>
                 <Box display="flex" flexDirection="row" justifyContent={'space-between'} position={"sticky"} top={0} bgcolor={"white"}> 
                         <Typography variant={"h3"}>
                             Book a Time
-                        </Typography>   
+                        </Typography> 
                         <IconButton sx={{width: 60}} size="large" onClick={onClose}> { /* confirmation dialog would be nice */}
                             <CancelRounded fontSize="large"/>
                         </IconButton>
@@ -115,7 +118,7 @@ const BookingCalendar = ({userRole, onClose}:BookingCalendarProps) => {
                     margin: '10px',
                 }}>
                     <Box>
-                        <DateCalendar disablePast={true} sx={{minWidth: 300}} defaultValue={dayjs(today)} minDate={today} maxDate={threeMonthsFromNow} />
+                        <DateCalendar disablePast={true} sx={{minWidth: 300}} defaultValue={dayjs(today)} minDate={today} maxDate={nMonthsFromNow} />
                     </Box>
                     <Box display="flex" flexDirection="column" sx={{overflowY: 'scroll'}} alignContent={"center"}>
                             <Typography variant='h6'>
@@ -126,23 +129,11 @@ const BookingCalendar = ({userRole, onClose}:BookingCalendarProps) => {
                                 {
                                     // [BUG] centering items doesn't work on mobile. 
                                     timesArray.map((listing, index)=>(
-                                        listing.premiumOnly ? 
-                                        ( 
-                                            userRole == "Premium" ?
-                                            (
-                                                <Button key={index} variant={ selectedTimeButton !== index? 'outlined' : 'contained'} sx={timeButtonStyle} 
-                                                    onClick={() => handleTimeSelect(index, listing.time)}>
-                                                    {listing.time}
-                                                </Button>
-                                            ):(
-                                                <></>
-                                            )
-                                        ):
-                                        (
-                                            <Button key={index} variant={ selectedTimeButton !== index? 'outlined' : 'contained'}  sx={timeButtonStyle} onClick={() => handleTimeSelect(index, listing.time)}>
+                                            <Button key={index} variant={ selectedTimeButton !== index? 'outlined' : 'contained'}  sx={timeButtonStyle} onClick={() => handleTimeSelect(index, listing.time)} 
+                                            disabled={userRole !== "Premium" && listing.premiumOnly}>
                                                 {listing.time}
                                             </Button>
-                                        )))
+                                        ))
                                     }
                             </Grid2>
                         </Box>
@@ -153,7 +144,7 @@ const BookingCalendar = ({userRole, onClose}:BookingCalendarProps) => {
                             <TextField id="DescriptionField" sx={{fontSize: 12}} maxRows={3}  variant="filled" onChange={handleTextUpdate} multiline fullWidth>
                             </TextField>
                         </Box>
-                        <Button sx={{marginTop: 4}} onClick={()=>handleCloseModal(true)} disabled={(inputText === "" && selectedTime === "")}>
+                        <Button sx={{marginTop: 4}} onClick={()=>handleCloseModal(true)} disabled={(inputText === "" || selectedTime === "")}>
                             Submit {/* [BUG] users can submit without input text after closing and reopening the form */}
                         </Button>
                     </Box>

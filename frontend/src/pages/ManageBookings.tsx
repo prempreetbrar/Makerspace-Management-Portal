@@ -20,6 +20,12 @@ import { describe } from 'node:test';
 import RequestCard from '../Components/Requests/RequestCard.tsx';
 // like, really need to simplify these...
 
+type Booking = 
+{
+    time: string,
+    equipment: string,
+    user: string,
+}
 
 const requestTemplate1 =
 {
@@ -46,7 +52,7 @@ const requestTemplate3 =
 const templateRequests = [requestTemplate1, requestTemplate1, requestTemplate2, requestTemplate2, requestTemplate3, requestTemplate3];
 
 const theme = createTheme();
-const Requests = () => {
+const ManageBookings = () => {
 
     {/* TO DO: 
         * Fetch requests from the server
@@ -76,8 +82,9 @@ const Requests = () => {
         <>
         <NavBar id='request' />
         <MainContainer>
-            <Button onClick={handleChangeUser}> Change User </Button>
             <ThemeProvider theme={theme}>
+            <Button id="debugButton" fullWidth={false} sx={{position: 'sticky', bottom: 2, zIndex: 1000}} variant={"contained"} onClick={handleChangeUser}> Change User: {currentUserRole} </Button>
+            <Box id="contentBox" sx={{position: 'fixed', display: 'flex', flexDirection: 'column', width: '100%', height: '100%', overflowX:"hidden", overflowY: "scroll", padding: 0}}>
                     <TabContext value={value}>
                         <TabList onChange={handleChange} aria-label="lab API tabs example" centered>
                             <Tab label="Approved" value="Approved" />
@@ -103,7 +110,7 @@ const Requests = () => {
                                                     </Typography>
                                                 </Box>
                                                 <Box>
-                                                    <Accordion sx={{ boxShadow: 0 }}>
+                                                    <Accordion component={Typography} sx={{ boxShadow: 0 }}>
                                                         <AccordionSummary>
                                                             <Typography variant='body2'>
                                                                 View Details
@@ -199,11 +206,12 @@ const Requests = () => {
                             </Box>
                         </TabPanel>
                     </TabContext>
+                    </Box>
             </ThemeProvider >
         </MainContainer >
         </>
     )
 }
 
-export default Requests;
+export default ManageBookings;
 
