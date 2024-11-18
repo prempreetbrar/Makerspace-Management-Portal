@@ -37,37 +37,39 @@ const Landing = () => {
   };
 
   return (
-    <MainContainer>
+    <>
       <NavBar id='landing'></NavBar>
-      <div className="content">
-        <div className="logo-container2">   <img src={MobileLogo} alt="React Logo" className="logo" /></div>
-        <div className='text-container'>
-          <div className="text-content">
-            <h1 className="heading">  
-              <span className="word opacity-1">DESIGN.</span>
-              <span className="word opacity-2">DEVELOP.</span> 
-              <span className="word opacity-3">DISCOVER.</span>
-              <span className="word opacity-4">INSIDE THE MAKERSPACE</span> <br />
-            </h1>
-            <p className="subheading">Bring your ideas to life by reserving tools, equipment, and workspace today.</p>
-            <GetStartedButton></GetStartedButton>
-            <div className="auth-buttons2">
-              <LoginButton button_type='button' onClick={handleOpenLoginMobile}></LoginButton>
-              <br /><br />
-              <CreateAccountButton button_type='button' onClick={handleOpenCreateAccountMobile}></CreateAccountButton>
+      <MainContainer>
+        <div className="content">
+          <div className="logo-container2">   <img src={MobileLogo} alt="React Logo" className="logo" /></div>
+          <div className='text-container'>
+            <div className="text-content">
+              <h1 className="heading">  
+                <span className="word opacity-1">DESIGN.</span>
+                <span className="word opacity-2">DEVELOP.</span> 
+                <span className="word opacity-3">DISCOVER.</span>
+                <span className="word opacity-4">INSIDE THE MAKERSPACE</span> <br />
+              </h1>
+              <p className="subheading">Bring your ideas to life by reserving tools, equipment, and workspace today.</p>
+              <GetStartedButton></GetStartedButton>
+              <div className="auth-buttons2">
+                <LoginButton button_type='button' onClick={handleOpenLoginMobile}></LoginButton>
+                <br /><br />
+                <CreateAccountButton button_type='button' onClick={handleOpenCreateAccountMobile}></CreateAccountButton>
+              </div>
             </div>
           </div>
+          <div className="illustration-container">
+            <img src={illustrationDesktop} alt="Makerspace Illustration" className="illustration desktop" />
+            <img src={illustrationMobile} alt="Makerspace Illustration" className="illustration mobile" />
+          </div>
+    
+          {isMobileLoginOpen && ( <Login onClose={handleCloseLoginMobile} />)}
+          {isMobileCreateAccountOpen && ( <Signup onClose={handleCloseCreateAccountMobile} /> )}
         </div>
-        <div className="illustration-container">
-          <img src={illustrationDesktop} alt="Makerspace Illustration" className="illustration desktop" />
-          <img src={illustrationMobile} alt="Makerspace Illustration" className="illustration mobile" />
-        </div>
-
-        {isMobileLoginOpen && ( <Login onClose={handleCloseLoginMobile} />)}
-        {isMobileCreateAccountOpen && ( <Signup onClose={handleCloseCreateAccountMobile} /> )}
-      </div>
-
-    </MainContainer>
+    
+      </MainContainer>
+    </>
   );
 };
 

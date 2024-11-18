@@ -73,8 +73,9 @@ const Requests = () => {
 
     const randomList: Array<String> = ["Apples", "Bananas", "Oranges", "Celery", "Carrots", "Avocados", "Pineapples", "Mangoes", "Potatoes", "Tomatoes", "Beans"];
     return (
+      <>
+        <NavBar id='request'></NavBar>
         <MainContainer>
-            <NavBar id='request'></NavBar>
             <Button onClick={handleChangeUser}> Change User </Button>
             <ThemeProvider theme={theme}>
                 <div className='page-content'>
@@ -208,6 +209,7 @@ const Requests = () => {
             {/* at some point, there should be a check for some sort of session token*/
                 /* also I don't know how to do media queries, so designing mobile first */}
         </MainContainer >
+      </>
     )
 }
 

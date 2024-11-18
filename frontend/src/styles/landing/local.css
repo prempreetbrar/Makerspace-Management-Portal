@@ -185,6 +185,10 @@
   .logo-container2 {
     font-size: 50px;
   }
+
+  .container {
+    min-height: 100vh;
+  }
 }
 
 @media (max-width: 480px) {

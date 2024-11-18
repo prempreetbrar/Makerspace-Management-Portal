@@ -4,26 +4,26 @@
   position: sticky;
   z-index: 1000;
   top: 0;
-  height: 6rem;
+  font-family: Arial, sans-serif;
   min-width: 100%;
 }
 
 .navbar {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 20px;
-    background-color: #fff;
-    border-bottom: 1px solid #ddd;
-    box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  background-color: #fff;
+  border-bottom: 1px solid #ddd;
+  box-sizing: border-box;
 }
 
 .left {
   display: flex;
   flex-direction: row;
   align-items: center;
-  /* border: solid red; */
 }
 
 .logo-container {
@@ -86,6 +86,10 @@
 }
 
 @media (min-width: 769px) {
+  .navbar {
+    height: 91px;
+  }
+  
   .left {
     gap: 25px;
   }

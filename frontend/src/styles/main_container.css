@@ -1,33 +1,24 @@
 /* Styles for the MainContainer component */
 
 .container {
-    display: flex;
-    flex-direction: column;
-    justify-content: start;
-    align-items: center;
-    padding: 0px;
-    width: 100%;
-    min-height: 100vh;
-    margin: 0 auto;
-    box-sizing: border-box;
-    color: #333;
-    background-color: #f8f9fa;
-    font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  padding: 0px;
+  width: 100%;
+  min-height: calc(100vh - 91px);
+  margin: 0 auto;
+  box-sizing: border-box;
+  color: #333;
+  background-color: #e6e6fa;
+  font-family: Arial, sans-serif;
 }
 
 /* Responsive adjustments */
-@media (min-width: 769px) {
-
-    /* Desktop styles */
-    .container {
-        background-color: #e6e6fa;
-    }
-}
-
 @media (max-width: 768px) {
-
-    /* Mobile styles */
-    .container {
-        background-color: #f8f9fa;
-    }
+  .container {
+    background-color: #f8f9fa;
+    min-height: calc(100vh - 158px);
+  }
 }

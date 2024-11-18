@@ -124,9 +124,10 @@ const ReserveEquipment = () => {
     const [currentUserRole, setCurrentUserRole] = React.useState(user.userRole);
 
     return (
+      <>
+        <NavBar id='reserve'></NavBar>
         <MainContainer>
             <ThemeProvider theme={theme}>
-                <NavBar id='reserve'></NavBar>
                 <Button variant={"contained"} onClick={handleChangeUser}> Change User: {currentUserRole} </Button>
                     <Box sx={{
                         display: 'flex',
@@ -203,6 +204,7 @@ const ReserveEquipment = () => {
                 /* also I don't know how to do media queries, so designing mobile first */
             }
         </MainContainer >
+      </>
     )
 }
 
