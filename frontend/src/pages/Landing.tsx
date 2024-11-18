@@ -22,10 +22,6 @@ const Landing = () => {
   const handleOpenCreateAccountMobile = () => setIsMobileCreateAccountOpen(true);  
   const handleCloseCreateAccountMobile = () => setIsMobileCreateAccountOpen(false); 
 
-
-
-
-
   const navigate = useNavigate();
 
   const goToLogin = () => {

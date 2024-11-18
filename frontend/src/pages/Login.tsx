@@ -3,7 +3,7 @@ import { Button, TextField, Dialog, DialogActions, DialogContent, DialogTitle } 
 import "../styles/authentication/login/Login-mobile.css"; 
 
 interface LoginProps {
-  onClose: () => void;
+  onClose?: () => void;
 }
 
 const Login: React.FC<LoginProps> = ({ onClose }) => {
