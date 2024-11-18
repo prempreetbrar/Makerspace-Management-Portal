@@ -1,33 +1,32 @@
 const { DataTypes, INTEGER } = require('sequelize');
+const sequelize = require('../config/database');
 
-module.exports = (sequelize) => {
-  const Attachment = sequelize.define(
-    'Attachment',
-    {
-      id: {
-        type: DataTypes.INTEGER,
-        defaultValue: DataTypes.INTEGER(),
-        autoIncrement: true,
-        primaryKey: true,
-      },
-      requestID: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-      },
-      // relative path to file in a designated directory.
-      file: {
-        type: DataTypes.BLOB, // any sort of file asset
-        defaultValue: '',
-        allowNull: false,
-      },
+const Attachment = sequelize.define(
+  'Attachment',
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
     },
-    {
-      tableName: 'Attachment',
-      timestamps: false,
-    }
-  );
+    requestID: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    // relative path to file in a designated directory.
+    file: {
+      type: DataTypes.BLOB, // any sort of file asset
+      defaultValue: '',
+      allowNull: false,
+    },
+  },
+  {
+    tableName: 'Attachment',
+    timestamps: false,
+  }
+);
 
-  /*
+/*
     Sequelize only needs Model.belongsTo. The reason we've defined it inside of a method
     is because we can call this method after all models have been loaded in the code. If we put
     this code outside of a method, Sequelize tries to create the association as it's invoking the code,
@@ -41,13 +40,13 @@ module.exports = (sequelize) => {
     The name .associate is random, it could be anything. It's just a method we call. 
   */
 
-  Attachment.associate = (models) => {
-    Attachment.belongsTo(models.Request, {
-      foreignKey: 'requestID',
-      as: 'Request',
-      onDelete: 'CASCADE',
-      onUpdate: 'CASCADE',
-    });
-  };
-  return Attachment;
+Attachment.associate = (models) => {
+  Attachment.belongsTo(models.Request, {
+    foreignKey: 'requestID',
+    as: 'request',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  });
 };
+
+module.exports = Attachment;

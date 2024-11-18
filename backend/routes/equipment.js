@@ -4,22 +4,26 @@
 
 const express = require('express');
 const router = express.Router();
-const sequelize = require('../config/database');
 
 // models
-const EquipmentModel = require('../models/Equipment')(sequelize);
+const User = require('../models/User');
 
 // controllers
 const usersController = require('../controllers/users');
 const equipmentController = require('../controllers/equipment');
 
 // routes
-//router.use(usersController.isUserLoggedIn);
+router.use(usersController.isUserLoggedIn);
 router
   .route('/')
   .get(
     equipmentController.extractEquipmentFilters,
     equipmentController.getAllEquipment
+  )
+  .patch(
+    usersController.isUserAuthorized(User.ADMIN),
+    equipmentController.extractEquipmentFilters,
+    equipmentController.updateEquipment
   );
 
 module.exports = router;

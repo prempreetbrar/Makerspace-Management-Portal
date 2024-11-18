@@ -8,27 +8,21 @@
 const sequelize = require('./config/database');
 const fs = require('fs');
 const path = require('path');
-const UserModel = require('./models/User');
-const IssueModel = require('./models/Issue');
-const EquipmentModel = require('./models/Equipment');
-const BookingModel = require('./models/Booking');
-const RequestModel = require('./models/Request');
-const AttachmentModel = require('./models/Attachment');
+const User = require('./models/User');
+const Issue = require('./models/Issue');
+const Equipment = require('./models/Equipment');
+const Booking = require('./models/Booking');
+const Request = require('./models/Request');
+const Attachment = require('./models/Attachment');
+const Models = { User, Issue, Equipment, Booking, Request, Attachment };
 
-// Import models
-const User = UserModel(sequelize);
-const Issue = IssueModel(sequelize);
-const Equipment = EquipmentModel(sequelize);
-const Booking = BookingModel(sequelize);
-const Request = RequestModel(sequelize);
-const Attachment = AttachmentModel(sequelize);
-
-// invoke code to define relationships
-Object.keys(sequelize.models).forEach((modelName) => {
-  if (sequelize.models[modelName].associate) {
-    sequelize.models[modelName].associate(sequelize.models);
-  }
-});
+// create relationships
+User.associate(Models);
+Issue.associate(Models);
+Equipment.associate(Models);
+Booking.associate(Models);
+Request.associate(Models);
+Attachment.associate(Models);
 
 // Sync the database and seed data
 // Set the clear = true to erase existing data from your database
@@ -36,7 +30,7 @@ const seedDatabase = async (clear = false) => {
   try {
     if (clear) {
       // Clear existing data
-      await sequelize.sync({ force: true });
+      await sequelize.sync({ force: true, logging: console.log });
     } else {
       // Create tables if they don't exist
       await sequelize.sync();
@@ -46,35 +40,35 @@ const seedDatabase = async (clear = false) => {
     // Users
     const userCount = await User.count();
     if (userCount === 0) {
-      await User.bulkCreate([
-        {
-          email: 'real_email1@email.com',
-          firstName: 'Connor',
-          lastName: 'McDavid',
-          userRole: 'Premium',
-          password:
-            '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', // SHA-256 Hash of "password"
-          confirmPassword: null, // only null because Sequelize does not validate passwords match on bulk create (intentional, just how the ORM is implemented)
-        },
-        {
-          email: 'real_email2@email.com',
-          firstName: 'Sidney',
-          lastName: 'Crosby',
-          userRole: 'Basic',
-          password:
-            'c0e21a8ff85153deac82fe7f09c0da1b3bd90ac0ae204e78d7148753b4363c03', // SHA-256 Hash of "wordpass"
-          confirmPassword: null, // only null because Sequelize does not validate passwords match on bulk create (intentional, just how the ORM is implemented)
-        },
-        {
-          email: 'real_email3@email.com',
-          firstName: 'Austin',
-          lastName: 'Matthews',
-          userRole: 'Admin',
-          password:
-            '80d1159c872683756864281692bf8ffa330341cae85c8e188a2bf29edd7adbbe', // SHA-256 Hash of "extraSuperStrongP@s$W0Rd!"
-          confirmPassword: null, // only null because Sequelize does not validate passwords match on bulk create (intentional, just how the ORM is implemented)
-        },
-      ]);
+      await User.bulkCreate(
+        [
+          {
+            email: 'connor@gmail.com',
+            firstName: 'Connor',
+            lastName: 'McDavid',
+            userRole: User.PREMIUM,
+            password: 'connor',
+            confirmPassword: 'connor',
+          },
+          {
+            email: 'sidney@gmail.com',
+            firstName: 'Sidney',
+            lastName: 'Crosby',
+            userRole: User.BASIC,
+            password: 'sidney',
+            confirmPassword: 'sidney', // only null because Sequelize does not validate passwords match on bulk create (intentional, just how the ORM is implemented)
+          },
+          {
+            email: 'admin@gmail.com',
+            firstName: 'admin',
+            lastName: 'admin',
+            userRole: User.ADMIN,
+            password: 'admin',
+            confirmPassword: 'admin', // only null because Sequelize does not validate passwords match on bulk create (intentional, just how the ORM is implemented)
+          },
+        ],
+        { individualHooks: true }
+      );
       console.log('Seeded user table');
     }
 
@@ -92,7 +86,7 @@ const seedDatabase = async (clear = false) => {
             ),
             isUnderMaintenance: true,
             isBookable: true,
-            isPremium: true,
+            isPremium: false,
           },
           {
             id: 2,
@@ -137,10 +131,24 @@ const seedDatabase = async (clear = false) => {
       await Booking.bulkCreate([
         {
           id: 1,
-          userEmail: 'real_email1@email.com', // Relates to Connor McDavid
+          userEmail: 'connor@gmail.com', // Relates to Connor McDavid
           equipmentID: 1, // Relates to the 3D Printer
-          bookingDateTime: new Date(),
-          bookingDuration: 3,
+          bookingDate: new Date(),
+          timeSlot1: '12:00:00',
+          title: 'Need the 3D Printer',
+          description:
+            'I want to use the 3D printer to print out a ring for my wife Lauren.',
+        },
+        {
+          id: 2,
+          userEmail: 'connor@gmail.com', // Relates to Connor McDavid
+          equipmentID: 1, // Relates to the 3D Printer
+          bookingDate: new Date(new Date().setDate(new Date().getDate() + 1)), // tomorrow
+          timeSlot1: '14:00:00',
+          title: 'Need the 3D Printer AGAIN',
+          description:
+            'I want to use the 3D printer to print out a necklace for my wife Lauren.',
+          status: Booking.STATUS_APPROVED,
         },
       ]);
       console.log('Seeded booking table');
@@ -152,19 +160,19 @@ const seedDatabase = async (clear = false) => {
       await Request.bulkCreate([
         {
           id: 1,
-          userEmail: 'real_email1@email.com', // Relates to Connor McDavid
+          userEmail: 'connor@gmail.com', // Relates to Connor McDavid
           equipmentID: 1,
-          title: "3D Printing Request",
+          title: '3D Printing Request',
           description: "I'd like to use the 3D printer",
-          status: 'approved',
+          status: Booking.STATUS_APPROVED,
         },
         {
           id: 2,
-          userEmail: 'real_email3@email.com', // Relates to Austin Matthews
+          userEmail: 'admin@gmail.com', // Relates to Austin Matthews
           equipmentID: 2,
-          title: "Let me use the stapler",
+          title: 'Let me use the stapler',
           description: "I'd like to use the stapler",
-          status: 'pending',
+          status: Booking.STATUS_PENDING,
         },
       ]);
       console.log('Seeded request table');

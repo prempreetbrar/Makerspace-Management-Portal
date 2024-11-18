@@ -1,6 +1,5 @@
 // models
-const sequelize = require('../config/database');
-const Equipment = require('../models/Equipment')(sequelize);
+const Equipment = require('../models/Equipment');
 
 // controllers
 const errorsController = require('./errors');
@@ -14,23 +13,27 @@ const extractEquipmentFilters = errorsController.catchAsync(
   async (request, response, next) => {
     request.body.filter = {};
 
-    // name
+    // name. Specified in the URL when getting equipment.
     if (request.query.name) {
       request.body.filter.name = {
         [Op.like]: `%${request.query.name}%`,
       };
     }
 
-    // maintenance
-    if (request.query.maintenance) {
-      request.query.isUnderMaintenance = Boolean(
-        request.query.isUnderMaintenance
-      );
+    // maintenance. Specified in the URL when getting equipment.
+    if (request.query.isUnderMaintenance) {
+      request.body.filter.isUnderMaintenance =
+        request.query.isUnderMaintenance === 'true';
     }
 
-    // premium
+    // premium. Specified in the URL when getting equipment.
     if (request.query.isPremium) {
-      request.query.isPremium = Boolean(request.query.isPremium);
+      request.body.filter.isPremium = request.query.isPremium === 'true';
+    }
+
+    // id. Specified in the body when updating an equipment (since PATCH has a request body as per the REST protocol)
+    if (request.body.id) {
+      request.body.filter.id = request.body.id;
     }
 
     // move to the next middleware (ie. continue processing the request)
@@ -39,8 +42,10 @@ const extractEquipmentFilters = errorsController.catchAsync(
 );
 
 const getAllEquipment = factoryController.getAll(Equipment);
+const updateEquipment = factoryController.updateOne(Equipment);
 
 module.exports = {
   extractEquipmentFilters,
   getAllEquipment,
+  updateEquipment,
 };

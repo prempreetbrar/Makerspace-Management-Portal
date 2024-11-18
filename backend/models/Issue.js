@@ -1,37 +1,37 @@
 const { DataTypes } = require('sequelize');
+const sequelize = require('../config/database');
 
-module.exports = (sequelize) => {
-  const Issue = sequelize.define(
-    'Issue',
-    {
-      id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true,
-      },
-      equipmentID: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-      },
-      description: {
-        type: DataTypes.TEXT,
-        defaultValue: '',
-      },
-      isResolved: {
-        type: DataTypes.BOOLEAN, // resolved or not resolved
-        allowNull: false,
-        defaultValue: false,
-      },
+const Issue = sequelize.define(
+  'Issue',
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
     },
-    {
-      tableName: 'Issue',
-      timestamps: true,
-      // an issue will never be edited
-      updatedAt: false,
-    }
-  );
+    equipmentID: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    description: {
+      type: DataTypes.TEXT,
+      defaultValue: '',
+    },
+    isResolved: {
+      type: DataTypes.BOOLEAN, // resolved or not resolved
+      allowNull: false,
+      defaultValue: false,
+    },
+  },
+  {
+    tableName: 'Issue',
+    timestamps: true,
+    // an issue will never be edited
+    updatedAt: false,
+  }
+);
 
-  /*
+/*
     Sequelize only needs Model.belongsTo. The reason we've defined it inside of a method
     is because we can call this method after all models have been loaded in the code. If we put
     this code outside of a method, Sequelize tries to create the association as it's invoking the code,
@@ -44,13 +44,13 @@ module.exports = (sequelize) => {
 
     The name .associate is random, it could be anything. It's just a method we call. 
   */
-  Issue.associate = (models) => {
-    Issue.belongsTo(models.Equipment, {
-      foreignKey: 'equipmentID',
-      as: 'Equipment',
-      onDelete: 'CASCADE',
-      onUpdate: 'CASCADE',
-    });
-  };
-  return Issue;
+Issue.associate = (models) => {
+  Issue.belongsTo(models.Equipment, {
+    foreignKey: 'equipmentID',
+    as: 'equipment',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  });
 };
+
+module.exports = Issue;

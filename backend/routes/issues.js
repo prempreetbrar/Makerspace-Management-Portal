@@ -4,10 +4,9 @@
 
 const express = require('express');
 const router = express.Router();
-const sequelize = require('../config/database');
 
 // models
-const IssueModel = require('../models/Issue')(sequelize);
+const User = require('../models/User');
 
 // controllers
 const usersController = require('../controllers/users');
@@ -18,8 +17,18 @@ router.use(usersController.isUserLoggedIn);
 router
   .route('/')
   .post(
-    usersController.isUserAuthorized('Basic', 'Premium'),
+    usersController.isUserAuthorized(User.BASIC, User.PREMIUM),
     issuesController.createIssue
+  )
+  .get(
+    usersController.isUserAuthorized(User.ADMIN),
+    issuesController.extractIssuesFilters,
+    issuesController.getAllIssues
+  )
+  .patch(
+    usersController.isUserAuthorized(User.ADMIN),
+    issuesController.extractIssuesFilters,
+    issuesController.updateIssue
   );
 
 module.exports = router;

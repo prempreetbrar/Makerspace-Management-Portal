@@ -4,10 +4,9 @@
 
 const express = require('express');
 const router = express.Router();
-const sequelize = require('../config/database');
 
 // models
-const UserModel = require('../models/User')(sequelize); // use import instead of this syntax
+const User = require('../models/User');
 
 // controllers
 const usersController = require('../controllers/users');
@@ -19,7 +18,7 @@ router.post('/login', usersController.login);
 // all routes from this point onwards are only available to logged in, basic users
 router.use(
   usersController.isUserLoggedIn,
-  usersController.isUserAuthorized('Basic')
+  usersController.isUserAuthorized(User.BASIC)
 );
 
 router.get('/checkout', usersController.checkout);

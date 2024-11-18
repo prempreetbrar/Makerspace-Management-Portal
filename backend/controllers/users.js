@@ -5,8 +5,7 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const dollarsToCents = require('dollars-to-cents');
 
 // models
-const sequelize = require('../config/database');
-const User = require('../models/User')(sequelize);
+const User = require('../models/User');
 
 // controllers
 const errorsController = require('./errors');
@@ -240,7 +239,7 @@ const setUserPremium = errorsController.catchAsync(
     }
 
     const user = await User.findByPk(request.body.user.email);
-    user.userRole = 'Premium';
+    user.userRole = User.PREMIUM;
     await user.save();
 
     response.status(200).json({

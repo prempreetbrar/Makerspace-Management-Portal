@@ -17,10 +17,17 @@ const errorsController = require('./errors');
 const createOne = (Model) => {
   return errorsController.catchAsync(async (request, response) => {
     const instance = await Model.create(request.body);
+    const instanceWithAssociations = await Model.findByPk(instance.id, {
+      include: {
+        all: true,
+        required: false,
+        nested: false,
+      },
+    });
 
     response.status(201).json({
       status: 'success',
-      [Model.name.toLowerCase()]: instance,
+      [Model.name.toLowerCase()]: instanceWithAssociations,
     });
   });
 };
@@ -55,7 +62,59 @@ const getAll = (Model) => {
   });
 };
 
+const deleteOne = (Model) => {
+  return errorsController.catchAsync(async (request, response) => {
+    // sequelize doesn't like an undefined "where", so if there was no filter just default to an
+    // empty object which doesn't filter by anything anyways
+    request.body.filter = request.body.filter || {};
+
+    const deletedCount = await Model.destroy({
+      where: request.body.filter,
+    });
+
+    if (deletedCount === 0) {
+      throw new errorsController.ErrorWithStatusCode(
+        `No ${Model.name} found with filter ${JSON.stringify(request.body.filter)}`,
+        404
+      );
+    }
+
+    response.status(204).json({
+      status: 'success',
+    });
+  });
+};
+
+const updateOne = (Model) => {
+  return errorsController.catchAsync(async (request, response) => {
+    // sequelize doesn't like an undefined "where", so if there was no filter just default to an
+    // empty object which doesn't filter by anything anyways
+    request.body.filter = request.body.filter || {};
+    const instance = await Model.findByPk(request.body.filter.id);
+
+    if (!instance) {
+      throw new errorsController.ErrorWithStatusCode(
+        `No ${Model.name} found with filter ${JSON.stringify(request.body.filter)}`,
+        404
+      );
+    }
+
+    // override what is currently in the instance with new stuff int eh request body
+    Object.assign(instance, request.body);
+    // in this case, we're assuming that the frontend didn't send anything sus. Update is only used by admin's in our
+    // app, so this is a safe assumption.
+    await instance.save({ validate: false, hooks: false });
+
+    response.status(200).json({
+      status: 'success',
+      [Model.name.toLowerCase()]: instance,
+    });
+  });
+};
+
 module.exports = {
   createOne,
   getAll,
+  deleteOne,
+  updateOne,
 };
