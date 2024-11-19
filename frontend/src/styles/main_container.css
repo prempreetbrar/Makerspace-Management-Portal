@@ -13,6 +13,7 @@
   color: #333;
   background-color: #e6e6fa;
   font-family: Arial, sans-serif;
+  overflow: 'hidden';
 }
 
 /* Responsive adjustments */
