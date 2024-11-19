@@ -1,26 +1,28 @@
-.request-card {
+.mobile-request-card {
   background-color: #E7E0EC !important; /* Matches card background */
   margin: 0;
   box-shadow: none !important;
   width: 80% !important;
 }
 
-.request-card-title {
+.mobile-request-card-title {
   font-weight: bold;
   margin-bottom: 8px;
 }
 
-.request-card-description {
+.mobile-request-card-description {
   margin-bottom: 8px;
   color: #616161; /* Muted text color */
 }
 
-.request-card-date {
+.mobile-request-card-date {
   color: gray;
 }
 
-.card-container{
+.mobile-card-container{
     display: flex;
     justify-content: center;
+    flex-direction: row;
     margin-bottom: 10px;
+    width: 100%;
 }

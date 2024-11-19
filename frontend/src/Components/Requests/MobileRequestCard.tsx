@@ -28,7 +28,7 @@ const RequestCard: React.FC<RequestCardProps> = ({
   });
 
   return (
-    <div className="card-container">
+    <div className="mobile-card-container">
       <Box
         {...swipeHandlers}
         sx={{
@@ -98,21 +98,21 @@ const RequestCard: React.FC<RequestCardProps> = ({
             transform: isSwiped ? 'translateX(-30%)' : 'translateX(0)',
             transition: 'transform 0.3s ease',
           }}
-          className="request-card"
+          className="mobile-request-card"
         >
           <CardContent>
-            <Typography variant="h6" className="request-card-title">
+            <Typography variant="h6" className="mobile-request-card-title">
               {title}
             </Typography>
             <Typography
               variant="body2"
               color="text.secondary"
-              className="request-card-description"
+              className="mobile-request-card-description"
             >
               {description}
             </Typography>
             <Box display="flex" alignItems="center" gap={1} mt={1}>
-              <Typography variant="body2" className="request-card-date">
+              <Typography variant="body2" className="mobile-request-card-date">
                 <EventIcon className="icon" />
                 {date}
               </Typography>
