@@ -5,7 +5,7 @@ import '../styles/login_button.css';
 interface LoginButtonProps {
   text?: string;
   button_type: React.ButtonHTMLAttributes<HTMLButtonElement>['type'];
-  onClick?: () => void;
+  onClick?: (event: React.MouseEvent<HTMLElement>) => void;
 }
 
 const LoginButton = ({ text, button_type, onClick }: LoginButtonProps) => {

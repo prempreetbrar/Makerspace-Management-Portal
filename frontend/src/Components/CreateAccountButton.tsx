@@ -2,7 +2,7 @@ import '../styles/create_account_button.css';
 
 interface CreateAccountButtonProps {
   button_type: React.ButtonHTMLAttributes<HTMLButtonElement>['type'];
-  onClick?: () => void;
+  onClick: (event:React.MouseEvent<HTMLElement>) => void;
 }
 
 const CreateAccountButton = ({ button_type, onClick }: CreateAccountButtonProps) => {
