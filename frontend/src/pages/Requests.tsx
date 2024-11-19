@@ -1,217 +1,121 @@
-import '../styles/requests/local.css';
-import * as React from 'react';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import NavBar from '../Components/NavBar';
-import MainContainer from '../Components/MainContainer.tsx';
-import { Fab, Tab, Tabs, Stack, Typography, Button, Card, CardContent, CardActionArea, CardActions, Accordion, ButtonGroup } from '@mui/material';
-import { createTheme, styled, ThemeProvider, useTheme } from '@mui/material/styles'
-import Box from '@mui/material/Box';
-import AddIcon from '@mui/icons-material/Add'
-import TabPanel from '@mui/lab/TabPanel';
-import TabContext from '@mui/lab/TabContext';
-import TabList from '@mui/lab/TabList';
-import { UserProvider, useUser } from '../hooks/UserProvider.tsx';
-import { RequestsProvider } from '../hooks/RequestsProvider.tsx';
-import { request } from 'http';
-import { describe } from 'node:test';
-import RequestCard from '../Components/Requests/RequestCard.tsx';
-// like, really need to simplify these...
+import React, { useState } from 'react';
+import '../styles/requests/local.css';
+import TabContainer from '../Components/Requests/TabContainer';
+import RequestCard from '../Components/Requests/RequestCard';
+import MobileNavbar from '../Components/Requests/MobileNavBar';
+import RequestButtonGroup from '../Components/Requests/RequestButtonGroup';
+import MobileRequestCard from '../Components/Requests/MobileRequestCard';
+import { useMediaQuery } from '@mui/material';
 
-
-const requestTemplate1 =
-{
-    userEmail: "real_email1@email.com",
-    title: "Request Title",
-    description: "This is the request description. It might be very long or short.",
-    status: "approved"
-}
-const requestTemplate2 =
-{
-    userEmail: "real_email1@email.com",
-    title: "Request Title2",
-    description: "This is the request description. It might be very long or short.",
-    status: "pending",
-}
-const requestTemplate3 =
-{
-    userEmail: "real_email1@email.com",
-    title: "Request Title3",
-    description: "This is the request description. It might be very long or short.",
-    status: "denied",
+interface CardInfo {
+  key: number;
+  tite: string;
+  description: string;
+  date: string;
+  file?: string;
 }
 
-const templateRequests = [requestTemplate1, requestTemplate1, requestTemplate2, requestTemplate2, requestTemplate3, requestTemplate3];
-
-const theme = createTheme();
 const Requests = () => {
+  const isMobile = useMediaQuery('(max-width:786px)');
+  const [selectedTab, setSelectedTab] = useState('requests');
+  const [status, setStatus] = useState('approved');
 
-    {/* TO DO: 
-        * Fetch requests from the server
-        * Prerequisite: Need some sort of state to be implemented
-        * Possible workaround: Hardcode in the requests for a random user
-    << BIGGEST CHALLENGES  >>
-        * Admin vs Normal User view
-        * Getting a state
-    */}
-    const { user, setUserByIndex } = useUser();
-    const [currentUserIndex, setCurrentUserIndex] = React.useState(0);
-    const [currentUserRole, setCurrentUserRole] = React.useState(user.userRole);
-    const handleChangeUser = () => {
-        const nextIndex = currentUserIndex + 1 % 3;
-        setCurrentUserIndex(nextIndex);
-        setUserByIndex(nextIndex);
-        setCurrentUserRole(user.userRole);
-    }
+  const requests = [
+    {
+      id: 1,
+      status: 'approved',
+      title: '3D Printer',
+      description: 'I plan on using this printer to print out a prototype.',
+      date: 'Sep 5, 10:00-11:00AM',
+      file: 'vinylfile.svg',
+    },
+    {
+      id: 2,
+      status: 'pending',
+      title: 'Laser Cutter',
+      description: 'I plan on using this machine to cut out a model.',
+      date: 'Sep 10, 10:00-11:00AM',
+      file: 'vinylfile.svg',
+    },
+    {
+      id: 3,
+      status: 'pending',
+      title: 'Laser Cutter',
+      description: 'I plan on using this machine to cut out a model.',
+      date: 'Sep 10, 10:00-11:00AM',
+      file: 'vinylfile.svg',
+    },
+  ];
 
-    const [value, setValue] = React.useState('Approved'); // this is the default state I assume
-    const handleChange = (_event: React.SyntheticEvent, newValue: string) => {
-        setValue(newValue);
-    };
-
-    const randomList: Array<String> = ["Apples", "Bananas", "Oranges", "Celery", "Carrots", "Avocados", "Pineapples", "Mangoes", "Potatoes", "Tomatoes", "Beans"];
-    return (
-      <>
-        <NavBar id='request'></NavBar>
-        <MainContainer>
-            <Button onClick={handleChangeUser}> Change User </Button>
-            <ThemeProvider theme={theme}>
-                <div className='page-content'>
-                    <TabContext value={value}>
-                        <TabList onChange={handleChange} aria-label="lab API tabs example" centered>
-
-                            <Tab label="Approved" value="Approved" />
-                            <Tab label="Pending" value="Pending" />
-                            <Tab label="Denied" value="Denied" />
-                        </TabList>
-                        <TabPanel value="Approved">
-                            <Box sx={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                width: '100%',
-                            }}>
-                                <Stack spacing={3} sx={{ alignSelf: 'center' }}>
-                                    {
-                                        templateRequests.filter(item => item.status === "approved").map((item, index) =>
-                                            <RequestCard>
-                                                <Box>
-                                                    <Typography key={index} variant='body2' sx={{
-                                                        color: 'black',
-                                                        fontWeight: 'bold',
-                                                        fontSize: '20pt',
-                                                    }}> {item.title}
-                                                    </Typography>
-                                                </Box>
-                                                <Box>
-                                                    <Accordion sx={{ boxShadow: 0 }}>
-                                                        <AccordionSummary>
-                                                            <Typography variant='body2'>
-                                                                View Details
-                                                            </Typography>
-                                                        </AccordionSummary>
-                                                        <AccordionDetails>
-                                                            <Typography variant='body1' sx={{ textAlign: 'left' }}>
-                                                                {item.description}
-                                                            </Typography>
-                                                        </AccordionDetails>
-                                                    </Accordion>
-                                                </Box>
-                                            </RequestCard>
-                                        )
-                                    }
-                                </Stack>
-                            </Box>
-                        </TabPanel>
-                        <TabPanel value="Pending">
-                            <Box sx={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                width: '100%',
-                            }}>
-                                <Stack spacing={3} sx={{ alignSelf: 'center' }}>
-                                    {
-                                        templateRequests.filter(item => item.status === "pending").map((item, index) =>
-                                            <RequestCard userRole={user.userRole}>
-                                                <Box>
-                                                    <Typography key={index} variant='body2' sx={{
-                                                        color: 'black',
-                                                        fontWeight: 'bold',
-                                                        fontSize: '20pt',
-                                                    }}> {item.title}
-                                                    </Typography>
-                                                </Box>
-                                                <Box>
-                                                    <Accordion sx={{ boxShadow: 0 }}>
-                                                        <AccordionSummary>
-                                                            <Typography variant='body2'>
-                                                                View Details
-                                                            </Typography>
-                                                        </AccordionSummary>
-                                                        <AccordionDetails>
-                                                            <Typography variant='body1' sx={{ textAlign: 'left' }}>
-                                                                {item.description}
-                                                            </Typography>
-                                                        </AccordionDetails>
-                                                    </Accordion>
-                                                </Box>
-                                            </RequestCard>
-                                        )
-                                    }
-                                </Stack>
-                            </Box>
-                        </TabPanel>
-                        <TabPanel value="Denied">
-                            <Box sx={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                width: '100%',
-                            }}>
-                                <Stack spacing={3} sx={{ alignSelf: 'center' }}>
-                                    {
-                                        templateRequests.filter(item => item.status === "denied").map((item, index) =>
-                                            <RequestCard>
-                                                <Box>
-                                                    <Typography key={index} variant='body2' sx={{
-                                                        color: 'black',
-                                                        fontWeight: 'bold',
-                                                        fontSize: '20pt',
-                                                    }}> {item.title}
-                                                    </Typography>
-                                                </Box>
-                                                <Box>
-                                                    <Accordion sx={{ boxShadow: 0 }}>
-                                                        <AccordionSummary>
-                                                            <Typography variant='body2'>
-                                                                View Details
-                                                            </Typography>
-                                                        </AccordionSummary>
-                                                        <AccordionDetails>
-                                                            <Typography variant='body1' sx={{ textAlign: 'left' }}>
-                                                                {item.description}
-                                                            </Typography>
-                                                        </AccordionDetails>
-                                                    </Accordion>
-                                                </Box>
-                                            </RequestCard>
-                                        )
-                                    }
-                                </Stack>
-                            </Box>
-                        </TabPanel>
-                    </TabContext>
-                    <Fab>
-                        <AddIcon />
-                    </Fab>
-                </div>
-            </ThemeProvider >
-            {/* at some point, there should be a check for some sort of session token*/
-                /* also I don't know how to do media queries, so designing mobile first */}
-        </MainContainer >
-      </>
-    )
-}
+  return (
+    <div className="requestContainer">
+      {isMobile ? (
+        <>
+          <MobileNavbar
+            selectedTab={selectedTab}
+            onTabChange={setSelectedTab}
+          />
+          <RequestButtonGroup value={status} onChange={setStatus} />
+          <div className="request-list">
+            {requests
+              .filter((request) => request.status === status)
+              .map((request) => (
+                <MobileRequestCard
+                  key={request.id}
+                  status={request.status}
+                  title={request.title}
+                  description={request.description}
+                  date={request.date}
+                />
+              ))}
+          </div>
+        </>
+      ) : (
+        <>
+          <NavBar id="request"></NavBar>
+          <TabContainer
+            approvedCards={requests
+              .filter((request) => request.status === 'approved')
+              .map((request) => (
+                <RequestCard
+                  key={request.id}
+                  status={request.status}
+                  title={request.title}
+                  description={request.description}
+                  date={request.date}
+                  file={request.file}
+                />
+              ))}
+            pendingCards={requests
+              .filter((request) => request.status === 'pending')
+              .map((request) => (
+                <RequestCard
+                  key={request.id}
+                  status={request.status}
+                  title={request.title}
+                  description={request.description}
+                  date={request.date}
+                  file={request.file}
+                />
+              ))}
+            rejectedCards={requests
+              .filter((request) => request.status === 'rejected')
+              .map((request) => (
+                <RequestCard
+                  key={request.id}
+                  status={request.status}
+                  title={request.title}
+                  description={request.description}
+                  date={request.date}
+                  file={request.file}
+                />
+              ))}
+          />
+        </>
+      )}
+    </div>
+  );
+};
 
 export default Requests;
-

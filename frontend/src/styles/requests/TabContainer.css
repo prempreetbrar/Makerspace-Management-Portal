@@ -1,0 +1,39 @@
+.tab-container {
+    margin: 50px 200px 0px 200px !important;
+    margin-bottom: 100px !important;
+    background-color: #7D768B;
+    padding: 0px 0px 20px 0px;
+    border-radius: 16px;
+  }
+  
+  .tab-bar {
+    background-color: #b39ddb;
+    border-radius: 16px 16px 0 0;
+    color: #483E5C !important;
+  }
+  
+  .tab-content {
+    display: flex;
+    align-items: center; 
+    flex-direction: column;
+    margin-top: 20px;
+    width: 100%;
+  }
+
+
+.custom-tab.Mui-selected {
+    background-color: #D0BCFE;
+    color: white !important;
+  }
+
+.tab-bar .MuiTabs-indicator {
+        display: none !important;
+}
+
+
+.custom-tab {
+    font-weight: bold !important;
+    text-transform: none !important;
+  }
+  
+  
