@@ -56,6 +56,26 @@ interface BookingCalendarProps
     onClose: ()=> void,
     externalProps?: any,
 }
+const customTheme = createTheme({
+    palette: {
+        primary: {
+            main: "#65558F", 
+        },
+        secondary: {
+            main: "#ECE6F0", 
+        },
+        text: {
+            primary: "#000000",
+            secondary: "#5F5F5F", 
+        },
+        background: {
+            default: "#FFFFFF", 
+        },
+    },
+    typography: {
+        fontFamily: "Arial, sans-serif", 
+    },
+});
 const timeButtonStyle = { width: 100, margin: '2px', fontSize: 11 };
 // Need to link clicking off the modal to the close event. For now, linked to the close button only.
 const BookingCalendar = ({userRole, onClose, externalProps}:BookingCalendarProps) => {
@@ -98,13 +118,24 @@ const BookingCalendar = ({userRole, onClose, externalProps}:BookingCalendarProps
     const today = dayjs();
     const nMonthsFromNow = today.add(2, "month");
     return (
+        <ThemeProvider theme={customTheme}>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <Box sx={{overflow: 'hidden', overflowY: 'scroll'}} display="flex" flexDirection={"column"} alignContent={'center'}>
-                <Box display="flex" flexDirection="row" justifyContent={'space-between'} position={"sticky"} top={0} bgcolor={"white"}> 
-                        <Typography variant={"h3"}>
-                            Book a Time
-                        </Typography> 
-                        <IconButton sx={{width: 60}} size="large" onClick={onClose}> { /* confirmation dialog would be nice */}
+             <Box
+                sx={{
+                    overflow: 'hidden',
+                    borderRadius: 5, 
+                    padding: 2,
+                    backgroundColor: "white",
+                    boxShadow: 3,
+                }}
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+            >
+            <Box sx={{overflow: 'hidden'}} display="flex" flexDirection={"column"} alignContent={'center'}>
+                <Box display="flex" flexDirection="row" justifyContent={'right'} position={"sticky"} top={0} bgcolor={"white"}> 
+                      
+                        <IconButton sx={{width: 50}} size="small" onClick={onClose}> { /* confirmation dialog would be nice */}
                             <CancelRounded fontSize="large"/>
                         </IconButton>
                 </Box>
@@ -117,12 +148,12 @@ const BookingCalendar = ({userRole, onClose, externalProps}:BookingCalendarProps
                     },
                     margin: '10px',
                 }}>
-                    <Box>
-                        <DateCalendar disablePast={true} sx={{minWidth: 300}} defaultValue={dayjs(today)} minDate={today} maxDate={nMonthsFromNow} />
+                    <Box >
+                        <DateCalendar disablePast={true} sx={{minWidth: 300, backgroundColor: '#ECE6F0', borderRadius: 4, marginRight:5}} defaultValue={dayjs(today)} minDate={today} maxDate={nMonthsFromNow} />
                     </Box>
-                    <Box display="flex" flexDirection="column" sx={{overflowY: 'scroll'}} alignContent={"center"}>
-                            <Typography variant='h6'>
-                                Available Times
+                    <Box display="flex" flexDirection="column"  alignContent={"center"}>
+                            <Typography variant='h6' sx={{marginTop: 1}}>
+                            Time Slots
                             </Typography>
                         <Box display={"flex"} alignItems={'center'}>
                             <Grid2 rowSpacing={8} alignItems ="center" justifyContent={"space-between"}> 
@@ -137,20 +168,20 @@ const BookingCalendar = ({userRole, onClose, externalProps}:BookingCalendarProps
                                     }
                             </Grid2>
                         </Box>
-                        <Box component="form" sx={{paddingTop: 1}}>    
-                            <Typography>
-                                Reason for booking
-                            </Typography>
-                            <TextField id="DescriptionField" sx={{fontSize: 12}} maxRows={3}  variant="filled" onChange={handleTextUpdate} multiline fullWidth>
+                        <Box component="form" sx={{paddingTop: 3}}>    
+
+                            <TextField id="DescriptionField" label="Request Details" placeholder="Description"sx={{fontSize: 10}} maxRows={2}  variant="filled" onChange={handleTextUpdate} multiline fullWidth>
                             </TextField>
                         </Box>
-                        <Button sx={{marginTop: 4}} onClick={()=>handleCloseModal(true)} disabled={(inputText === "" || selectedTime === "")}>
+                        <Button  sx={{marginTop: 3, backgroundColor: '#65558F', color:"#FFFFFF", width:'120px'}} onClick={()=>handleCloseModal(true)} disabled={(inputText === "" || selectedTime === "")}>
                             Submit {/* [BUG] users can submit without input text after closing and reopening the form */}
                         </Button>
                     </Box>
                 </Box>
             </Box>
+            </Box>
         </LocalizationProvider>
+        </ThemeProvider>
     )
 }
 export default BookingCalendar
