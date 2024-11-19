@@ -13,7 +13,6 @@
   color: #333;
   background-color: #e6e6fa;
   font-family: Arial, sans-serif;
-  overflow: 'hidden';
 }
 
 /* Responsive adjustments */
@@ -21,6 +20,5 @@
   .container {
     background-color: #f8f9fa;
     min-height: calc(100vh - 158px);
-    overflow: hidden;
   }
 }

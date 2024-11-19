@@ -6,7 +6,7 @@ import CreateAccountButton from './CreateAccountButton';
 import { Link, useNavigate } from 'react-router-dom';
 import NavLogo from "../assets/logo_grayscale.svg";
 import { useState } from 'react';
-import LoginPopover from './Loginpopover.tsx';
+import LoginPopover from './LoginPopover.tsx';
 import CreateAccountPopover from './CreateAccountPopover.tsx';
 import ProfileLink from './ProfileLink.tsx';
 

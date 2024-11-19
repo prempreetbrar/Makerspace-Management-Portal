@@ -1,21 +1,9 @@
 import React, { useState, useEffect } from "react";
-import '../styles/requests/local.css';
 
-import AccordionSummary from '@mui/material/AccordionSummary';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import NavBar from '../Components/NavBar.tsx';
-import MainContainer from '../Components/MainContainer.tsx';
+
 import { Fab, Tab, Tabs, Stack, Typography, Button, Card, CardContent, CardActionArea, CardActions, Accordion, ButtonGroup, CircularProgress, Grid2, IconButton, TextField, FormGroup, Tooltip } from '@mui/material';
 import { createTheme, styled, ThemeProvider, useTheme } from '@mui/material/styles'
 import Box from '@mui/material/Box';
-import AddIcon from '@mui/icons-material/Add'
-import TabPanel from '@mui/lab/TabPanel';
-import TabContext from '@mui/lab/TabContext';
-import TabList from '@mui/lab/TabList';
-import { useUser } from '../hooks/UserProvider.tsx';
-import RequestCard from '../Components/Requests/RequestCard.tsx';
 import axios from 'axios';
 
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -122,7 +110,7 @@ const BookingCalendar = ({userRole, onClose, externalProps}:BookingCalendarProps
         <LocalizationProvider dateAdapter={AdapterDayjs}>
              <Box
                 sx={{
-                    overflow: 'hidden',
+                    overflow: 'scroll',
                     borderRadius: 5, 
                     padding: 2,
                     backgroundColor: "white",
@@ -133,10 +121,12 @@ const BookingCalendar = ({userRole, onClose, externalProps}:BookingCalendarProps
                 alignItems="center"
             >
             <Box sx={{overflow: 'hidden'}} display="flex" flexDirection={"column"} alignContent={'center'}>
-                <Box display="flex" flexDirection="row" justifyContent={'right'} position={"sticky"} top={0} bgcolor={"white"}> 
-                      
-                        <IconButton sx={{width: 50}} size="small" onClick={onClose}> { /* confirmation dialog would be nice */}
-                            <CancelRounded fontSize="large"/>
+                <Box display="flex" flexDirection="row" justifyContent={'space-between'} position={"sticky"} top={0} bgcolor={"white"}> 
+                        <Typography variant='h4'>
+                            Reserve a time
+                        </Typography>
+                        <IconButton sx={{minWidth: 50}} size="small" onClick={onClose}> { /* confirmation dialog would be nice */}
+                            <CancelRounded fontSize="large">Cancel</CancelRounded>
                         </IconButton>
                 </Box>
                 <Box display={"flex"} sx={{
@@ -148,15 +138,15 @@ const BookingCalendar = ({userRole, onClose, externalProps}:BookingCalendarProps
                     },
                     margin: '10px',
                 }}>
-                    <Box >
-                        <DateCalendar disablePast={true} sx={{minWidth: 300, backgroundColor: '#ECE6F0', borderRadius: 4, marginRight:5}} defaultValue={dayjs(today)} minDate={today} maxDate={nMonthsFromNow} />
+                    <Box display="flex" flexDirection="column" columnGap={5} mr={{xs: 0, md: 5}}>
+                        <DateCalendar disablePast={true} sx={{minWidth: 300, backgroundColor: '#ECE6F0', borderRadius: 4}} defaultValue={dayjs(today)} minDate={today} maxDate={nMonthsFromNow} />
                     </Box>
                     <Box display="flex" flexDirection="column"  alignContent={"center"}>
                             <Typography variant='h6' sx={{marginTop: 1}}>
-                            Time Slots
+                            Available Times:
                             </Typography>
-                        <Box display={"flex"} alignItems={'center'}>
-                            <Grid2 rowSpacing={8} alignItems ="center" justifyContent={"space-between"}> 
+                        <Box id="time-display" display={"flex"} flexDirection={"column"} alignItems={'center'}>
+                            <Grid2 container rowSpacing={0.25} alignItems ="left" flexGrow={1} justifyContent={"left"}> 
                                 {
                                     // [BUG] centering items doesn't work on mobile. 
                                     timesArray.map((listing, index)=>(
@@ -170,12 +160,14 @@ const BookingCalendar = ({userRole, onClose, externalProps}:BookingCalendarProps
                         </Box>
                         <Box component="form" sx={{paddingTop: 3}}>    
 
-                            <TextField id="DescriptionField" label="Request Details" placeholder="Description"sx={{fontSize: 10}} maxRows={2}  variant="filled" onChange={handleTextUpdate} multiline fullWidth>
+                            <TextField id="DescriptionField" label="Request Details" placeholder="Description"sx={{fontSize: 10}} maxRows={2}  variant="filled" onChange={handleTextUpdate} multiline fullWidth required>
                             </TextField>
                         </Box>
-                        <Button  sx={{marginTop: 3, backgroundColor: '#65558F', color:"#FFFFFF", width:'120px'}} onClick={()=>handleCloseModal(true)} disabled={(inputText === "" || selectedTime === "")}>
+                        <span>
+                        <Button variant="contained" sx={{marginTop: 3, backgroundColor: '#65558F', color:"#FFFFFF", width:'120px'}} onClick={()=>handleCloseModal(true)} disabled={(inputText === "" || selectedTime === "")}>
                             Submit {/* [BUG] users can submit without input text after closing and reopening the form */}
                         </Button>
+                        </span>
                     </Box>
                 </Box>
             </Box>
