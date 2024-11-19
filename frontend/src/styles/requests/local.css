@@ -1,4 +1,4 @@
-#request {
+#manageBookings {
   display: flex;
 
 }
@@ -27,31 +27,31 @@
 
 @media (max-width: 768px) {
 
-  #request {
+  #manageBookings {
     display: flex;
     background-color: #65558f;
   }
 
-  #request .left {
+  #manageBookings .left {
     flex-direction: column;
     order: 1;
     align-items: flex-start;
   }
 
-  #request .home {
+  #manageBookings .home {
     display: none;
   }
 
-  #request .nav-links li a {
+  #manageBookings .nav-links li a {
     color: white;
   }
 
-  #request .auth-buttons {
+  #manageBookings .auth-buttons {
     order: 2;
     align-self: flex-start;
   }
 
-  #request .logo {
+  #manageBookings .logo {
     content:url("../../assets/logo_greyscale_big.svg");
   }
 

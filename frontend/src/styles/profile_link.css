@@ -44,5 +44,7 @@
 @media (max-width: 768px) {
   .link-image {
     content:url("../assets/profile_link_mobile.svg");
+    margin-top: 5px;
+    margin-right: 5px;
   }
 }

@@ -30,9 +30,22 @@
   }
 }
 
-@media (max-width: 480px) {
-  .login-button {
-    width: 100%;
-    font-size: 0.9rem;
+@media (max-width: 768px) {
+  .navbar .login-button {
+    color: #000000;
+    background-color: #fff;
+  }
+}
+
+@media (max-width: 500px) {
+  .navbar .login-button {
+    width: 75%;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 380px) {
+  .navbar .login-button {
+    padding: 2px 4px;
   }
 }

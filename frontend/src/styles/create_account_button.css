@@ -27,9 +27,15 @@
   }
 }
 
-@media (max-width: 480px) {
-  .create-account-button {
-    width: 100%;
-    font-size: 0.9rem;
+@media (max-width: 500px) {
+  .navbar .create-account-button {
+    width: 75%;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 380px) {
+  .navbar .create-account-button {
+    padding: 2px 4px;
   }
 }
