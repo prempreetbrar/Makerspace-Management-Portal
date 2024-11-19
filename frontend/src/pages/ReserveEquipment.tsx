@@ -77,6 +77,7 @@ const equipmentModel: Equipment[] = [
 ];
 
 const theme = createTheme();
+
 const ModalStyle = 
 {
     overflow: 'hidden',
@@ -128,34 +129,44 @@ const SearchBarStyle =
 }
 const searchBarBoxStyle = 
 {
-
-    zIndex: 10000,
+    zIndex: 10,
     display: 'flex',
     flexDirection: 'column',
     position: 'sticky',
     top: 0,
-    padding: 2,
+    padding: 0,
     alignItems: 'center',
     textAlign: 'middle',
+    pb: 3,
 }
 
 const ReserveEquipment = () => {
+    
     const {height, width} = WindowDimensions();
     const [resultsFound, setResultsFound] = useState(true);
     const [searchText, setSearchText] = useState("");
     const [isOpen, setIsOpen] = useState(false);
-    const [open, setOpen] = React.useState(false);
+    const [modalOpen, setModalOpen] = React.useState(false);
     const [maintenanceToggled, setmaintenanceToggled] = useState(false);
+    const [bookingSubmitted, setBookingSubmitted] = useState(false);
+    
+    const [openSnackbar, setOpenSnackbar] = useState(false);
+    const handleSubmitModal = ()=>
+    {
+        setModalOpen(false);
+        setOpenSnackbar(true);
+    }
+
     const handleTogglemaintenance = (item: Equipment) =>
     {
         setmaintenanceToggled(!maintenanceToggled);
         item.isUnderMaintenance=!item.isUnderMaintenance;
     }
-    const handleOpen = () => {
-        setOpen(true);
+    const handleOpenModal = () => {
+        setModalOpen(true);
     }
-    const handleClose = () => {
-        setOpen(false);
+    const handleCloseModal = () => {
+        setModalOpen(false);
     }
     const handleChangeUser = () => {
         const nextIndex = currentUserIndex + 1 % 3;
@@ -192,31 +203,24 @@ const ReserveEquipment = () => {
       <>
         <MainContainer>
             <ThemeProvider theme={theme}>  
-                    <Box id="contentBox" sx={{position: 'sticky', top: 0, display: 'flex', flexDirection: 'column', width: '100%', height: height , scroll: 'none', overflowX:"hidden", overflowY: "hidden", padding: 0}}>
+                    <Box id="contentBox" sx={{position: 'sticky', top: 0, display: 'flex', flexDirection: 'column', width: '100%', pt: 10, height: height, scroll: 'none', overflowX:"hidden", overflowY: "hidden", padding: 0}}>
                         <NavBar id='reserve'></NavBar>
                         <Box id="searchBarBox" sx={searchBarBoxStyle}>
                             <ChangeUserButton />
                             <Typography>
                                 Search
                             </Typography>
-                            <TextField sx={SearchBarStyle} onChange={handleSearch} >
+                            <TextField inputMode="search" label="Search" hiddenLabel={true} sx={SearchBarStyle} onChange={handleSearch} >
                             </TextField>
                         </Box>
-                        <Modal open={open} onClose={handleClose}>
+                        <Modal open={modalOpen} onClose={handleCloseModal}>
                             <Box sx={ModalStyle} borderColor={"white"}>
-                                {currentUserRole === 'Admin'?
-                                (
-                               <Typography variant='body1'>
-                                    Admins see this
-                                </Typography>
-                                ):(
-                                    <BookingCalendar onClose={handleClose} userRole={currentUserRole}>
+                                    <BookingCalendar onClose={handleCloseModal} onSubmit={handleSubmitModal} userRole={currentUserRole}>
                                     </BookingCalendar>
-                                )}
                             </Box>
                         </Modal>
-                        <Box display="flex" flexDirection="column" sx={{alignSelf: 'center', overflowY: 'scroll'}}>
-                        <Stack spacing={3} sx={{alignSelf: 'center', pb: 10}}>
+                        <Box display="flex" flexDirection="column" sx={{alignSelf: 'center', width: width, overflowY: 'scroll'}}>
+                        <Stack spacing={3} sx={{alignSelf: 'center'}}>
                             {
                                 displayModel.map((item, index) =>
                                 ( // this NEEDS to be optimized
@@ -224,7 +228,7 @@ const ReserveEquipment = () => {
                                     sx={{
                                         border: '1px solid black',
                                         backgroundColor: theme.palette.primary.main,
-                                        width: '80vw',
+                                        width: 0.6*width,
                                         minHeight:
                                         {
                                             xs: '100px',
@@ -261,8 +265,8 @@ const ReserveEquipment = () => {
                                         </Accordion>
                                         <CardActions sx={{backgroundColor: 'white'}}>
                                             <span>
-                                            <DisguisedButton showSwitchIfTrue={currentUserRole === 'Admin'} buttonDisabled={item.isUnderMaintenance} switchLabel='Under maintenance' buttonLabel='Book Now'
-                                                switchToggled={item.isUnderMaintenance} onSwitch={()=>handleTogglemaintenance(item)} onButtonPress={handleOpen}
+                                            <DisguisedButton showSwitchIfTrue={currentUserRole === 'Admin'} buttonDisabled={item.isUnderMaintenance} switchLabel='Under Maintenance' buttonLabel='Book Now'
+                                                switchToggled={item.isUnderMaintenance} onSwitch={()=>handleTogglemaintenance(item)} onButtonPress={handleOpenModal}
                                                 buttonSX={{
                                                     backgroundColor: item.isUnderMaintenance ? theme.palette.error.main : theme.palette.action.active
 

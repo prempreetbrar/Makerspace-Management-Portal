@@ -54,11 +54,12 @@ interface BookingCalendarProps
 {
     userRole: string,
     onClose: ()=> void,
+    onSubmit: ()=>void,
     externalProps?: any,
 }
 const timeButtonStyle = { width: 100, margin: '2px', fontSize: 11 };
 // Need to link clicking off the modal to the close event. For now, linked to the close button only.
-const BookingCalendar = ({userRole, onClose, externalProps}:BookingCalendarProps) => {
+const BookingCalendar = ({userRole, onClose, onSubmit, externalProps}:BookingCalendarProps) => {
     //@ts-ignore
     const passedInProps = externalProps;
 
@@ -144,7 +145,9 @@ const BookingCalendar = ({userRole, onClose, externalProps}:BookingCalendarProps
                             <TextField id="DescriptionField" sx={{fontSize: 12}} maxRows={3}  variant="filled" onChange={handleTextUpdate} multiline fullWidth>
                             </TextField>
                         </Box>
-                        <Button sx={{marginTop: 4}} onClick={()=>handleCloseModal(true)} disabled={(inputText === "" || selectedTime === "")}>
+                        <Button sx={{marginTop: 4}} onClick={()=>{
+                            onSubmit();
+                            handleCloseModal(true)}} disabled={(inputText === "" || selectedTime === "")}>
                             Submit {/* [BUG] users can submit without input text after closing and reopening the form */}
                         </Button>
                     </Box>

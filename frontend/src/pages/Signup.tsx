@@ -19,7 +19,6 @@ const Signup: React.FC<SignupProps> = ({ onClose }) => {
 
   const [error, setError] = useState<string | null>(null);
   const [passwordError, setPasswordError] = useState<string | null>(null);
-  const [studentNumberError, setStudentNumberError] = useState<string | null>(null);
   const [touched, setTouched] = useState({
     firstName: false,
     lastName: false,
@@ -37,7 +36,6 @@ const Signup: React.FC<SignupProps> = ({ onClose }) => {
     }));
     setError(null); 
     setPasswordError(null); 
-    setStudentNumberError(null); 
   };
 
   const handleBlur = (field: string) => {
@@ -50,14 +48,6 @@ const Signup: React.FC<SignupProps> = ({ onClose }) => {
   const validatePassword = (password: string) => {
     if (password.length < 8) {
       setPasswordError('Password must be at least 8 characters.');
-      return false;
-    }
-    return true;
-  };
-
-  const validateStudentNumber = (studentNumber: string) => {
-    if (!/^\d+$/.test(studentNumber)) {
-      setStudentNumberError('Student number must be numeric.');
       return false;
     }
     return true;
@@ -86,12 +76,7 @@ const Signup: React.FC<SignupProps> = ({ onClose }) => {
     if (!validatePassword(formData.password)) {
       return;
     }
-
-   
-    if (!validateStudentNumber(formData.studentNumber)) {
-      return;
-    }
-
+    
     console.log('User Data:', formData);
     onClose();
   };
@@ -112,8 +97,8 @@ const Signup: React.FC<SignupProps> = ({ onClose }) => {
           variant="outlined"
           className="text-field"
           required
-          error={(touched.firstName || error) && !formData.firstName}
-          helperText={(touched.firstName || error) && !formData.firstName ? 'This field is required.' : ''}
+          error={(touched.firstName || error !== null) && !formData.firstName}
+          helperText={(touched.firstName || error !== null) && !formData.firstName ? 'This field is required.' : ''}
         />
         <TextField
           margin="normal"
@@ -127,26 +112,10 @@ const Signup: React.FC<SignupProps> = ({ onClose }) => {
           variant="outlined"
           className="text-field"
           required
-          error={(touched.lastName || error) && !formData.lastName}
-          helperText={(touched.lastName || error) && !formData.lastName ? 'This field is required.' : ''}
+          error={(touched.lastName || error !== null) && !formData.lastName}
+          helperText={(touched.lastName || error !== null) && !formData.lastName ? 'This field is required.' : ''}
         />
-        <TextField
-          margin="normal"
-          label="Student Number"
-          type="text"
-          name="studentNumber"
-          value={formData.studentNumber}
-          onChange={handleChange}
-          onBlur={() => handleBlur('studentNumber')}
-          fullWidth
-          variant="outlined"
-          className="text-field"
-          required
-          error={(touched.studentNumber || error || studentNumberError) && !formData.studentNumber}
-          helperText={(touched.studentNumber || error || studentNumberError) && !formData.studentNumber
-            ? 'This field is required.'
-            : studentNumberError}
-        />
+
         <TextField
           margin="normal"
           label="Email Address"
@@ -159,8 +128,8 @@ const Signup: React.FC<SignupProps> = ({ onClose }) => {
           variant="outlined"
           className="text-field"
           required
-          error={(touched.email || error) && !formData.email}
-          helperText={(touched.email || error) && !formData.email ? 'This field is required.' : ''}
+          error={(touched.email || error !== null) && !formData.email}
+          helperText={(touched.email || error !== null) && !formData.email ? 'This field is required.' : ''}
         />
         <TextField
           margin="normal"
@@ -174,8 +143,8 @@ const Signup: React.FC<SignupProps> = ({ onClose }) => {
           variant="outlined"
           className="text-field"
           required
-          error={(touched.password || error || passwordError) && !formData.password}
-          helperText={(touched.password || error || passwordError) && !formData.password
+          error={(touched.password || error !== null || passwordError!== null) && !formData.password}
+          helperText={(touched.password || error !== null || passwordError) && !formData.password
             ? 'This field is required.'
             : passwordError}
         />
@@ -191,7 +160,7 @@ const Signup: React.FC<SignupProps> = ({ onClose }) => {
           variant="outlined"
           className="text-field"
           required
-          error={(touched.confirmPassword || passwordError)}
+          error={(touched.confirmPassword || passwordError !== null)}
           helperText={passwordError || (touched.confirmPassword && !formData.confirmPassword ? 'This field is required.' : '')}
         />
       </DialogContent>
