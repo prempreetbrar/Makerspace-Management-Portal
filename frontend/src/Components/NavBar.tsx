@@ -19,7 +19,7 @@ const NavBar = ({id}: { id: string }) => {
         setAnchorElCreate(null); 
     };
     const handleCloseLogin = () => setAnchorElLogin(null);
-    const handleOpenProfile = (event: React.MouseEvent<HTMLElement>) => {
+    const handleOpenProfile = (_event: React.MouseEvent<HTMLElement>) => {
       console.log("Opening profile page...");
     };
     const openLogin = Boolean(anchorElLogin);
@@ -32,8 +32,6 @@ const NavBar = ({id}: { id: string }) => {
     const handleCloseCreateAccount = () => setAnchorElCreate(null);
     const openCreateAccount = Boolean(anchorElCreate);
 
-   
-    
     const navigate = useNavigate();
 
     const goToLogin = () => {
@@ -60,7 +58,7 @@ const NavBar = ({id}: { id: string }) => {
               <ul className="nav-links">
                   <li className='home'><Link to="/home">Home</Link></li>
                   <li><Link to="/reserve">{isAdmin ? 'Manage Equipment' : 'Reserve Equipment'}</Link></li>
-                  <li><Link to="/requests">{isAdmin ? 'Manage Bookings' : 'My Reservations'}</Link></li>
+                  <li><Link to="/manage">{isAdmin ? 'Manage Bookings' : 'My Reservations'}</Link></li>
               </ul>
             </div>
             <div className="auth-buttons">

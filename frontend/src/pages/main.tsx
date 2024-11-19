@@ -11,6 +11,7 @@ import Requests from "./Requests.tsx";
 import ReserveEquipment from "./ReserveEquipment.tsx";
 import '../styles/index.css'
 import { UserProvider } from "../hooks/UserProvider.tsx";
+import ManageBookings from "./ManageBookings.tsx";
 
 const router = createBrowserRouter([
     {
@@ -23,7 +24,13 @@ const router = createBrowserRouter([
     },
     {
         path: "signup",
-        element: <Signup />,
+        element: <Signup onClose={function (): void {
+            throw new Error("Function not implemented.");
+        } } />,
+    },
+    {
+        path: "manage",
+        element: <ManageBookings />
     },
     {
         path: "requests",

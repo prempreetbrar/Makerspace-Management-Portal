@@ -80,7 +80,7 @@ const ManageBookings = () => {
     const randomList: Array<String> = ["Apples", "Bananas", "Oranges", "Celery", "Carrots", "Avocados", "Pineapples", "Mangoes", "Potatoes", "Tomatoes", "Beans"];
     return (
         <>
-        <NavBar id='request' />
+        <NavBar id='manageBookings' />
         <MainContainer>
             <ThemeProvider theme={theme}>
             <Button id="debugButton" fullWidth={false} sx={{position: 'sticky', bottom: 2, zIndex: 1000}} variant={"contained"} onClick={handleChangeUser}> Change User: {currentUserRole} </Button>
