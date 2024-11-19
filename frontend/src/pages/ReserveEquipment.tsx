@@ -6,7 +6,7 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ErrorIcon from '@mui/icons-material/Error'
 import NavBar from '../Components/NavBar.tsx';
 import MainContainer from '../Components/MainContainer.tsx';
-import { Fab, Tab, Tabs, Stack, Typography, Button, Card, CardContent, CardActionArea, CardActions, Accordion, ButtonGroup, CircularProgress, IconButton, TextField } from '@mui/material';
+import { Fab, Tab, Tabs, Stack, Typography, Button, Card, CardContent, CardActionArea, CardActions, Accordion, ButtonGroup, CircularProgress, IconButton, TextField, Input } from '@mui/material';
 import { createTheme, styled, ThemeProvider, useTheme } from '@mui/material/styles'
 import Box from '@mui/material/Box';
 import AddIcon from '@mui/icons-material/Add'
@@ -20,6 +20,8 @@ import BookingCalendar from '../Components/BookingModal.tsx';
 import Modal from '@mui/material/Modal';
 import '../styles/reserve_equipment/local.css';
 import zIndex from '@mui/material/styles/zIndex';
+import WindowDimensions from '../Components/WindowDimensions.tsx';
+import DisguisedButton from '../Components/DisguisedSwitch.tsx';
 // like, really need to simplify these...
 
 
@@ -30,6 +32,7 @@ type Equipment = {
   isUnderMaintenance: boolean,
   isBookable: boolean,
   isPremium: boolean,
+  setUnderMaintenece?: (value: boolean)=>void
 }
 
 type Booking = {
@@ -37,7 +40,7 @@ type Booking = {
   userEmail: string;
   equipmentID: number;
   bookingDateTime: Date;
-  bookingDuration: number;
+  bookingDuration: number
 };
 
 const equipmentModel: Equipment[] = [
@@ -113,11 +116,19 @@ const SearchBarStyle =
     { 
         xs: '300px'
 
+    },
+    backgroundColor: 'white',
+
+    '.MUIInputBase-root':
+    {
+        backgroundColor: 'white',
+        border: 'none'
     }
+
 }
 const searchBarBoxStyle = 
 {
-    backgroundColor: '#e6e6fa',
+
     zIndex: 10000,
     display: 'flex',
     flexDirection: 'column',
@@ -129,10 +140,17 @@ const searchBarBoxStyle =
 }
 
 const ReserveEquipment = () => {
+    const {height, width} = WindowDimensions();
     const [resultsFound, setResultsFound] = useState(true);
     const [searchText, setSearchText] = useState("");
     const [isOpen, setIsOpen] = useState(false);
     const [open, setOpen] = React.useState(false);
+    const [maintenanceToggled, setmaintenanceToggled] = useState(false);
+    const handleTogglemaintenance = (item: Equipment) =>
+    {
+        setmaintenanceToggled(!maintenanceToggled);
+        item.isUnderMaintenance=!item.isUnderMaintenance;
+    }
     const handleOpen = () => {
         setOpen(true);
     }
@@ -170,27 +188,25 @@ const ReserveEquipment = () => {
     const [currentUserIndex, setCurrentUserIndex] = React.useState(0);
     const [currentUserRole, setCurrentUserRole] = React.useState(user.userRole);
     const ChangeUserButton = ()=>(<Button id="debugButton" fullWidth={false} sx={{ width: '250px', position: 'sticky', bottom: 2, zIndex: 1000}} variant={"contained"} onClick={handleChangeUser}> Change User: {currentUserRole} </Button>);
-
     return (
       <>
-        <NavBar id='reserve'></NavBar>
         <MainContainer>
             <ThemeProvider theme={theme}>  
-               
-                    <Box id="contentBox" sx={{position: 'fixed', display: 'flex', flexDirection: 'column', width: '100%', height: '100%', overflowX:"hidden", overflowY: "scroll", padding: 0}}>
+                    <Box id="contentBox" sx={{position: 'sticky', top: 0, display: 'flex', flexDirection: 'column', width: '100%', height: height , scroll: 'none', overflowX:"hidden", overflowY: "hidden", padding: 0}}>
+                        <NavBar id='reserve'></NavBar>
                         <Box id="searchBarBox" sx={searchBarBoxStyle}>
                             <ChangeUserButton />
                             <Typography>
                                 Search
                             </Typography>
-                            <TextField sx={SearchBarStyle} onChange={handleSearch}>
+                            <TextField sx={SearchBarStyle} onChange={handleSearch} >
                             </TextField>
                         </Box>
                         <Modal open={open} onClose={handleClose}>
                             <Box sx={ModalStyle} borderColor={"white"}>
                                 {currentUserRole === 'Admin'?
                                 (
-                                <Typography variant='body1'>
+                               <Typography variant='body1'>
                                     Admins see this
                                 </Typography>
                                 ):(
@@ -199,7 +215,8 @@ const ReserveEquipment = () => {
                                 )}
                             </Box>
                         </Modal>
-                        <Stack spacing={3} sx={{ alignSelf: 'center' }}>
+                        <Box display="flex" flexDirection="column" sx={{alignSelf: 'center', overflowY: 'scroll'}}>
+                        <Stack spacing={3} sx={{alignSelf: 'center', pb: 10}}>
                             {
                                 displayModel.map((item, index) =>
                                 ( // this NEEDS to be optimized
@@ -211,6 +228,7 @@ const ReserveEquipment = () => {
                                         minHeight:
                                         {
                                             xs: '100px',
+                                            md: '200px',
                                         },
                                         display: 'flex',
                                         borderRadius: '20px',
@@ -241,14 +259,23 @@ const ReserveEquipment = () => {
                                                 </Typography>
                                             </AccordionDetails>
                                         </Accordion>
-                                        <CardActions sx={{paddingLeft: 0, paddingRight: 0}}>
-                                            <Button variant="contained" sx={{backgroundColor: theme.palette.action.active}} onClick={handleOpen}>Book Now</Button> 
+                                        <CardActions sx={{backgroundColor: 'white'}}>
+                                            <span>
+                                            <DisguisedButton showSwitchIfTrue={currentUserRole === 'Admin'} buttonDisabled={item.isUnderMaintenance} switchLabel='Under maintenance' buttonLabel='Book Now'
+                                                switchToggled={item.isUnderMaintenance} onSwitch={()=>handleTogglemaintenance(item)} onButtonPress={handleOpen}
+                                                buttonSX={{
+                                                    backgroundColor: item.isUnderMaintenance ? theme.palette.error.main : theme.palette.action.active
+
+                                                }}></DisguisedButton>
+                                            </span>
+
                                         </CardActions>
                                     </CardContent>
                                 </Card >
                                 ))
                             }
                         </Stack>
+                        </Box>
                     </Box>
             </ThemeProvider >
         </MainContainer >
