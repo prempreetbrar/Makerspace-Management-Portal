@@ -16,7 +16,7 @@ const ProfileLink = () => {
       {isPopupVisible && (
         <div className="popup-menu">
           <ul>
-            <li>Profile</li>
+            <li><a className='profile-link' href="/profile">Profile</a></li>
             <li>Logout</li>
           </ul>
         </div>

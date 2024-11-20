@@ -41,6 +41,11 @@
   content:url("../assets/profile_link_desktop.svg");
 }
 
+.profile-link {
+  text-decoration: none;
+  color: black;
+}
+
 @media (max-width: 768px) {
   .link-image {
     content:url("../assets/profile_link_mobile.svg");
