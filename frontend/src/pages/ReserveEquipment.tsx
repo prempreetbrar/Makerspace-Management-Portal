@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Card, CardContent, Modal, Box, TextField, Typography, Stack, CardActionArea, Chip, CardActions, CardHeader } from '@mui/material';
+import { Button, Card, CardContent, Modal, Box, TextField, Typography, Stack, CardActionArea, Chip, CardActions, CardHeader, colors } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Grid2 from '@mui/material/Grid2'; // Import Grid2 from MUI
 import '../styles/reserve_equipment/local.css';
@@ -8,6 +8,11 @@ import MainContainer from '../Components/MainContainer.tsx';
 import { useUser } from '../hooks/UserProvider.tsx';
 import BookingCalendar from '../Components/BookingModal.tsx';
 
+// These are stub-ins. Images are saved on the server side
+import ThreeDPrinterIcon from '../assets/3D_printer.svg';
+import LaserCutterIcon from '../assets/laser_cutter.svg';
+import CNCMillIcon from '../assets/laser_cutter.svg';
+import MakerbotReplicatorImg from '../assets/mb_replicator.jpeg'
 import '../styles/reserve_equipment/local.css';
 import zIndex from '@mui/material/styles/zIndex';
 import WindowDimensions from '../Components/WindowDimensions.tsx';
@@ -18,7 +23,6 @@ import ConditionalWrapper from '../Components/ConditionalWrapper.tsx';
 
 // like, really need to simplify these...
 
-
 type Equipment = {
   id: number,
   name: string,
@@ -26,6 +30,7 @@ type Equipment = {
   isUnderMaintenance: boolean,
   isBookable: boolean,
   isPremium: boolean,
+  icon?: any,
   setUnderMaintenece?: (value: boolean)=>void
 }
 
@@ -38,18 +43,21 @@ type Booking = {
 };
 const description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit." 
 const equipmentModel: Equipment[] = [
-  { id: 1, name: 'Prussa 3', description: description, isUnderMaintenance: false, isBookable: true, isPremium: true },
-  { id: 2, name: 'Laser Cutter', description: description, isUnderMaintenance: false, isBookable: true, isPremium: false },
-  { id: 3, name: 'CNC Machine', description: description, isUnderMaintenance: true, isBookable: true, isPremium: false },
+  { id: 1, name: '3D Printer', description: description, isUnderMaintenance: false, isBookable: true, isPremium: false, icon: ThreeDPrinterIcon},
+  { id: 2, name: 'Laser Cutter', description: description, isUnderMaintenance: false, isBookable: true, isPremium: false, icon: LaserCutterIcon},
+  { id: 3, name: 'CNC Machine', description: description, isUnderMaintenance: true, isBookable: true, isPremium: false, icon: CNCMillIcon },
   { id: 4, name: 'Laser Engraver', description: description, isUnderMaintenance: false, isBookable: true, isPremium: false },
-  { id: 5, name: '3D Printer', description: description, isUnderMaintenance: false, isBookable: true, isPremium: true },
-  { id: 6, name: 'Laser Cutter', description: description, isUnderMaintenance: false, isBookable: true, isPremium: false },
-  { id: 7, name: 'CNC Machine', description: description, isUnderMaintenance: true, isBookable: true, isPremium: false },
+  { id: 5, name: 'Makerbot Replicator+', description: description, isUnderMaintenance: false, isBookable: true, isPremium: true, icon: MakerbotReplicatorImg},
+  { id: 6, name: 'Laser Cutter', description: description, isUnderMaintenance: false, isBookable: true, isPremium: false, icon: LaserCutterIcon},
+  { id: 7, name: 'CNC Machine', description: description, isUnderMaintenance: true, isBookable: true, isPremium: false, icon: CNCMillIcon },
   { id: 8, name: 'Laser Engraver', description: description, isUnderMaintenance: false, isBookable: true, isPremium: false },
-  { id: 9, name: '3D Printer', description: 'prints stuff... in 3D!', isUnderMaintenance: false, isBookable: true, isPremium: true },
-  { id: 10, name: 'Laser Cutter', description: 'cuts stuff... in 2D!', isUnderMaintenance: false, isBookable: true, isPremium: false },
-  { id: 11, name: 'CNC Machine', description: 'machine for precise cutting!', isUnderMaintenance: true, isBookable: true, isPremium: false },
-  { id: 12, name: 'Laser Engraver', description: 'engraves materials with laser!', isUnderMaintenance: false, isBookable: true, isPremium: false },
+  { id: 9, name: 'Makerbot Replicator', description: description, isUnderMaintenance: false, isBookable: true, isPremium: true, icon: ThreeDPrinterIcon},
+  { id: 10, name: 'Laser Cutter', description: description, isUnderMaintenance: false, isBookable: true, isPremium: false, icon: LaserCutterIcon},
+  { id: 11, name: 'CNC Machine', description: description, isUnderMaintenance: false, isBookable: true, isPremium: false, icon: CNCMillIcon},
+  { id: 12, name: 'Laser Engraver', description: description, isUnderMaintenance: false, isBookable: true, isPremium: false },
+
+
+
   // Add more items as necessary...
 ];
 
@@ -137,6 +145,13 @@ const ReserveEquipment = () => {
         </Button>
     );
 
+    const IconStyle: React.CSSProperties = {
+        width: '80px',
+        height: '80px',
+        top: '30px',
+        left: '135px',
+    }
+
     const ModalStyle = {
         overflow: 'hidden',
         overflowY: 'scroll',
@@ -161,10 +176,9 @@ const ReserveEquipment = () => {
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-evenly',
-
         position: 'absolute',
         backgroundColor: 'black',
-        zIndex: 1000,
+        zIndex: 20,
         width: '350px',
         height: 
         {
@@ -177,7 +191,8 @@ const ReserveEquipment = () => {
         transform: 'translate(-50%, -50%)',
         color: theme.palette.primary.contrastText,
         textAlign: 'left',
-    } 
+    }
+
     const equipmentCardStyle =
     {
         border: '0px solid black',
@@ -204,13 +219,15 @@ const ReserveEquipment = () => {
             opacity: 0,
         },
     }
+    
     const errorChipStyle = 
     {
         position:
             'absolute',
         top: '10px',
         left: '10px',
-        backgroundColor: theme.palette.error.light
+        backgroundColor: theme.palette.error.light,
+        color: 'white',
     }
 
     return (
@@ -284,17 +301,12 @@ const ReserveEquipment = () => {
                                                     </ConditionalWrapper>
                                                     {/* Conditionally render the star icon if the item is premium */}
                                                     <ConditionalWrapper displayCondition={item.isPremium}>
-                                                        <StarsIcon sx={{
-                                                                    position:
-                                                                        'absolute',
-                                                                    top: '10px',
-                                                                    right: '10px',
-                                                                    fontSize:
-                                                                        '30px',
-                                                                }}
-                                                            />
+                                                        <StarsIcon sx={{position: 'absolute', top: '10px', right: '10px', fontSize: '30px'}}/>
                                                     </ConditionalWrapper>
-                                                    <CardContent sx={{textAlign: 'center', position: 'relative'}}>
+                                                    <CardContent sx={{textAlign: 'center', position: 'static'}}>
+                                                        <ConditionalWrapper displayCondition={item.icon !== undefined}>
+                                                            <img src={item.icon} style={IconStyle} alt={item.name}></img>
+                                                        </ConditionalWrapper>
                                                         <Typography
                                                             className="title"
                                                             variant="h3"
@@ -312,7 +324,7 @@ const ReserveEquipment = () => {
                                                                 <Typography variant="body2"  color="white">{item.description} </Typography>
                                                             </Box>
                                                             <ConditionalWrapper displayCondition={userCanBookItem(item, currentUserRole)}>
-                                                                    <Button variant="contained" onClick={handleOpen}> Book </Button>
+                                                                    <Button sx={{opacity: 100, zIndex: 30}} variant="contained" onClick={handleOpen}> Book </Button>
                                                             </ConditionalWrapper>
                                                         </Box>
                                                     </CardContent>
