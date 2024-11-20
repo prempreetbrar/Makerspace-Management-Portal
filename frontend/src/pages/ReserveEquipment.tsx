@@ -14,7 +14,11 @@ import WindowDimensions from '../Components/WindowDimensions.tsx';
 import DisguisedButton from '../Components/DisguisedSwitch.tsx';
 import ErrorIcon from '@mui/icons-material/Error';
 import StarsIcon from '@mui/icons-material/Stars';
-
+import LaserCutterIcon from '../assets/laser_cutter.svg'
+import ThreeDPrinterIcon from "../assets/3D_printer.svg"
+import ToolboxIcon from "../assets/toolbox.svg";
+import CNCMachine from '../assets/cnc_machine.svg'
+import RaspberryPI from '../assets/raspberry_pi.svg'
 // like, really need to simplify these...
 
 
@@ -41,10 +45,10 @@ const equipmentModel: Equipment[] = [
   { id: 2, name: 'Laser Cutter', description: description, isUnderMaintenance: false, isBookable: true, isPremium: false },
   { id: 3, name: 'CNC Machine', description: description, isUnderMaintenance: true, isBookable: true, isPremium: false },
   { id: 4, name: 'Laser Engraver', description: description, isUnderMaintenance: false, isBookable: true, isPremium: false },
-  { id: 5, name: '3D Printer', description: description, isUnderMaintenance: false, isBookable: true, isPremium: true },
+  { id: 5, name: 'Toolbox', description: description, isUnderMaintenance: false, isBookable: true, isPremium: true },
   { id: 6, name: 'Laser Cutter', description: description, isUnderMaintenance: false, isBookable: true, isPremium: false },
   { id: 7, name: 'CNC Machine', description: description, isUnderMaintenance: true, isBookable: true, isPremium: false },
-  { id: 8, name: 'Laser Engraver', description: description, isUnderMaintenance: false, isBookable: true, isPremium: false },
+  { id: 8, name: 'Raspberry PI', description: description, isUnderMaintenance: false, isBookable: true, isPremium: false },
   { id: 9, name: '3D Printer', description: 'prints stuff... in 3D!', isUnderMaintenance: false, isBookable: true, isPremium: true },
   { id: 10, name: 'Laser Cutter', description: 'cuts stuff... in 2D!', isUnderMaintenance: false, isBookable: true, isPremium: false },
   { id: 11, name: 'CNC Machine', description: 'machine for precise cutting!', isUnderMaintenance: true, isBookable: true, isPremium: false },
@@ -203,6 +207,13 @@ const ReserveEquipment = () => {
             opacity: 0,
         },
     }
+    const IconStyle: React.CSSProperties = {
+        width: '80px',
+        height: '80px',
+        position: 'absolute',
+        top: '30px',
+        left: '135px',
+    }
     const errorChipStyle = 
     {
         position:
@@ -293,6 +304,44 @@ const ReserveEquipment = () => {
                                                             }}
                                                         />
                                                     )}
+                                                     {/* Conditionally render the icons based on item name */}
+                                                    {item.name === 'Laser Cutter' && (
+                                                        <img
+                                                            src={LaserCutterIcon}
+                                                            alt="Laser Cutter"
+                                                            style={IconStyle}
+                                                        />
+                                                    )}
+                                                    {item.name === '3D Printer' && (
+                                                        <img
+                                                            src={ThreeDPrinterIcon}
+                                                            alt="Laser Cutter"
+                                                            style={IconStyle}
+                                                        />
+                                                    )}
+                                                     {item.name === 'Toolbox' && (
+                                                        <img
+                                                            src={ToolboxIcon}
+                                                            alt="Toolbox"
+                                                            style={IconStyle}
+                                                        />
+                                                    )}
+                                                     {item.name === 'CNC Machine' && (
+                                                        <img
+                                                            src={CNCMachine}
+                                                            alt="Toolbox"
+                                                            style={IconStyle}
+                                                        />
+                                                    )}
+                                                      {item.name === 'Raspberry PI' && (
+                                                        <img
+                                                            src={RaspberryPI}
+                                                            alt="Toolbox"
+                                                            style={IconStyle}
+                                                        />
+                                                    )}
+
+
 
                                                     {/* Conditionally render the maintenance icon if the item is under maintenance */}
                                                     {item.isUnderMaintenance && (
@@ -318,6 +367,8 @@ const ReserveEquipment = () => {
                                                                 fontSize:
                                                                     '12pt',
                                                                 padding: '5px',
+
+                                                                marginTop:'100px', 
                                                                 transition:
                                                                     'opacity 0.2s ease',
                                                                 
