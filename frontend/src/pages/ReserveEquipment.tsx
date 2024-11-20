@@ -14,6 +14,7 @@ import WindowDimensions from '../Components/WindowDimensions.tsx';
 import DisguisedButton from '../Components/DisguisedSwitch.tsx';
 import ErrorIcon from '@mui/icons-material/Error';
 import StarsIcon from '@mui/icons-material/Stars';
+import ConditionalWrapper from '../Components/ConditionalWrapper.tsx';
 
 // like, really need to simplify these...
 
@@ -37,7 +38,7 @@ type Booking = {
 };
 const description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit." 
 const equipmentModel: Equipment[] = [
-  { id: 1, name: '3D Printer', description: description, isUnderMaintenance: false, isBookable: true, isPremium: true },
+  { id: 1, name: 'Prussa 3', description: description, isUnderMaintenance: false, isBookable: true, isPremium: true },
   { id: 2, name: 'Laser Cutter', description: description, isUnderMaintenance: false, isBookable: true, isPremium: false },
   { id: 3, name: 'CNC Machine', description: description, isUnderMaintenance: true, isBookable: true, isPremium: false },
   { id: 4, name: 'Laser Engraver', description: description, isUnderMaintenance: false, isBookable: true, isPremium: false },
@@ -69,7 +70,7 @@ const theme = createTheme({
         },
     },
     typography: {
-        fontFamily: 'Arial, sans-serif',
+        fontFamily: 'Roboto, sans-serif',
     },
 });
 
@@ -219,15 +220,16 @@ const ReserveEquipment = () => {
                     <Box
                         id="contentBox"
                         sx={{
+                            position: 'fixed',
                             display: 'flex',
                             flexDirection: 'column',
                             width: width,
                             height: height,
                             backgroundColor: '#483E5C',
                             padding: 0,
+                            scroll: 'none',
                             overflow: 'hidden',
                         }}>
-                        
                         <NavBar id="reserve" />
                         <Box
                             sx={{
@@ -251,11 +253,7 @@ const ReserveEquipment = () => {
                         </Box>
                         <Modal open={open} onClose={handleClose}>
                             <Box sx={ModalStyle} borderColor={'white'}>
-
-                                    <BookingCalendar
-                                        onClose={handleClose}
-                                        userRole={currentUserRole}
-                                    />
+                                <BookingCalendar onClose={handleClose} userRole={currentUserRole}/>
                             </Box>
                         </Modal>
                             {displayModel.length === 0 &&
@@ -276,74 +274,47 @@ const ReserveEquipment = () => {
                                         spacing={3}
                                         justifyContent={'center'}
                                         alignItems={'center'}
-                                        sx={{ padding: 3}}
-                                    >
+                                        sx={{ padding: 3}}>
+
                                         {displayModel.map((item, index) => (
                                                 <Card key={index} sx={equipmentCardStyle}>
-                                                    {/* Conditionally render the star icon if the item is premium */}
-                                                    {item.isPremium && (
-                                                        <StarsIcon
-                                                            sx={{
-                                                                position:
-                                                                    'absolute',
-                                                                top: '10px',
-                                                                right: '10px',
-                                                                fontSize:
-                                                                    '30px',
-                                                            }}
-                                                        />
-                                                    )}
-
                                                     {/* Conditionally render the maintenance icon if the item is under maintenance */}
-                                                    {item.isUnderMaintenance && (
+                                                    <ConditionalWrapper displayCondition={item.isUnderMaintenance}>
                                                         <Chip sx={errorChipStyle}icon={<ErrorIcon fontSize='medium' sx={{color: 'white'}}/>}label = "Out of order" />
-                                                    )}
-                                                    <CardContent
-                                                        sx={{
-                                                            textAlign: 'center',
-                                                            position:
-                                                                'relative',
-                                                        }}
-                                                    >
+                                                    </ConditionalWrapper>
+                                                    {/* Conditionally render the star icon if the item is premium */}
+                                                    <ConditionalWrapper displayCondition={item.isPremium}>
+                                                        <StarsIcon sx={{
+                                                                    position:
+                                                                        'absolute',
+                                                                    top: '10px',
+                                                                    right: '10px',
+                                                                    fontSize:
+                                                                        '30px',
+                                                                }}
+                                                            />
+                                                    </ConditionalWrapper>
+                                                    <CardContent sx={{textAlign: 'center', position: 'relative'}}>
                                                         <Typography
                                                             className="title"
                                                             variant="h3"
                                                             sx={{
-                                                                color: theme
-                                                                    .palette
-                                                                    .primary
-                                                                    .main,
-                                                                fontWeight:
-                                                                    'bold',
-                                                                fontSize:
-                                                                    '12pt',
+                                                                color: theme.palette.primary.main,
+                                                                fontWeight: 'bold',
+                                                                fontSize: '12pt',
                                                                 padding: '5px',
-                                                                transition:
-                                                                    'opacity 0.2s ease',
-                                                                
-                                                            }}
-                                                        >
+                                                                transition: 'opacity 0.2s ease', 
+                                                            }}>
                                                             {item.name}
                                                         </Typography>
                                                         <Box id="detailsBox" className="details" sx={hoverBoxStyle}>
                                                             <Box sx={{height: {xs: '150px', md: '157.5px'}}}>
-                                                                <Typography variant="body2"  color="white">{item.description}
-
-                                                                </Typography>
+                                                                <Typography variant="body2"  color="white">{item.description} </Typography>
                                                             </Box>
-                                                            {item.isBookable &&
-                                                            !item.isUnderMaintenance && (
-                                                                            <Button
-                                                                                variant="contained"
-                                                                                onClick={
-                                                                                    handleOpen
-                                                                                }
-                                                                            >
-                                                                                Book
-                                                                            </Button>
-                                                                        )}
+                                                            <ConditionalWrapper displayCondition={userCanBookItem(item, currentUserRole)}>
+                                                                    <Button variant="contained" onClick={handleOpen}> Book </Button>
+                                                            </ConditionalWrapper>
                                                         </Box>
-                                        
                                                     </CardContent>
                                                 </Card>
                                         ))}

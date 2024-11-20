@@ -12,6 +12,7 @@ import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import dayjs, { Dayjs } from "dayjs";
 import { TimePicker } from "@mui/x-date-pickers";
 import { CancelRounded, TheaterComedyOutlined } from "@mui/icons-material";
+import WindowDimensions from "./WindowDimensions";
 const theme = createTheme();
 type TimeEntry = {
     time: string,
@@ -70,6 +71,7 @@ const BookingCalendar = ({userRole, onClose, externalProps}:BookingCalendarProps
     //@ts-ignore
     const passedInProps = externalProps;
 
+    const {height, width} = WindowDimensions();
     // all event listeners would need to be exposed at some point via Props. 
     
     //@ts-ignore
@@ -107,72 +109,72 @@ const BookingCalendar = ({userRole, onClose, externalProps}:BookingCalendarProps
     const nMonthsFromNow = today.add(2, "month");
     return (
         <ThemeProvider theme={customTheme}>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-             <Box
-                sx={{
-                    overflow: 'scroll',
-                    borderRadius: 5, 
-                    padding: 2,
-                    backgroundColor: "white",
-                    boxShadow: 3,
-                }}
-                display="flex"
-                flexDirection="column"
-                alignItems="center"
-            >
-            <Box sx={{overflow: 'hidden'}} display="flex" flexDirection={"column"} alignContent={'center'}>
-                <Box display="flex" flexDirection="row" justifyContent={'space-between'} position={"sticky"} top={0} bgcolor={"white"}> 
-                        <Typography variant='h4'>
-                            Reserve a time
-                        </Typography>
-                        <IconButton sx={{minWidth: 50}} size="small" onClick={onClose}> { /* confirmation dialog would be nice */}
-                            <CancelRounded fontSize="large">Cancel</CancelRounded>
-                        </IconButton>
-                </Box>
-                <Box display={"flex"} sx={{
-                    alignSelf: 'center',
-                    justifyContent: 'space-between',
-                    flexDirection: {
-                        xs: 'column',
-                        md: 'row',
-                    },
-                    margin: '10px',
-                }}>
-                    <Box display="flex" flexDirection="column" columnGap={5} mr={{xs: 0, md: 5}}>
-                        <DateCalendar disablePast={true} sx={{minWidth: 300, backgroundColor: '#ECE6F0', borderRadius: 4}} defaultValue={dayjs(today)} minDate={today} maxDate={nMonthsFromNow} />
-                    </Box>
-                    <Box display="flex" flexDirection="column"  alignContent={"center"}>
-                            <Typography variant='h6' sx={{marginTop: 1}}>
-                            Available Times:
-                            </Typography>
-                        <Box id="time-display" display={"flex"} flexDirection={"column"} alignItems={'center'}>
-                            <Grid2 container rowSpacing={0.25} alignItems ="left" flexGrow={1} justifyContent={"left"}> 
-                                {
-                                    // [BUG] centering items doesn't work on mobile. 
-                                    timesArray.map((listing, index)=>(
-                                            <Button key={index} variant={ selectedTimeButton !== index? 'outlined' : 'contained'}  sx={timeButtonStyle} onClick={() => handleTimeSelect(index, listing.time)} 
-                                            disabled={userRole !== "Premium" && listing.premiumOnly}>
-                                                {listing.time}
-                                            </Button>
-                                        ))
-                                    }
-                            </Grid2>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <Box
+                        sx={{
+                            height: 
+                            {
+                                xs: height,
+                            },
+                            overflowY: 'scroll',
+                            borderRadius: 5, 
+                            padding: 2,
+                            backgroundColor: "white",
+                            boxShadow: 3,
+                        }}
+                        display="flex"
+                        flexDirection="column"
+                        alignItems="center"
+                        justifyContent='center'>
+                    <IconButton sx={{marginLeft: 'auto', color: theme.palette.error.main}} size="small" onClick={onClose}> { /* confirmation dialog would be nice */}
+                                    <CancelRounded fontSize="large">Cancel</CancelRounded>
+                    </IconButton>
+                    <Box sx={{overflowX: 'hidden', overflowY: 'scroll'}} display="flex" flexDirection={"column"} alignContent={'center'}>
+                        <Box display="flex" flexDirection="row" justifyContent={'space-between'} position={"sticky"} top={0} bgcolor={"white"}> 
+                                <Typography variant='h4'>
+                                    Reserve a time
+                                </Typography>
                         </Box>
-                        <Box component="form" sx={{paddingTop: 3}}>    
-
-                            <TextField id="DescriptionField" label="Request Details" placeholder="Description"sx={{fontSize: 10}} maxRows={2}  variant="filled" onChange={handleTextUpdate} multiline fullWidth required>
-                            </TextField>
+                        <Box display={"flex"} sx={{
+                            alignSelf: 'center',
+                            justifyContent: 'space-between',
+                            flexDirection: {
+                                xs: 'column',
+                                md: 'row',
+                            },
+                            margin: '10px',
+                        }}>
+                            <Box id="calendarBox" display="flex" flexDirection="column" columnGap={5} mr={{xs: 0, md: 5}}>
+                                <DateCalendar disablePast={true} sx={{minWidth: 300, backgroundColor: '#ECE6F0', borderRadius: 4}} defaultValue={dayjs(today)} minDate={today} maxDate={nMonthsFromNow} />
+                            </Box>
+                            <Box display="flex" flexDirection="column"  alignContent={"center"}>
+                                    <Typography variant='h6' sx={{marginTop: 1}}>
+                                    Available Times:
+                                    </Typography>
+                                <Box id="time-display" display={"flex"} flexDirection={"column"} alignItems={'center'}>
+                                    <Grid2 container rowSpacing={0.25} alignItems ="left" flexGrow={1} justifyContent={"left"}> 
+                                        {
+                                            timesArray.map((listing, index)=>(
+                                                    <Button key={index} variant={ selectedTimeButton !== index? 'outlined' : 'contained'}  sx={timeButtonStyle} onClick={() => handleTimeSelect(index, listing.time)} 
+                                                    disabled={userRole !== "Premium" && listing.premiumOnly}>
+                                                        {listing.time}
+                                                    </Button>
+                                                ))
+                                            }
+                                    </Grid2>
+                                </Box>
+                                <Box component="form" sx={{paddingTop: 3}}>
+                                    <TextField id="DescriptionField" label="Request Details" placeholder="Description"sx={{fontSize: 10}} maxRows={2}  variant="filled" onChange={handleTextUpdate} multiline fullWidth required>
+                                    </TextField>
+                                </Box>                            
+                                <Button variant="contained" sx={{marginTop: 3, backgroundColor: '#65558F', color:"#FFFFFF", width:'120px'}} onClick={()=>handleCloseModal(true)} disabled={(inputText === "" || selectedTime === "")}>
+                                    Submit
+                                </Button>
+                            </Box>
                         </Box>
-                        <span>
-                        <Button variant="contained" sx={{marginTop: 3, backgroundColor: '#65558F', color:"#FFFFFF", width:'120px'}} onClick={()=>handleCloseModal(true)} disabled={(inputText === "" || selectedTime === "")}>
-                            Submit {/* [BUG] users can submit without input text after closing and reopening the form */}
-                        </Button>
-                        </span>
                     </Box>
                 </Box>
-            </Box>
-            </Box>
-        </LocalizationProvider>
+            </LocalizationProvider>
         </ThemeProvider>
     )
 }
