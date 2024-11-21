@@ -323,9 +323,11 @@ const ReserveEquipment = () => {
                                                             <Box sx={{height: {xs: '150px', md: '157.5px'}}}>
                                                                 <Typography variant="body2"  color="white">{item.description} </Typography>
                                                             </Box>
-                                                            <ConditionalWrapper displayCondition={userCanBookItem(item, currentUserRole)}>
-                                                                    <Button sx={{opacity: 100, zIndex: 30}} variant="contained" onClick={handleOpen}> Book </Button>
-                                                            </ConditionalWrapper>
+                                                            <Box>
+                                                                <ConditionalWrapper displayCondition={userCanBookItem(item, currentUserRole)}>
+                                                                        <Button sx={{opacity: 100, zIndex: 30}} variant="contained" onClick={handleOpen}> Book </Button>
+                                                                </ConditionalWrapper>
+                                                            </Box>
                                                         </Box>
                                                     </CardContent>
                                                 </Card>
