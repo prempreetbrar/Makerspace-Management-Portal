@@ -46,6 +46,14 @@ const Requests = () => {
       date: 'Sep 10, 10:00-11:00AM',
       file: 'vinylfile.svg',
     },
+    {
+      id: 4,
+      status: 'rejected',
+      title: 'Laser Cutter',
+      description: 'I plan on using this machine to cut out a model.',
+      date: 'Sep 10, 10:00-11:00AM',
+      file: 'vinylfile.svg',
+    },
   ];
 
   return (
