@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Popover, TextField, Button, Link } from '@mui/material';
 import '../styles/authentication/login/local.css'
 
-import CreateAccountPopover from '../Components/CreateAccountPopover.tsx';
+import CreateAccountPopover from './CreateAccountPopover.tsx';
 
 interface LoginPopoverProps {
     anchorEl: HTMLElement | null;

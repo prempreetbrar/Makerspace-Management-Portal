@@ -1,0 +1,33 @@
+#profile {
+  display: flex;
+}
+
+@media (max-width: 768px) {
+  #profile {
+    display: flex;
+    background-color: #65558f;
+  }
+
+  #profile .left {
+    flex-direction: column;
+    order: 1;
+    align-items: flex-start;
+  }
+
+  #profile .home {
+    display: none;
+  }
+
+  #profile .nav-links li a {
+    color: white;
+  }
+
+  #profile .auth-buttons {
+    order: 2;
+    align-self: flex-start;
+  }
+
+  #profile .logo {
+    content:url("../../assets/logo_greyscale_big.svg");
+  }
+}

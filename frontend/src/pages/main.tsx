@@ -9,8 +9,10 @@ import Login from './Login.tsx'
 import Signup from './Signup.tsx'
 import Requests from "./Requests.tsx";
 import ReserveEquipment from "./ReserveEquipment.tsx";
+import Profile from "./Profile.tsx";
 import '../styles/index.css'
 import { UserProvider } from "../hooks/UserProvider.tsx";
+import ManageBookings from "./ManageBookings.tsx";
 
 const router = createBrowserRouter([
     {
@@ -23,7 +25,13 @@ const router = createBrowserRouter([
     },
     {
         path: "signup",
-        element: <Signup />,
+        element: <Signup onClose={function (): void {
+            throw new Error("Function not implemented.");
+        } } />,
+    },
+    {
+        path: "manage",
+        element: <ManageBookings />
     },
     {
         path: "requests",
@@ -32,6 +40,10 @@ const router = createBrowserRouter([
     {
         path: "reserve",
         element: <ReserveEquipment />
+    },
+    {
+      path: "profile",
+      element: <Profile />
     },
     {
         path: "home",
