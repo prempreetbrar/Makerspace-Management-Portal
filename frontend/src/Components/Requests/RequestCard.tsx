@@ -21,17 +21,52 @@ const RequestCard: React.FC<RequestCardProps> = ({
   file,
 }) => {
   return (
-    <Card className="request-card">
+    <Card
+      className="request-card"
+      sx={{
+        backgroundColor: 'white',
+        margin: '10px 40px 10px 40px',
+        padding: '10px',
+        borderRadius: '14px',
+        width: '80%',
+      }}
+    >
       <CardContent>
-        <Typography variant="h6" className="card-title">
+        <Typography
+          variant="h6"
+          className="card-title"
+          sx={{
+            fontWeight: 'bolder',
+          }}
+        >
           {title}
         </Typography>
-        <Typography variant="body2" className="card-description">
+        <Typography
+          variant="body2"
+          className="card-description"
+          sx={{
+            margin: '10px 0',
+          }}
+        >
           {description}
         </Typography>
-        <Box className="card-footer">
+        <Box
+          className="card-footer"
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginTop: '10px',
+          }}
+        >
           <Typography variant="body2" className="card-date">
-            <EventIcon className="icon" /> {date}
+            <EventIcon
+              className="icon"
+              sx={{
+                verticalAlign: 'middle',
+              }}
+            />{' '}
+            {date}
           </Typography>
           <a href={`/${file}`} download className="card-file">
             <DownloadIcon className="icon" /> {file}

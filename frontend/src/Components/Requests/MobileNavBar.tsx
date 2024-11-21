@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import '../../styles/requests/MobileNavBar.css';
+import React from 'react';
 import {
   AppBar,
   Toolbar,
@@ -21,12 +20,40 @@ const MobileNavbar: React.FC<NavbarProps> = ({ selectedTab, onTabChange }) => {
   };
 
   return (
-    <AppBar position="static" className="mobile-navbar">
-      <Toolbar className="mobile-navbar-toolbar">
-        <Typography variant="h6" className="mobile-navbar-title">
+    <AppBar
+      position="static"
+      style={{
+        backgroundColor: '#65558F',
+        width: '100%',
+        maxWidth: '100vw',
+        display: 'flex',
+        flexDirection: 'column',
+        padding: '0',
+      }}
+    >
+      <Toolbar
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          padding: '0',
+          width: '100%',
+        }}
+      >
+        <Typography
+          variant="h6"
+          style={{
+            marginLeft: '20px',
+          }}
+        >
           Makerspace
         </Typography>
-        <IconButton edge="end" color="inherit" className="mobile-navbar-icon">
+        <IconButton
+          edge="end"
+          color="inherit"
+          style={{
+            marginRight: '20px',
+          }}
+        >
           <AccountCircleIcon />
         </IconButton>
       </Toolbar>
@@ -35,7 +62,12 @@ const MobileNavbar: React.FC<NavbarProps> = ({ selectedTab, onTabChange }) => {
         value={selectedTab}
         onChange={handleChange}
         centered
-        className="navbar-tabs"
+        style={{
+          backgroundColor: '#65558F',
+          width: '100%',
+          margin: '0',
+          padding: '0',
+        }}
         TabIndicatorProps={{
           style: { backgroundColor: '#fff' }, // Indicator color
         }}
@@ -43,12 +75,20 @@ const MobileNavbar: React.FC<NavbarProps> = ({ selectedTab, onTabChange }) => {
         <Tab
           label="Reserve Equipment"
           value="reserve"
-          className="mobile-navbar-tab"
+          style={{
+            color: 'white',
+            fontWeight: 'bold',
+            textTransform: 'none',
+          }}
         />
         <Tab
           label="View Requests"
           value="requests"
-          className="mobile-navbar-tab"
+          style={{
+            color: 'white',
+            fontWeight: 'bold',
+            textTransform: 'none',
+          }}
         />
       </Tabs>
     </AppBar>

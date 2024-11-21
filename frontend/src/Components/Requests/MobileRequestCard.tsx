@@ -3,7 +3,6 @@ import { useSwipeable } from 'react-swipeable';
 import { Box, Card, CardContent, Typography, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import '../../styles/requests/MobileRequestCard.css';
 import EventIcon from '@mui/icons-material/Event';
 
 interface RequestCardProps {
@@ -28,7 +27,13 @@ const RequestCard: React.FC<RequestCardProps> = ({
   });
 
   return (
-    <div className="card-container">
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+        marginBottom: '10px',
+      }}
+    >
       <Box
         {...swipeHandlers}
         sx={{
@@ -94,26 +99,47 @@ const RequestCard: React.FC<RequestCardProps> = ({
         {/* Main Card */}
         <Card
           sx={{
+            backgroundColor: '#E7E0EC',
+            margin: 0,
+            boxShadow: 'none',
+            width: '80%',
             flex: 1,
             transform: isSwiped ? 'translateX(-30%)' : 'translateX(0)',
             transition: 'transform 0.3s ease',
           }}
-          className="request-card"
         >
           <CardContent>
-            <Typography variant="h6" className="request-card-title">
+            <Typography
+              variant="h6"
+              style={{
+                fontWeight: 'bold',
+                marginBottom: '8px',
+              }}
+            >
               {title}
             </Typography>
             <Typography
               variant="body2"
               color="text.secondary"
-              className="request-card-description"
+              style={{
+                marginBottom: '8px',
+                color: '#616161',
+              }}
             >
               {description}
             </Typography>
             <Box display="flex" alignItems="center" gap={1} mt={1}>
-              <Typography variant="body2" className="request-card-date">
-                <EventIcon className="icon" />
+              <Typography
+                variant="body2"
+                style={{
+                  color: 'gray',
+                }}
+              >
+                <EventIcon
+                  style={{
+                    verticalAlign: 'middle',
+                  }}
+                />{' '}
                 {date}
               </Typography>
             </Box>
