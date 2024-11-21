@@ -1,5 +1,4 @@
 import React from 'react';
-import '../../styles/requests/RequestCard.css';
 import { Card, CardContent, Typography, IconButton, Box } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DownloadIcon from '@mui/icons-material/CloudDownload';
