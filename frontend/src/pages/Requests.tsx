@@ -88,6 +88,7 @@ const Requests = () => {
                                 title={request.title}
                                 description={request.description}
                                 date={request.date}
+                                file={request.file}
                                 icon={request.icon}
                             />
                         ) : (
