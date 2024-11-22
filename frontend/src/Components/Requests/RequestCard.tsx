@@ -1,61 +1,77 @@
-import React from "react"
-import { createTheme, styled } from "@mui/material";
-import { Card, CardActions, CardContent, CardActionArea } from "@mui/material"
-import { Button, ButtonGroup } from "@mui/material";
+import React from 'react';
+import { Card, CardContent, Typography, IconButton, Box } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import DownloadIcon from '@mui/icons-material/CloudDownload';
+import EventIcon from '@mui/icons-material/Event';
 
-const theme = createTheme();
 interface RequestCardProps {
-    children?: React.ReactNode,
-    userRole?: string,
+    status?: string;
+    title?: string;
+    description?: string;
+    date?: string;
 }
 
-const DangerousActionButton = styled(Button)({
-    backgroundColor: theme.palette.error.main,
-    color: theme.palette.primary.contrastText,
-    flexGrow: 0,
-});
-const PositiveActionButton = styled(Button)({
-    backgroundColor: theme.palette.success.main,
-    color: theme.palette.primary.contrastText,
-    flexGrow: 0,
-});
-
-const RequestCard = ({ children, userRole }: RequestCardProps) => (
-    <Card
-        sx={{
-            border: '1px solid black',
-            backgroundColor: theme.palette.secondary.main,
-            width: '80vw',
-            minHeight:
-            {
-                xs: '100px',
-            },
-            display: 'flex',
-            borderRadius: '20px',
-            flexDirection: 'column'
-        }}>
-        <CardActionArea>
-            <CardContent sx={{ padding: '3px' }}>
-                {children}
+const RequestCard = ({
+    status,
+    title,
+    description,
+    date,
+}:RequestCardProps) => {
+    return (
+        <Card
+            className="request-card"
+            sx={{
+                backgroundColor: 'white',
+                margin: '10px 0px 10px 0px',
+                padding: '0px',
+                borderRadius: '14px',
+                width: '90%',
+            }}
+        >
+            <CardContent>
+                <Typography
+                    variant="h6"
+                    className="card-title"
+                    sx={{
+                        fontWeight: 'bolder',
+                    }}
+                >
+                    {title}
+                </Typography>
+                <Typography
+                    variant="body2"
+                    className="card-description"
+                    sx={{
+                        margin: '10px 0',
+                    }}
+                >
+                    {description}
+                </Typography>
+                <Box
+                    className="card-footer"
+                    sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        marginTop: '10px',
+                    }}
+                >
+                    <Typography variant="body2" className="card-date">
+                        <EventIcon
+                            className="icon"
+                            sx={{
+                                verticalAlign: 'middle',
+                            }}
+                        />{''}
+                        {date}
+                    </Typography>
+                    <IconButton className="card-delete">
+                        <DeleteIcon />
+                    </IconButton>
+                </Box>
             </CardContent>
-        </CardActionArea>
-        <CardActions>
-            {userRole === "Admin" ? (
-                <>
-                    <ButtonGroup variant="contained">
-                        <PositiveActionButton>
-                            Approve
-                        </PositiveActionButton>
-                        <DangerousActionButton>
-                            Deny
-                        </DangerousActionButton>
-                    </ButtonGroup>
-                </>
-            ) : (
-                <>
-                </>
-            )}
-        </CardActions>
-    </Card >
-);
-export default RequestCard
+        </Card>
+    );
+};
+
+export default RequestCard;

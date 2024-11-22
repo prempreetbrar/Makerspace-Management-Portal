@@ -1,106 +1,43 @@
-#manageBookings {
+#request {
   display: flex;
-
 }
 
-/* Responsive adjustments */
-@media (min-width: 769px) {
-  .page-content {
-    background-color: #ffffff;
-    display: initial;
-    padding: 0;
-    text-align: center;
-    height: 100vh;
-    width: 100vw;
-    margin: 0;
-  }
-
-  /* Desktop styles */
-  .auth-buttons2 {
-    display: none;
-  }
-
-  .logo-container2 {
-    display: none;
-  }
+.requestContainer{
+  background-color: #483E5C ;
+  min-height: 100vh; 
+  padding-bottom: 40px;
 }
 
 @media (max-width: 768px) {
-
-  #manageBookings {
+  .requestContainer{
+    background-color: white;
+  }
+  
+  #request {
     display: flex;
     background-color: #65558f;
   }
 
-  #manageBookings .left {
+  #request .left {
     flex-direction: column;
     order: 1;
     align-items: flex-start;
   }
 
-  #manageBookings .home {
+  #request .home {
     display: none;
   }
 
-  #manageBookings .nav-links li a {
+  #request .nav-links li a {
     color: white;
   }
 
-  #manageBookings .auth-buttons {
+  #request .auth-buttons {
     order: 2;
     align-self: flex-start;
   }
 
-  #manageBookings .logo {
+  #request .logo {
     content:url("../../assets/logo_greyscale_big.svg");
-  }
-
-  .illustration.desktop {
-    display: none;
-  }
-
-  .illustration.mobile {
-    display: block;
-    scale: 0.8;
-    margin-bottom: -20px;
-  }
-
-  .page-content {
-    display: block;
-    flex-direction: column;
-    padding: 0;
-    text-align: center;
-    height: 100vh;
-    width: 100vw;
-    margin: 0;
-  }
-
-  .text-content {
-    text-align: center;
-  }
-
-  .heading {
-    font-size: 1.6rem;
-    text-align: center;
-  }
-
-  .subheading {
-    display: none;
-  }
-}
-
-@media (max-width: 480px) {
-
-  /* Extra small devices */
-  .heading {
-    font-size: 1.5rem;
-  }
-
-  .subheading {
-    font-size: 0.9rem;
-  }
-
-  .illustration {
-    max-width: 250px;
   }
 }

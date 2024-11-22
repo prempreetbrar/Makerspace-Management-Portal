@@ -1,209 +1,110 @@
-import '../styles/requests/local.css';
-import * as React from 'react';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import NavBar from '../Components/NavBar';
-import MainContainer from '../Components/MainContainer.tsx';
-import { Fab, Tab, Tabs, Stack, Typography, Button, Card, CardContent, CardActionArea, CardActions, Accordion, ButtonGroup } from '@mui/material';
-import { createTheme, styled, ThemeProvider, useTheme } from '@mui/material/styles'
-import Box from '@mui/material/Box';
-import AddIcon from '@mui/icons-material/Add'
-import TabPanel from '@mui/lab/TabPanel';
-import TabContext from '@mui/lab/TabContext';
-import TabList from '@mui/lab/TabList';
-import { UserProvider, useUser } from '../hooks/UserProvider.tsx';
-import { RequestsProvider } from '../hooks/RequestsProvider.tsx';
-import { request } from 'http';
-import { describe } from 'node:test';
-import RequestCard from '../Components/Requests/RequestCard.tsx';
-// like, really need to simplify these...
+import React, { useState } from 'react';
+import '../styles/requests/local.css';
+import TabContainer from '../Components/Requests/TabContainer';
+import RequestCard from '../Components/Requests/RequestCard';
+import MobileRequestCard from '../Components/Requests/MobileRequestCard';
+import { useMediaQuery } from '@mui/material';
+import { validateDate } from '@mui/x-date-pickers';
 
+import ThreeDPrinterIcon from '../assets/3D_printer.svg';
+import LaserCutterIcon from '../assets/laser_cutter.svg';
+import CNCMillIcon from '../assets/laser_cutter.svg';
+import MakerbotReplicatorImg from '../assets/mb_replicator.jpeg';
 
-const requestTemplate1 =
-{
-    userEmail: "real_email1@email.com",
-    title: "Request Title",
-    description: "This is the request description. It might be very long or short.",
-    status: "approved"
-}
-const requestTemplate2 =
-{
-    userEmail: "real_email1@email.com",
-    title: "Request Title2",
-    description: "This is the request description. It might be very long or short.",
-    status: "pending",
-}
-const requestTemplate3 =
-{
-    userEmail: "real_email1@email.com",
-    title: "Request Title3",
-    description: "This is the request description. It might be very long or short.",
-    status: "denied",
+interface CardInfo {
+    key: number;
+    tite: string;
+    description: string;
+    date: string;
+    file?: string;
+    icon: string;
 }
 
-const templateRequests = [requestTemplate1, requestTemplate1, requestTemplate2, requestTemplate2, requestTemplate3, requestTemplate3];
-
-const theme = createTheme();
 const Requests = () => {
+    const isMobile = useMediaQuery('(max-width:768px)');
+    const [status, setStatus] = useState(0);
 
-    {/* TO DO: 
-        * Fetch requests from the server
-        * Prerequisite: Need some sort of state to be implemented
-        * Possible workaround: Hardcode in the requests for a random user
-    << BIGGEST CHALLENGES  >>
-        * Admin vs Normal User view
-        * Getting a state
-    */}
-    const { user, setUserByIndex } = useUser();
-    const [currentUserIndex, setCurrentUserIndex] = React.useState(0);
-    const [currentUserRole, setCurrentUserRole] = React.useState(user.userRole);
-    const handleChangeUser = () => {
-        const nextIndex = currentUserIndex + 1 % 3;
-        setCurrentUserIndex(nextIndex);
-        setUserByIndex(nextIndex);
-        setCurrentUserRole(user.userRole);
-    }
+    const requests = [
+        {
+            id: 1,
+            status: 'approved',
+            title: '3D Printer',
+            description:
+                'I plan on using this printer to print out a prototype.',
+            date: 'Sep 5, 10:00-11:00AM',
+            file: 'vinylfile.svg',
+            icon: ThreeDPrinterIcon,
+        },
+        {
+            id: 2,
+            status: 'pending',
+            title: 'Laser Cutter',
+            description: 'I plan on using this machine to cut out a model.',
+            date: 'Sep 10, 10:00-11:00AM',
+            file: 'vinylfile.svg',
+            icon: LaserCutterIcon,
+        },
+        {
+            id: 3,
+            status: 'pending',
+            title: 'Laser Cutter',
+            description: 'I plan on using this machine to cut out a model.',
+            date: 'Sep 10, 10:00-11:00AM',
+            file: 'vinylfile.svg',
+            icon: LaserCutterIcon,
+        },
+        {
+            id: 4,
+            status: 'rejected',
+            title: 'Maker Bot Replicator',
+            description: 'make a bomb',
+            date: 'Sep 10, 10:00-11:00AM',
+            file: 'vinylfile.svg',
+            icon: MakerbotReplicatorImg,
+        },
+    ];
 
-    const [value, setValue] = React.useState('Approved'); // this is the default state I assume
-    const handleChange = (_event: React.SyntheticEvent, newValue: string) => {
-        setValue(newValue);
+    const numberToStringMap: { [key: number]: string } = {
+        0: 'approved',
+        1: 'pending',
+        2: 'rejected',
     };
 
-    const randomList: Array<String> = ["Apples", "Bananas", "Oranges", "Celery", "Carrots", "Avocados", "Pineapples", "Mangoes", "Potatoes", "Tomatoes", "Beans"];
     return (
-        <>
-        <NavBar id='request' />
-        <MainContainer>
-            <Button onClick={handleChangeUser}> Change User </Button>
-            <ThemeProvider theme={theme}>
-                    <TabContext value={value}>
-                        <TabList onChange={handleChange} aria-label="lab API tabs example" centered>
-                            <Tab label="Approved" value="Approved" />
-                            <Tab label="Pending" value="Pending" />
-                            <Tab label="Denied" value="Denied" />
-                        </TabList>
-                        <TabPanel value="Approved">
-                            <Box sx={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                width: '100%',
-                            }}>
-                                <Stack spacing={3} sx={{ alignSelf: 'center' }}>
-                                    {
-                                        templateRequests.filter(item => item.status === "approved").map((item, index) =>
-                                            <RequestCard>
-                                                <Box>
-                                                    <Typography key={index} variant='body2' sx={{
-                                                        color: 'black',
-                                                        fontWeight: 'bold',
-                                                        fontSize: '20pt',
-                                                    }}> {item.title}
-                                                    </Typography>
-                                                </Box>
-                                                <Box>
-                                                    <Accordion sx={{ boxShadow: 0 }}>
-                                                        <AccordionSummary>
-                                                            <Typography variant='body2'>
-                                                                View Details
-                                                            </Typography>
-                                                        </AccordionSummary>
-                                                        <AccordionDetails>
-                                                            <Typography variant='body1' sx={{ textAlign: 'left' }}>
-                                                                {item.description}
-                                                            </Typography>
-                                                        </AccordionDetails>
-                                                    </Accordion>
-                                                </Box>
-                                            </RequestCard>
-                                        )
-                                    }
-                                </Stack>
-                            </Box>
-                        </TabPanel>
-                        <TabPanel value="Pending">
-                            <Box sx={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                width: '100%',
-                            }}>
-                                <Stack spacing={3} sx={{ alignSelf: 'center' }}>
-                                    {
-                                        templateRequests.filter(item => item.status === "pending").map((item, index) =>
-                                            <RequestCard userRole={user.userRole}>
-                                                <Box>
-                                                    <Typography key={index} variant='body2' sx={{
-                                                        color: 'black',
-                                                        fontWeight: 'bold',
-                                                        fontSize: '20pt',
-                                                    }}> {item.title}
-                                                    </Typography>
-                                                </Box>
-                                                <Box>
-                                                    <Accordion sx={{ boxShadow: 0 }}>
-                                                        <AccordionSummary>
-                                                            <Typography variant='body2'>
-                                                                View Details
-                                                            </Typography>
-                                                        </AccordionSummary>
-                                                        <AccordionDetails>
-                                                            <Typography variant='body1' sx={{ textAlign: 'left' }}>
-                                                                {item.description}
-                                                            </Typography>
-                                                        </AccordionDetails>
-                                                    </Accordion>
-                                                </Box>
-                                            </RequestCard>
-                                        )
-                                    }
-                                </Stack>
-                            </Box>
-                        </TabPanel>
-                        <TabPanel value="Denied">
-                            <Box sx={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                width: '100%',
-                            }}>
-                                <Stack spacing={3} sx={{ alignSelf: 'center' }}>
-                                    {
-                                        templateRequests.filter(item => item.status === "denied").map((item, index) =>
-                                            <RequestCard>
-                                                <Box>
-                                                    <Typography key={index} variant='body2' sx={{
-                                                        color: 'black',
-                                                        fontWeight: 'bold',
-                                                        fontSize: '20pt',
-                                                    }}> {item.title}
-                                                    </Typography>
-                                                </Box>
-                                                <Box>
-                                                    <Accordion sx={{ boxShadow: 0 }}>
-                                                        <AccordionSummary>
-                                                            <Typography variant='body2'>
-                                                                View Details
-                                                            </Typography>
-                                                        </AccordionSummary>
-                                                        <AccordionDetails>
-                                                            <Typography variant='body1' sx={{ textAlign: 'left' }}>
-                                                                {item.description}
-                                                            </Typography>
-                                                        </AccordionDetails>
-                                                    </Accordion>
-                                                </Box>
-                                            </RequestCard>
-                                        )
-                                    }
-                                </Stack>
-                            </Box>
-                        </TabPanel>
-                    </TabContext>
-            </ThemeProvider >
-        </MainContainer >
-        </>
-    )
-}
+        <div className="requestContainer">
+            <NavBar id="request"></NavBar>
+            <TabContainer value={status} onChange={setStatus}>
+                {requests
+                    .filter(
+                        (request) =>
+                            request.status === numberToStringMap[Number(status)]
+                    )
+                    .map((request) =>
+                        isMobile ? (
+                            <MobileRequestCard
+                                key={request.id}
+                                status={request.status}
+                                title={request.title}
+                                description={request.description}
+                                date={request.date}
+                                icon={request.icon}
+                            />
+                        ) : (
+                            <RequestCard
+                                key={request.id}
+                                status={request.status}
+                                title={request.title}
+                                description={request.description}
+                                date={request.date}
+                                file={request.file}
+                                icon={request.icon}
+                            />
+                        )
+                    )}
+            </TabContainer>
+        </div>
+    );
+};
 
 export default Requests;
-
