@@ -1,14 +1,43 @@
+#request {
+  display: flex;
+}
+
 .requestContainer{
   background-color: #483E5C ;
   min-height: 100vh; 
   padding-bottom: 40px;
 }
 
-
-
-
 @media (max-width: 768px) {
   .requestContainer{
     background-color: white;
+  }
+  
+  #request {
+    display: flex;
+    background-color: #65558f;
+  }
+
+  #request .left {
+    flex-direction: column;
+    order: 1;
+    align-items: flex-start;
+  }
+
+  #request .home {
+    display: none;
+  }
+
+  #request .nav-links li a {
+    color: white;
+  }
+
+  #request .auth-buttons {
+    order: 2;
+    align-self: flex-start;
+  }
+
+  #request .logo {
+    content:url("../../assets/logo_greyscale_big.svg");
   }
 }
