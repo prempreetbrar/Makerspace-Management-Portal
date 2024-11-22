@@ -1,6 +1,13 @@
 import React, { useState } from 'react';
 import { useSwipeable } from 'react-swipeable';
-import { Box, Card, CardContent, Typography, IconButton } from '@mui/material';
+import {
+    Box,
+    Card,
+    CardContent,
+    Typography,
+    IconButton,
+    Grid2,
+} from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import EventIcon from '@mui/icons-material/Event';
@@ -10,6 +17,7 @@ interface MobileRequestCardProps {
     title: string;
     description: string;
     date: string;
+    icon: any;
 }
 
 const MobileRequestCard: React.FC<MobileRequestCardProps> = ({
@@ -17,8 +25,14 @@ const MobileRequestCard: React.FC<MobileRequestCardProps> = ({
     title,
     description,
     date,
+    icon,
 }) => {
     const [isSwiped, setIsSwiped] = useState(false);
+
+    const IconStyle: React.CSSProperties = {
+        width: '100px',
+        height: '100px',
+    };
 
     const swipeHandlers = useSwipeable({
         onSwipedLeft: () => setIsSwiped(true),
@@ -33,6 +47,7 @@ const MobileRequestCard: React.FC<MobileRequestCardProps> = ({
                 display: 'flex',
                 justifyContent: 'center',
                 marginBottom: '10px',
+                width: '100%',
             }}
         >
             <Box
@@ -40,9 +55,9 @@ const MobileRequestCard: React.FC<MobileRequestCardProps> = ({
                 sx={{
                     position: 'relative',
                     display: 'flex',
-                    width: '80%',
+                    width: '100%',
                     backgroundColor: '#E7E0EC',
-                    borderRadius: 2,
+                    borderRadius: 7,
                     overflow: 'hidden',
                 }}
             >
@@ -106,44 +121,59 @@ const MobileRequestCard: React.FC<MobileRequestCardProps> = ({
                             backgroundColor: '#E7E0EC',
                         }}
                     >
-                        <Typography
-                            variant="h6"
-                            className="request-card-title"
-                            style={{
-                                fontWeight: 'bold',
-                                marginBottom: '8px',
-                            }}
-                        >
-                            {title}
-                        </Typography>
-                        <Typography
-                            variant="body2"
-                            color="text.secondary"
-                            className="request-card-description"
-                            style={{
-                                marginBottom: '8px',
-                                color: '#616161',
-                            }}
-                        >
-                            {description}
-                        </Typography>
-                        <Box display="flex" alignItems="center" gap={1} mt={1}>
-                            <Typography
-                                variant="body2"
-                                className="request-card-date"
-                                style={{
-                                    color: 'gray',
-                                }}
-                            >
-                                <EventIcon
-                                    className="icon"
+                        <Grid2 container spacing={4}>
+                            <Grid2 size="auto">
+                                <img
+                                    src={icon}
+                                    style={IconStyle}
+                                    alt={icon}
+                                ></img>
+                            </Grid2>
+                            <Grid2 size="grow">
+                                <Typography
+                                    variant="h6"
+                                    className="request-card-title"
                                     style={{
-                                        verticalAlign: 'middle',
+                                        marginBottom: '8px',
                                     }}
-                                />{' '}
-                                {date}
-                            </Typography>
-                        </Box>
+                                >
+                                    {title}
+                                </Typography>
+                                <Typography
+                                    variant="body2"
+                                    color="text.secondary"
+                                    className="request-card-description"
+                                    style={{
+                                        marginBottom: '8px',
+                                        color: '#616161',
+                                    }}
+                                >
+                                    {description}
+                                </Typography>
+                                <Box
+                                    display="flex"
+                                    alignItems="center"
+                                    gap={1}
+                                    mt={1}
+                                >
+                                    <Typography
+                                        variant="body2"
+                                        className="request-card-date"
+                                        style={{
+                                            color: 'gray',
+                                        }}
+                                    >
+                                        <EventIcon
+                                            className="icon"
+                                            style={{
+                                                verticalAlign: 'middle',
+                                            }}
+                                        />
+                                        {date}
+                                    </Typography>
+                                </Box>
+                            </Grid2>
+                        </Grid2>
                     </CardContent>
                 </Card>
             </Box>

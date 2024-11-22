@@ -3,10 +3,14 @@ import React, { useState } from 'react';
 import '../styles/requests/local.css';
 import TabContainer from '../Components/Requests/TabContainer';
 import RequestCard from '../Components/Requests/RequestCard';
-import MobileNavbar from '../Components/Requests/MobileNavBar';
-import RequestButtonGroup from '../Components/Requests/RequestButtonGroup';
 import MobileRequestCard from '../Components/Requests/MobileRequestCard';
 import { useMediaQuery } from '@mui/material';
+import { validateDate } from '@mui/x-date-pickers';
+
+import ThreeDPrinterIcon from '../assets/3D_printer.svg';
+import LaserCutterIcon from '../assets/laser_cutter.svg';
+import CNCMillIcon from '../assets/laser_cutter.svg';
+import MakerbotReplicatorImg from '../assets/mb_replicator.jpeg';
 
 interface CardInfo {
     key: number;
@@ -18,8 +22,7 @@ interface CardInfo {
 
 const Requests = () => {
     const isMobile = useMediaQuery('(max-width:768px)');
-    const [selectedTab, setSelectedTab] = useState('requests');
-    const [status, setStatus] = useState('approved');
+    const [status, setStatus] = useState(0);
 
     const requests = [
         {
@@ -30,6 +33,7 @@ const Requests = () => {
                 'I plan on using this printer to print out a prototype.',
             date: 'Sep 5, 10:00-11:00AM',
             file: 'vinylfile.svg',
+            icon: ThreeDPrinterIcon,
         },
         {
             id: 2,
@@ -38,6 +42,7 @@ const Requests = () => {
             description: 'I plan on using this machine to cut out a model.',
             date: 'Sep 10, 10:00-11:00AM',
             file: 'vinylfile.svg',
+            icon: LaserCutterIcon,
         },
         {
             id: 3,
@@ -46,80 +51,58 @@ const Requests = () => {
             description: 'I plan on using this machine to cut out a model.',
             date: 'Sep 10, 10:00-11:00AM',
             file: 'vinylfile.svg',
+            icon: LaserCutterIcon,
         },
         {
             id: 4,
             status: 'rejected',
-            title: 'Laser Cutter',
-            description: 'I plan on using this machine to cut out a model.',
+            title: 'Maker Bot Replicator',
+            description: 'make a bomb',
             date: 'Sep 10, 10:00-11:00AM',
             file: 'vinylfile.svg',
+            icon: MakerbotReplicatorImg,
         },
     ];
 
+    const numberToStringMap: { [key: number]: string } = {
+        0: 'approved',
+        1: 'pending',
+        2: 'rejected',
+    };
+
     return (
         <div className="requestContainer">
-            {isMobile ? (
-                <>
-                    <NavBar id="request"></NavBar>
-                    <RequestButtonGroup value={status} onChange={setStatus} />
-                    <div className="request-list">
-                        {requests
-                            .filter((request) => request.status === status)
-                            .map((request) => (
-                                <MobileRequestCard
-                                    key={request.id}
-                                    status={request.status}
-                                    title={request.title}
-                                    description={request.description}
-                                    date={request.date}
-                                />
-                            ))}
-                    </div>
-                </>
-            ) : (
-                <>
-                    <NavBar id="request"></NavBar>
-                    <TabContainer
-                        approvedCards={requests
-                            .filter((request) => request.status === 'approved')
-                            .map((request) => (
-                                <RequestCard
-                                    key={request.id}
-                                    status={request.status}
-                                    title={request.title}
-                                    description={request.description}
-                                    date={request.date}
-                                    file={request.file}
-                                />
-                            ))}
-                        pendingCards={requests
-                            .filter((request) => request.status === 'pending')
-                            .map((request) => (
-                                <RequestCard
-                                    key={request.id}
-                                    status={request.status}
-                                    title={request.title}
-                                    description={request.description}
-                                    date={request.date}
-                                    file={request.file}
-                                />
-                            ))}
-                        rejectedCards={requests
-                            .filter((request) => request.status === 'rejected')
-                            .map((request) => (
-                                <RequestCard
-                                    key={request.id}
-                                    status={request.status}
-                                    title={request.title}
-                                    description={request.description}
-                                    date={request.date}
-                                    file={request.file}
-                                />
-                            ))}
-                    />
-                </>
-            )}
+            <NavBar id="request"></NavBar>
+            <TabContainer value={status} onChange={setStatus}>
+                {requests
+                    .filter(
+                        (request) =>
+                            request.status === numberToStringMap[Number(status)]
+                    )
+                    .map((request) =>
+                        isMobile ? (
+                            <MobileRequestCard
+                                key={request.id}
+                                status={request.status}
+                                title={request.title}
+                                description={request.description}
+                                date={request.date}
+                                file={request.file}
+                                icon={request.icon}
+                            />
+                        ) : (
+                            <RequestCard
+                                key={request.id}
+                                status={request.status}
+                                title={request.title}
+                                description={request.description}
+                                date={request.date}
+                                file={request.file}
+                                icon={request.icon}
+                            />
+                        )
+                    )}
+            </TabContainer>
         </div>
     );
 };
