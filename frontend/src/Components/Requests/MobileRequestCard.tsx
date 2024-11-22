@@ -13,10 +13,11 @@ import EditIcon from '@mui/icons-material/Edit';
 import EventIcon from '@mui/icons-material/Event';
 
 interface MobileRequestCardProps {
-    status: 'approved' | 'pending' | 'rejected';
+    status: 'approved' | 'pending' | 'rejected' | string;
     title: string;
     description: string;
     date: string;
+    file: string;
     icon: any;
 }
 

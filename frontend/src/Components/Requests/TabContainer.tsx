@@ -36,7 +36,7 @@ const TabContainer: React.FC<TabContainerProps> = ({
                     onChange={(event, newValue) => onChange(newValue)}
                     className="tab-bar"
                     sx={{
-                        backgroundColor: '#b39ddb',
+                        backgroundColor: '#E8DEF8',
                         borderRadius: '16px 16px 0 0',
                         color: '#483E5C',
                         '& .MuiTabs-indicator': {
