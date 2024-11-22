@@ -23,6 +23,10 @@ const Landing = () => {
   const handleCloseCreateAccountMobile = () => setIsMobileCreateAccountOpen(false); 
 
   const navigate = useNavigate();
+  const goToReservePage = ()=>{
+    // if not logged in, redirect to login.
+    navigate('/reserve');
+  }
 
   const goToLogin = () => {
     navigate('/login');
@@ -47,7 +51,7 @@ const Landing = () => {
                 <span className="word opacity-4">INSIDE THE MAKERSPACE</span> <br />
               </h1>
               <p className="subheading">Bring your ideas to life by reserving tools, equipment, and workspace today.</p>
-              <GetStartedButton></GetStartedButton>
+              <GetStartedButton onClick={goToReservePage}></GetStartedButton>
               <div className="auth-buttons2">
                 <LoginButton button_type='button' onClick={handleOpenLoginMobile}></LoginButton>
                 <br /><br />

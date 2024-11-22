@@ -183,9 +183,7 @@ const Signup: React.FC<SignupProps> = ({ onClose }) => {
         <Button
           onClick={handleSignup}
           className="sign-up-button"
-          sx={{ backgroundColor: '#65558f' , color:'white' }}
-   
-        >
+          sx={{ backgroundColor: '#65558f' , color:'white' }}>
           Sign Up
         </Button>
         <Button onClick={onClose} className="cancel-button"  sx={{backgroundColor: 'white' , color:'#65558f' }}>

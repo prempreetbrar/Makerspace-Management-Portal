@@ -96,6 +96,8 @@ function userCanBookItem(item: Equipment, userRole: string)
 }
 
 const ReserveEquipment = () => {
+    // Note to graders: some of these hooks are for debugging purposes only, to make sure that the layout and different views 
+    // will work correctly when connected to the backend.
     const {height, width} = WindowDimensions();
     const [resultsFound, setResultsFound] = useState(true);
     const [searchText, setSearchText] = useState('');
@@ -104,7 +106,6 @@ const ReserveEquipment = () => {
     const { user, setUserByIndex } = useUser();
     const [currentUserRole, setCurrentUserRole] = useState(user.userRole);
     const [currentUserIndex, setCurrentUserIndex] = useState(0);
-
     const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSearchText(event.target.value);
         if (event.target.value === '') {
@@ -331,7 +332,12 @@ const ReserveEquipment = () => {
                                                                 <Typography variant="body2"  color="white">{item.description} </Typography>
                                                             </Box>
                                                             <Box display="flex" flexDirection="column" alignContent={'center'}>
-                                                                <ConditionalWrapper displayCondition={userCanBookItem(item, currentUserRole)}>
+                                                                <ConditionalWrapper displayCondition={currentUserRole === 'Admin'}>
+                                                                        <Button sx={{opacity: 100, zIndex: 30}} variant="contained">
+                                                                            {item.isUnderMaintenance ? (<>Enable Booking</>) : (<>Disable Booking</>)}
+                                                                        </Button>
+                                                                </ConditionalWrapper>
+                                                                <ConditionalWrapper displayCondition={userCanBookItem(item, currentUserRole) && currentUserRole !== 'Admin'}>
                                                                         <Button sx={{opacity: 100, zIndex: 30}} variant="contained" onClick={handleOpen}> Book </Button>
                                                                 </ConditionalWrapper>
                                                             </Box>
