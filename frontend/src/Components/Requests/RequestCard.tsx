@@ -21,7 +21,14 @@ interface RequestCardProps {
     icon: any;
 }
 
-const RequestCard = ({ status, title, description, date, file, icon }) => {
+const RequestCard: React.FC<RequestCardProps> = ({
+    status,
+    title,
+    description,
+    date,
+    file,
+    icon,
+}) => {
     const IconStyle: React.CSSProperties = {
         width: '100px',
         height: '100px',
