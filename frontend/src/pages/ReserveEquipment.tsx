@@ -96,6 +96,8 @@ function userCanBookItem(item: Equipment, userRole: string)
 }
 
 const ReserveEquipment = () => {
+    // Note to graders: some of these hooks are for debugging purposes only, to make sure that the layout and different views 
+    // will work correctly when connected to the backend.
     const {height, width} = WindowDimensions();
     const [resultsFound, setResultsFound] = useState(true);
     const [searchText, setSearchText] = useState('');
@@ -104,7 +106,6 @@ const ReserveEquipment = () => {
     const { user, setUserByIndex } = useUser();
     const [currentUserRole, setCurrentUserRole] = useState(user.userRole);
     const [currentUserIndex, setCurrentUserIndex] = useState(0);
-
     const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSearchText(event.target.value);
         if (event.target.value === '') {
@@ -169,6 +170,12 @@ const ReserveEquipment = () => {
         p: { xs: 1, s: 2, md: 4 },
     };
 
+    const equipmentCardWidth = 
+    {
+        xs: '350px',
+        md: '225px',
+    }
+
     const hoverBoxStyle = 
     {
         opacity: 0,
@@ -179,7 +186,7 @@ const ReserveEquipment = () => {
         position: 'absolute',
         backgroundColor: 'black',
         zIndex: 20,
-        width: '350px',
+        width: equipmentCardWidth,
         height: 
         {
             xs: 150,
@@ -197,7 +204,7 @@ const ReserveEquipment = () => {
     {
         border: '0px solid black',
         backgroundColor: "FFFAFA",
-        width: '350px',
+        width: equipmentCardWidth,
         boxShadow: 5,
         height: 
         { 
@@ -264,13 +271,14 @@ const ReserveEquipment = () => {
                                     width: '100%',
                                     borderRadius: 2,
                                 }}
+                                placeholder='Search for equipment...'
                                 value={searchText}
                                 onChange={handleSearch}
                             />
                         </Box>
                         <Modal open={open} onClose={handleClose}>
                             <Box sx={ModalStyle} borderColor={'white'}>
-                                <BookingCalendar onClose={handleClose} userRole={currentUserRole}/>
+                                <BookingCalendar onClose={handleClose} onSubmit={handleClose} userRole={currentUserRole}/>
                             </Box>
                         </Modal>
                             {displayModel.length === 0 &&
@@ -301,7 +309,7 @@ const ReserveEquipment = () => {
                                                     </ConditionalWrapper>
                                                     {/* Conditionally render the star icon if the item is premium */}
                                                     <ConditionalWrapper displayCondition={item.isPremium}>
-                                                        <StarsIcon sx={{position: 'absolute', top: '10px', right: '10px', fontSize: '30px'}}/>
+                                                        <StarsIcon sx={{position: 'absolute', top: '10px', right: '10px', fontSize: '30px', color: '#e3c011', borderRadius: '30px'}}/>
                                                     </ConditionalWrapper>
                                                     <CardContent sx={{textAlign: 'center', position: 'static'}}>
                                                         <ConditionalWrapper displayCondition={item.icon !== undefined}>
@@ -323,8 +331,13 @@ const ReserveEquipment = () => {
                                                             <Box sx={{height: {xs: '150px', md: '157.5px'}}}>
                                                                 <Typography variant="body2"  color="white">{item.description} </Typography>
                                                             </Box>
-                                                            <Box>
-                                                                <ConditionalWrapper displayCondition={userCanBookItem(item, currentUserRole)}>
+                                                            <Box display="flex" flexDirection="column" alignContent={'center'}>
+                                                                <ConditionalWrapper displayCondition={currentUserRole === 'Admin'}>
+                                                                        <Button sx={{opacity: 100, zIndex: 30}} variant="contained">
+                                                                            {item.isUnderMaintenance ? (<>Enable Booking</>) : (<>Disable Booking</>)}
+                                                                        </Button>
+                                                                </ConditionalWrapper>
+                                                                <ConditionalWrapper displayCondition={userCanBookItem(item, currentUserRole) && currentUserRole !== 'Admin'}>
                                                                         <Button sx={{opacity: 100, zIndex: 30}} variant="contained" onClick={handleOpen}> Book </Button>
                                                                 </ConditionalWrapper>
                                                             </Box>

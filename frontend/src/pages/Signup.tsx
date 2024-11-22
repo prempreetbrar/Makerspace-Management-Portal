@@ -19,7 +19,6 @@ const Signup: React.FC<SignupProps> = ({ onClose }) => {
 
   const [error, setError] = useState<string | null>(null);
   const [passwordError, setPasswordError] = useState<string | null>(null);
-  const [studentNumberError, setStudentNumberError] = useState<string | null>(null);
   const [touched, setTouched] = useState({
     firstName: false,
     lastName: false,
@@ -37,7 +36,6 @@ const Signup: React.FC<SignupProps> = ({ onClose }) => {
     }));
     setError(null); 
     setPasswordError(null); 
-    setStudentNumberError(null); 
   };
 
   const handleBlur = (field: string) => {
@@ -50,14 +48,6 @@ const Signup: React.FC<SignupProps> = ({ onClose }) => {
   const validatePassword = (password: string) => {
     if (password.length < 8) {
       setPasswordError('Password must be at least 8 characters.');
-      return false;
-    }
-    return true;
-  };
-
-  const validateStudentNumber = (studentNumber: string) => {
-    if (!/^\d+$/.test(studentNumber)) {
-      setStudentNumberError('Student number must be numeric.');
       return false;
     }
     return true;
@@ -86,12 +76,7 @@ const Signup: React.FC<SignupProps> = ({ onClose }) => {
     if (!validatePassword(formData.password)) {
       return;
     }
-
-   
-    if (!validateStudentNumber(formData.studentNumber)) {
-      return;
-    }
-
+    
     console.log('User Data:', formData);
     onClose();
   };
@@ -183,9 +168,7 @@ const Signup: React.FC<SignupProps> = ({ onClose }) => {
         <Button
           onClick={handleSignup}
           className="sign-up-button"
-          sx={{ backgroundColor: '#65558f' , color:'white' }}
-   
-        >
+          sx={{ backgroundColor: '#65558f' , color:'white' }}>
           Sign Up
         </Button>
         <Button onClick={onClose} className="cancel-button"  sx={{backgroundColor: 'white' , color:'#65558f' }}>
