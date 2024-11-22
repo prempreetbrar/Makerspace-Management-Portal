@@ -278,7 +278,7 @@ const ReserveEquipment = () => {
                         </Box>
                         <Modal open={open} onClose={handleClose}>
                             <Box sx={ModalStyle} borderColor={'white'}>
-                                <BookingCalendar onClose={handleClose} userRole={currentUserRole}/>
+                                <BookingCalendar onClose={handleClose} onSubmit={handleClose} userRole={currentUserRole}/>
                             </Box>
                         </Modal>
                             {displayModel.length === 0 &&
