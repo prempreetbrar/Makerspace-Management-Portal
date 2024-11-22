@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import '../styles/profile_link.css';
+import { Link } from 'react-router-dom';
 
 const ProfileLink = () => {
   const [isPopupVisible, setIsPopupVisible] = useState(false);
@@ -16,7 +17,7 @@ const ProfileLink = () => {
       {isPopupVisible && (
         <div className="popup-menu">
           <ul>
-            <li>Profile</li>
+            <li><Link to="/profile" style={{textDecoration: 'none', color: 'black'}}>Profile</Link></li>
             <li>Logout</li>
           </ul>
         </div>

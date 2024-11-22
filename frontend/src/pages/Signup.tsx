@@ -113,7 +113,7 @@ const Signup: React.FC<SignupProps> = ({ onClose }) => {
           className="text-field"
           required
           error={(touched.lastName || error !== null) && !formData.lastName}
-          helperText={(touched.lastName || error !== null) && !formData.lastName ? 'This field is required.' : ''}
+          helperText={(touched.lastName || error) && !formData.lastName ? 'This field is required.' : ''}
         />
 
         <TextField
@@ -129,7 +129,7 @@ const Signup: React.FC<SignupProps> = ({ onClose }) => {
           className="text-field"
           required
           error={(touched.email || error !== null) && !formData.email}
-          helperText={(touched.email || error !== null) && !formData.email ? 'This field is required.' : ''}
+          helperText={(touched.email || error) && !formData.email ? 'This field is required.' : ''}
         />
         <TextField
           margin="normal"
@@ -143,8 +143,8 @@ const Signup: React.FC<SignupProps> = ({ onClose }) => {
           variant="outlined"
           className="text-field"
           required
-          error={(touched.password || error !== null || passwordError!== null) && !formData.password}
-          helperText={(touched.password || error !== null || passwordError) && !formData.password
+          error={(touched.password || error !== null|| passwordError !== null) && !formData.password}
+          helperText={(touched.password || error || passwordError) && !formData.password
             ? 'This field is required.'
             : passwordError}
         />
@@ -168,9 +168,7 @@ const Signup: React.FC<SignupProps> = ({ onClose }) => {
         <Button
           onClick={handleSignup}
           className="sign-up-button"
-          sx={{ backgroundColor: '#65558f' , color:'white' }}
-   
-        >
+          sx={{ backgroundColor: '#65558f' , color:'white' }}>
           Sign Up
         </Button>
         <Button onClick={onClose} className="cancel-button"  sx={{backgroundColor: 'white' , color:'#65558f' }}>

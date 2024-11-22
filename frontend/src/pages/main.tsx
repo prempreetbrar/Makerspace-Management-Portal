@@ -9,6 +9,7 @@ import Login from './Login.tsx'
 import Signup from './Signup.tsx'
 import Requests from "./Requests.tsx";
 import ReserveEquipment from "./ReserveEquipment.tsx";
+import Profile from "./Profile.tsx";
 import '../styles/index.css'
 import { UserProvider } from "../hooks/UserProvider.tsx";
 import ManageBookings from "./ManageBookings.tsx";
@@ -39,6 +40,10 @@ const router = createBrowserRouter([
     {
         path: "reserve",
         element: <ReserveEquipment />
+    },
+    {
+      path: "profile",
+      element: <Profile />
     },
     {
         path: "home",

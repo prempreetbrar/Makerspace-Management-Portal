@@ -6,7 +6,7 @@ import CreateAccountButton from './CreateAccountButton';
 import { Link, useNavigate } from 'react-router-dom';
 import NavLogo from "../assets/logo_grayscale.svg";
 import { useState } from 'react';
-import LoginPopover from './Loginpopover.tsx';
+import LoginPopover from './LoginPopover.tsx';
 import CreateAccountPopover from './CreateAccountPopover.tsx';
 import ProfileLink from './ProfileLink.tsx';
 
@@ -43,16 +43,16 @@ const NavBar = ({id}: { id: string }) => {
     };
 
     // For testing
-    var isLoggedIn = true
+    var isLoggedIn = true;
     var isAdmin = false;
     return (
       <header className="nav-bar-container">
         <nav className="navbar" id={id}>
             <div className='left'>
               <div className="logo-container">
-                <div className="logo-wrapper">
+                <a className="logo-wrapper" href='/home'>
                   <img className="logo" src={NavLogo} alt="React Logo" />
-                </div>
+                </a>
                 <p className='logo-text'>&nbsp;Makerspace</p>
               </div>
               <ul className="nav-links">

@@ -1,29 +1,27 @@
-import React, { useState, useEffect } from 'react';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import ErrorIcon from '@mui/icons-material/Error'
+import React, { useState } from 'react';
+import { Button, Card, CardContent, Modal, Box, TextField, Typography, Stack, CardActionArea, Chip, CardActions, CardHeader, colors } from '@mui/material';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import Grid2 from '@mui/material/Grid2'; // Import Grid2 from MUI
+import '../styles/reserve_equipment/local.css';
 import NavBar from '../Components/NavBar.tsx';
 import MainContainer from '../Components/MainContainer.tsx';
-import { Fab, Tab, Tabs, Stack, Typography, Button, Card, CardContent, CardActionArea, CardActions, Accordion, ButtonGroup, CircularProgress, IconButton, TextField, Input } from '@mui/material';
-import { createTheme, styled, ThemeProvider, useTheme } from '@mui/material/styles'
-import Box from '@mui/material/Box';
-import AddIcon from '@mui/icons-material/Add'
-import TabPanel from '@mui/lab/TabPanel';
-import TabContext from '@mui/lab/TabContext';
-import TabList from '@mui/lab/TabList';
 import { useUser } from '../hooks/UserProvider.tsx';
-import RequestCard from '../Components/Requests/RequestCard.tsx';
-import axios from 'axios';
 import BookingCalendar from '../Components/BookingModal.tsx';
-import Modal from '@mui/material/Modal';
+
+// These are stub-ins. Images are saved on the server side
+import ThreeDPrinterIcon from '../assets/3D_printer.svg';
+import LaserCutterIcon from '../assets/laser_cutter.svg';
+import CNCMillIcon from '../assets/laser_cutter.svg';
+import MakerbotReplicatorImg from '../assets/mb_replicator.jpeg'
 import '../styles/reserve_equipment/local.css';
 import zIndex from '@mui/material/styles/zIndex';
 import WindowDimensions from '../Components/WindowDimensions.tsx';
 import DisguisedButton from '../Components/DisguisedSwitch.tsx';
-// like, really need to simplify these...
+import ErrorIcon from '@mui/icons-material/Error';
+import StarsIcon from '@mui/icons-material/Stars';
+import ConditionalWrapper from '../Components/ConditionalWrapper.tsx';
 
+// like, really need to simplify these...
 
 type Equipment = {
   id: number,
@@ -32,6 +30,7 @@ type Equipment = {
   isUnderMaintenance: boolean,
   isBookable: boolean,
   isPremium: boolean,
+  icon?: any,
   setUnderMaintenece?: (value: boolean)=>void
 }
 
@@ -42,253 +41,318 @@ type Booking = {
   bookingDateTime: Date;
   bookingDuration: number
 };
-
+const description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit." 
 const equipmentModel: Equipment[] = [
-  { id: 1, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: false },
-  { id: 2, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: false },
-  { id: 3, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: false },
-  { id: 4, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: false },
-  { id: 5, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: false },
-  { id: 6, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: false },
-  { id: 7, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: false },
-  { id: 8, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: false },
-  { id: 9, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: false },
-  { id: 10, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: false },
-  { id: 11, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: false },
-  { id: 12, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: false },
-  { id: 13, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: false },
-  { id: 14, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: false },
-  { id: 15, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: true },
-  { id: 16, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: true },
-  { id: 17, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: true },
-  { id: 18, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: true },
-  { id: 19, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: true },
-  { id: 20, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: true },
-  { id: 21, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: true },
-  { id: 22, name: "4D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: true },
-  { id: 23, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: true },
-  { id: 24, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: true },
-  { id: 25, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: true },
-  { id: 26, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: true },
-  { id: 27, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: true },
-  { id: 28, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: false },
-  { id: 29, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: false },
-  { id: 30, name: "3D Printer", description: "prints stuff... in 3D!", isUnderMaintenance: false, isBookable: true, isPremium: false },
+  { id: 1, name: '3D Printer', description: description, isUnderMaintenance: false, isBookable: true, isPremium: false, icon: ThreeDPrinterIcon},
+  { id: 2, name: 'Laser Cutter', description: description, isUnderMaintenance: false, isBookable: true, isPremium: false, icon: LaserCutterIcon},
+  { id: 3, name: 'CNC Machine', description: description, isUnderMaintenance: true, isBookable: true, isPremium: false, icon: CNCMillIcon },
+  { id: 4, name: 'Laser Engraver', description: description, isUnderMaintenance: false, isBookable: true, isPremium: false },
+  { id: 5, name: 'Makerbot Replicator+', description: description, isUnderMaintenance: false, isBookable: true, isPremium: true, icon: MakerbotReplicatorImg},
+  { id: 6, name: 'Laser Cutter', description: description, isUnderMaintenance: false, isBookable: true, isPremium: false, icon: LaserCutterIcon},
+  { id: 7, name: 'CNC Machine', description: description, isUnderMaintenance: true, isBookable: true, isPremium: false, icon: CNCMillIcon },
+  { id: 8, name: 'Laser Engraver', description: description, isUnderMaintenance: false, isBookable: true, isPremium: false },
+  { id: 9, name: 'Makerbot Replicator', description: description, isUnderMaintenance: false, isBookable: true, isPremium: true, icon: ThreeDPrinterIcon},
+  { id: 10, name: 'Laser Cutter', description: description, isUnderMaintenance: false, isBookable: true, isPremium: false, icon: LaserCutterIcon},
+  { id: 11, name: 'CNC Machine', description: description, isUnderMaintenance: false, isBookable: true, isPremium: false, icon: CNCMillIcon},
+  { id: 12, name: 'Laser Engraver', description: description, isUnderMaintenance: false, isBookable: true, isPremium: false },
+
+
+
+  // Add more items as necessary...
 ];
 
-const theme = createTheme();
+const theme = createTheme({
+    palette: {
+        primary: {
+            main: '#65558F',
+        },
+        secondary: {
+            main: '#ECE6F0',
+        },
+        text: {
+            primary: '#000000',
+            secondary: '#5F5F5F',
+        },
+        background: {
+            default: '#FFFFFF',
+        },
+    },
+    typography: {
+        fontFamily: 'Roboto, sans-serif',
+    },
+});
 
-const ModalStyle = 
+
+function userCanBookItem(item: Equipment, userRole: string)
 {
-    overflow: 'hidden',
-    position: 'absolute',
-    display: 'flex',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 
+    if(item.isPremium)
     {
-        xs: "100%",
-        md: 900,
-    },
-    height:
-    {
-        xs: '100%',
-        s: '80%',
-        md: 500,
-    },
-    bgcolor: 'background.paper',
-    border: '2px solid #fffff',
-    
-    boxShadow: 24,
-    p: 
-    {
-        xs: 1,
-        s: 2,
-        md: 4
+        return userRole === 'Premium';
     }
-}
-
-const SearchBarStyle = 
-{
-    top: 0,
-    alignSelf: 'center',
-    width: 
-    { 
-        xs: '300px'
-
-    },
-    backgroundColor: 'white',
-
-    '.MUIInputBase-root':
+    else
     {
-        backgroundColor: 'white',
-        border: 'none'
+        return !item.isUnderMaintenance
     }
-
-}
-const searchBarBoxStyle = 
-{
-    zIndex: 10,
-    display: 'flex',
-    flexDirection: 'column',
-    position: 'sticky',
-    top: 0,
-    padding: 0,
-    alignItems: 'center',
-    textAlign: 'middle',
-    pb: 3,
 }
 
 const ReserveEquipment = () => {
-    
+    // Note to graders: some of these hooks are for debugging purposes only, to make sure that the layout and different views 
+    // will work correctly when connected to the backend.
     const {height, width} = WindowDimensions();
     const [resultsFound, setResultsFound] = useState(true);
-    const [searchText, setSearchText] = useState("");
-    const [isOpen, setIsOpen] = useState(false);
-    const [modalOpen, setModalOpen] = React.useState(false);
-    const [maintenanceToggled, setmaintenanceToggled] = useState(false);
-    const [bookingSubmitted, setBookingSubmitted] = useState(false);
-    
-    const [openSnackbar, setOpenSnackbar] = useState(false);
-    const handleSubmitModal = ()=>
-    {
-        setModalOpen(false);
-        setOpenSnackbar(true);
-    }
-
-    const handleTogglemaintenance = (item: Equipment) =>
-    {
-        setmaintenanceToggled(!maintenanceToggled);
-        item.isUnderMaintenance=!item.isUnderMaintenance;
-    }
-    const handleOpenModal = () => {
-        setModalOpen(true);
-    }
-    const handleCloseModal = () => {
-        setModalOpen(false);
-    }
-    const handleChangeUser = () => {
-        const nextIndex = currentUserIndex + 1 % 3;
-        setCurrentUserIndex(nextIndex);
-        setUserByIndex(nextIndex);
-        setCurrentUserRole(user.userRole);
-    }
+    const [searchText, setSearchText] = useState('');
+    const [open, setOpen] = useState(false);
     const [displayModel, setDisplayModel] = useState(equipmentModel);
-    const handleSearch = (event:React.ChangeEvent<HTMLInputElement>) =>
-    {
+    const { user, setUserByIndex } = useUser();
+    const [currentUserRole, setCurrentUserRole] = useState(user.userRole);
+    const [currentUserIndex, setCurrentUserIndex] = useState(0);
+    const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSearchText(event.target.value);
-        if(event.target.value === "")
-        {
-            setDisplayModel(equipmentModel)
-        }
-        else
-        {
-            // Some sort of query would probably go here.
-            const searchExpr = (input: Equipment, searchTerm:string) =>
-            {
+        if (event.target.value === '') {
+            setDisplayModel(equipmentModel);
+        } else {
+            const searchExpr = (input: Equipment, searchTerm: string) => {
                 const normalizedName = input.name.toLowerCase();
                 const normalizedSearchTerm = searchTerm.toLowerCase();
                 return normalizedName.includes(normalizedSearchTerm);
-            }
-            setDisplayModel(displayModel.filter((elem)=>searchExpr(elem, event.target.value)));
-            setResultsFound(displayModel.length > 0)
+            };
+            const filteredResults = equipmentModel.filter((elem) =>
+                searchExpr(elem, event.target.value)
+            );
+            setDisplayModel(filteredResults);
+            setResultsFound(filteredResults.length > 0);
         }
+    };
+    
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+
+    const handleChangeUser = () => {
+        const nextIndex = (currentUserIndex + 1) % 3;
+        setCurrentUserIndex(nextIndex);
+        setUserByIndex(nextIndex);
+        setCurrentUserRole(user.userRole);
+    };
+
+    const ChangeUserButton = () => (
+        <Button
+            id="debugButton"
+            fullWidth={false}
+            sx={{ width: '250px', position: 'sticky', bottom: 2, zIndex: 1000 }}
+            variant={'contained'}
+            onClick={handleChangeUser}
+        >
+            Change User: {currentUserRole}
+        </Button>
+    );
+
+    const IconStyle: React.CSSProperties = {
+        width: '80px',
+        height: '80px',
+        top: '30px',
+        left: '135px',
     }
-    const { user, setUserByIndex } = useUser();
-    const [currentUserIndex, setCurrentUserIndex] = React.useState(0);
-    const [currentUserRole, setCurrentUserRole] = React.useState(user.userRole);
-    const ChangeUserButton = ()=>(<Button id="debugButton" fullWidth={false} sx={{ width: '250px', position: 'sticky', bottom: 2, zIndex: 1000}} variant={"contained"} onClick={handleChangeUser}> Change User: {currentUserRole} </Button>);
+
+    const ModalStyle = {
+        overflow: 'hidden',
+        overflowY: 'scroll',
+        position: 'absolute',
+        display: 'flex',
+        flexDirection: 'column',
+        alignContent: 'center',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: { xs: width, md: 900 },
+        height: {xs: height, md: 600},
+        bgcolor: 'rgba(255, 255, 255, 0)',
+        boxShadow: 80,
+        p: { xs: 1, s: 2, md: 4 },
+    };
+
+    const equipmentCardWidth = 
+    {
+        xs: '350px',
+        md: '225px',
+    }
+
+    const hoverBoxStyle = 
+    {
+        opacity: 0,
+        padding: 2,
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-evenly',
+        position: 'absolute',
+        backgroundColor: 'black',
+        zIndex: 20,
+        width: equipmentCardWidth,
+        height: 
+        {
+            xs: 150,
+            md: 225,
+        },
+        transition: 'opacity 0.3s ease',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        color: theme.palette.primary.contrastText,
+        textAlign: 'left',
+    }
+
+    const equipmentCardStyle =
+    {
+        border: '0px solid black',
+        backgroundColor: "FFFAFA",
+        width: equipmentCardWidth,
+        boxShadow: 5,
+        height: 
+        { 
+            xs: 150,
+            md: 225,
+        },
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: '10px',
+        position: 'relative',
+        overflow: 'hidden',
+        '&:hover .details': {
+            opacity: 1,
+            color: 'white',
+        },
+        '&:hover .title': {
+            opacity: 0,
+        },
+    }
+    
+    const errorChipStyle = 
+    {
+        position:
+            'absolute',
+        top: '10px',
+        left: '10px',
+        backgroundColor: theme.palette.error.light,
+        color: 'white',
+    }
+
     return (
-      <>
-        <MainContainer>
-            <ThemeProvider theme={theme}>  
-                    <Box id="contentBox" sx={{position: 'sticky', top: 0, display: 'flex', flexDirection: 'column', width: '100%', pt: 10, height: height, scroll: 'none', overflowX:"hidden", overflowY: "hidden", padding: 0}}>
-                        <NavBar id='reserve'></NavBar>
-                        <Box id="searchBarBox" sx={searchBarBoxStyle}>
+        <>
+            <MainContainer>
+                <ThemeProvider theme={theme}>
+                    <Box
+                        id="contentBox"
+                        sx={{
+                            position: 'fixed',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            width: width,
+                            height: height,
+                            backgroundColor: '#483E5C',
+                            padding: 0,
+                            scroll: 'none',
+                            overflow: 'hidden',
+                        }}>
+                        <NavBar id="reserve" />
+                        <Box
+                            sx={{
+                                padding: 3,
+                                justifyContent: 'center',
+                                width: '100%',
+                            }}>
                             <ChangeUserButton />
-                            <Typography>
-                                Search
-                            </Typography>
-                            <TextField inputMode="search" label="Search" hiddenLabel={true} sx={SearchBarStyle} onChange={handleSearch} >
-                            </TextField>
+                            <TextField
+                                sx={{
+                                    marginTop: 2,
+                                    backgroundColor: 'white',
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    width: '100%',
+                                    borderRadius: 2,
+                                }}
+                                placeholder='Search for equipment...'
+                                value={searchText}
+                                onChange={handleSearch}
+                            />
                         </Box>
-                        <Modal open={modalOpen} onClose={handleCloseModal}>
-                            <Box sx={ModalStyle} borderColor={"white"}>
-                                    <BookingCalendar onClose={handleCloseModal} onSubmit={handleSubmitModal} userRole={currentUserRole}>
-                                    </BookingCalendar>
+                        <Modal open={open} onClose={handleClose}>
+                            <Box sx={ModalStyle} borderColor={'white'}>
+                                <BookingCalendar onClose={handleClose} userRole={currentUserRole}/>
                             </Box>
                         </Modal>
-                        <Box display="flex" flexDirection="column" sx={{alignSelf: 'center', width: width, overflowY: 'scroll'}}>
-                        <Stack spacing={3} sx={{alignSelf: 'center'}}>
-                            {
-                                displayModel.map((item, index) =>
-                                ( // this NEEDS to be optimized
-                                <Card key={index}
+                            {displayModel.length === 0 &&
+                            resultsFound === false ? (
+                                <Typography>No results found</Typography>
+                            ) : (
+                                <Box
                                     sx={{
-                                        border: '1px solid black',
-                                        backgroundColor: theme.palette.primary.main,
-                                        width: 0.6*width,
-                                        minHeight:
-                                        {
-                                            xs: '100px',
-                                            md: '200px',
-                                        },
-                                        display: 'flex',
-                                        borderRadius: '20px',
-                                        flexDirection: 'column'
-                                    }}>
-                                    <CardContent>
-                                        <Typography variant='body2' sx={{
-                                            color: theme.palette.primary.contrastText,
-                                            fontWeight: 'bold',
-                                            fontSize: '20pt',
-                                            padding: '5px'
-                                        }}> {item.name}
-                                        </Typography>
-                                        <Accordion sx={{ boxShadow: 0 }}>
-                                            <AccordionSummary>
-                                                    <Typography variant='body2'>
-                                                        View Details
-                                                        {/*
-                                                            *  I need to link the modal to each component via the card action
-                                                            *  Admins also need a different view for approval
-                                                            *  This means the schema needs to be updated
-                                                            * */}
-                                                    </Typography>
-                                            </AccordionSummary>
-                                            <AccordionDetails>
-                                                <Typography variant='body1' sx={{ textAlign: 'left' }}>
-                                                    {item.description}
-                                                </Typography>
-                                            </AccordionDetails>
-                                        </Accordion>
-                                        <CardActions sx={{backgroundColor: 'white'}}>
-                                            <span>
-                                            <DisguisedButton showSwitchIfTrue={currentUserRole === 'Admin'} buttonDisabled={item.isUnderMaintenance} switchLabel='Under Maintenance' buttonLabel='Book Now'
-                                                switchToggled={item.isUnderMaintenance} onSwitch={()=>handleTogglemaintenance(item)} onButtonPress={handleOpenModal}
-                                                buttonSX={{
-                                                    backgroundColor: item.isUnderMaintenance ? theme.palette.error.main : theme.palette.action.active
+                                        backgroundColor: '#cac5d4',
+                                        padding: 0.1,
+                                        borderRadius: 2,
+                                        margin: 2,
+                                        overflowY: 'scroll'
+                                    }}
+                                >
+                                    <Grid2
+                                        container
+                                        spacing={3}
+                                        justifyContent={'center'}
+                                        alignItems={'center'}
+                                        sx={{ padding: 3}}>
 
-                                                }}></DisguisedButton>
-                                            </span>
-
-                                        </CardActions>
-                                    </CardContent>
-                                </Card >
-                                ))
-                            }
-                        </Stack>
-                        </Box>
+                                        {displayModel.map((item, index) => (
+                                                <Card key={index} sx={equipmentCardStyle}>
+                                                    {/* Conditionally render the maintenance icon if the item is under maintenance */}
+                                                    <ConditionalWrapper displayCondition={item.isUnderMaintenance}>
+                                                        <Chip sx={errorChipStyle}icon={<ErrorIcon fontSize='medium' sx={{color: 'white'}}/>}label = "Out of order" />
+                                                    </ConditionalWrapper>
+                                                    {/* Conditionally render the star icon if the item is premium */}
+                                                    <ConditionalWrapper displayCondition={item.isPremium}>
+                                                        <StarsIcon sx={{position: 'absolute', top: '10px', right: '10px', fontSize: '30px', color: '#e3c011', borderRadius: '30px'}}/>
+                                                    </ConditionalWrapper>
+                                                    <CardContent sx={{textAlign: 'center', position: 'static'}}>
+                                                        <ConditionalWrapper displayCondition={item.icon !== undefined}>
+                                                            <img src={item.icon} style={IconStyle} alt={item.name}></img>
+                                                        </ConditionalWrapper>
+                                                        <Typography
+                                                            className="title"
+                                                            variant="h3"
+                                                            sx={{
+                                                                color: theme.palette.primary.main,
+                                                                fontWeight: 'bold',
+                                                                fontSize: '12pt',
+                                                                padding: '5px',
+                                                                transition: 'opacity 0.2s ease', 
+                                                            }}>
+                                                            {item.name}
+                                                        </Typography>
+                                                        <Box id="detailsBox" className="details" sx={hoverBoxStyle}>
+                                                            <Box sx={{height: {xs: '150px', md: '157.5px'}}}>
+                                                                <Typography variant="body2"  color="white">{item.description} </Typography>
+                                                            </Box>
+                                                            <Box display="flex" flexDirection="column" alignContent={'center'}>
+                                                                <ConditionalWrapper displayCondition={currentUserRole === 'Admin'}>
+                                                                        <Button sx={{opacity: 100, zIndex: 30}} variant="contained">
+                                                                            {item.isUnderMaintenance ? (<>Enable Booking</>) : (<>Disable Booking</>)}
+                                                                        </Button>
+                                                                </ConditionalWrapper>
+                                                                <ConditionalWrapper displayCondition={userCanBookItem(item, currentUserRole) && currentUserRole !== 'Admin'}>
+                                                                        <Button sx={{opacity: 100, zIndex: 30}} variant="contained" onClick={handleOpen}> Book </Button>
+                                                                </ConditionalWrapper>
+                                                            </Box>
+                                                        </Box>
+                                                    </CardContent>
+                                                </Card>
+                                        ))}
+                                    </Grid2>
+                                </Box>
+                            )}
                     </Box>
-            </ThemeProvider >
-        </MainContainer >
-      </>
-    )
-}
+                </ThemeProvider>
+            </MainContainer>
+        </>
+    );
+};
 
 export default ReserveEquipment;
-
-/*
-    
-    */

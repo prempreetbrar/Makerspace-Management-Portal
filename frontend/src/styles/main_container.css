@@ -1,18 +1,20 @@
 /* Styles for the MainContainer component */
 
 .container {
-  display: flex;
-  flex-direction: column;
-  justify-content: start;
-  align-items: center;
-  padding: 0px;
-  width: 100%;
-  min-height: calc(100vh - 91px);
-  margin: 0 auto;
-  box-sizing: border-box;
-  color: #333;
-  background-color: #e6e6fa;
-  font-family: Arial, sans-serif;
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+    padding: 0px;
+    width: 100%;
+    min-height: calc(100vh - 91px);
+    margin: 0 auto;
+    box-sizing: border-box;
+    color: #333;
+    background-color: #e6e6fa;
+    font-family: Arial, sans-serif;
+    overflow: hidden;
 }
 
 /* Responsive adjustments */

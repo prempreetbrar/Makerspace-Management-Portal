@@ -1,8 +1,11 @@
 import '../styles/get_started_button.css';
-
-const GetStartedButton = () => {
+interface GetStartedButtonProps
+{
+    onClick: ()=>void
+}
+const GetStartedButton = ({onClick}:GetStartedButtonProps) => {
   return (
-    <button className="get-started-button">Get Started</button>
+    <button className="get-started-button" onClick={onClick}>Get Started</button>
   );
 };
 
