@@ -17,7 +17,7 @@ interface CardInfo {
 }
 
 const Requests = () => {
-    const isMobile = useMediaQuery('(max-width:786px)');
+    const isMobile = useMediaQuery('(max-width:768px)');
     const [selectedTab, setSelectedTab] = useState('requests');
     const [status, setStatus] = useState('approved');
 
@@ -61,10 +61,7 @@ const Requests = () => {
         <div className="requestContainer">
             {isMobile ? (
                 <>
-                    <MobileNavbar
-                        selectedTab={selectedTab}
-                        onTabChange={setSelectedTab}
-                    />
+                    <NavBar id="request"></NavBar>
                     <RequestButtonGroup value={status} onChange={setStatus} />
                     <div className="request-list">
                         {requests
