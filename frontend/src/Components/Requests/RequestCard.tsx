@@ -5,20 +5,18 @@ import DownloadIcon from '@mui/icons-material/CloudDownload';
 import EventIcon from '@mui/icons-material/Event';
 
 interface RequestCardProps {
-    status: 'approved' | 'pending' | 'rejected';
-    title: string;
-    description: string;
-    date: string;
-    file: string;
+    status?: string;
+    title?: string;
+    description?: string;
+    date?: string;
 }
 
-const RequestCard: React.FC<RequestCardProps> = ({
+const RequestCard = ({
     status,
     title,
     description,
     date,
-    file,
-}) => {
+}:RequestCardProps) => {
     return (
         <Card
             className="request-card"
@@ -64,12 +62,9 @@ const RequestCard: React.FC<RequestCardProps> = ({
                             sx={{
                                 verticalAlign: 'middle',
                             }}
-                        />{' '}
+                        />{''}
                         {date}
                     </Typography>
-                    <a href={`/${file}`} download className="card-file">
-                        <DownloadIcon className="icon" /> {file}
-                    </a>
                     <IconButton className="card-delete">
                         <DeleteIcon />
                     </IconButton>

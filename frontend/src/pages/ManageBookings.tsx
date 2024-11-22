@@ -138,30 +138,8 @@ const ManageBookings = () => {
                                 <Stack spacing={3} sx={{ alignSelf: 'center' }}>
                                     {
                                         templateRequests.filter(item => item.status === "pending").map((item, index) =>
-                                            <RequestCard userRole={user.userRole}>
-                                                <Box>
-                                                    <Typography key={index} variant='body2' sx={{
-                                                        color: 'black',
-                                                        fontWeight: 'bold',
-                                                        fontSize: '20pt',
-                                                    }}> {item.title}
-                                                    </Typography>
-                                                </Box>
-                                                <Box>
-                                                    <Accordion sx={{ boxShadow: 0 }}>
-                                                        <AccordionSummary>
-                                                            <Typography variant='body2'>
-                                                                View Details
-                                                            </Typography>
-                                                        </AccordionSummary>
-                                                        <AccordionDetails>
-                                                            <Typography variant='body1' sx={{ textAlign: 'left' }}>
-                                                                {item.description}
-                                                            </Typography>
-                                                        </AccordionDetails>
-                                                    </Accordion>
-                                                </Box>
-                                            </RequestCard>
+                                            <RequestCard userRole={user.userRole}/>
+
                                         )
                                     }
                                 </Stack>
@@ -176,30 +154,7 @@ const ManageBookings = () => {
                                 <Stack spacing={3} sx={{ alignSelf: 'center' }}>
                                     {
                                         templateRequests.filter(item => item.status === "denied").map((item, index) =>
-                                            <RequestCard>
-                                                <Box>
-                                                    <Typography key={index} variant='body2' sx={{
-                                                        color: 'black',
-                                                        fontWeight: 'bold',
-                                                        fontSize: '20pt',
-                                                    }}> {item.title}
-                                                    </Typography>
-                                                </Box>
-                                                <Box>
-                                                    <Accordion sx={{ boxShadow: 0 }}>
-                                                        <AccordionSummary>
-                                                            <Typography variant='body2'>
-                                                                View Details
-                                                            </Typography>
-                                                        </AccordionSummary>
-                                                        <AccordionDetails>
-                                                            <Typography variant='body1' sx={{ textAlign: 'left' }}>
-                                                                {item.description}
-                                                            </Typography>
-                                                        </AccordionDetails>
-                                                    </Accordion>
-                                                </Box>
-                                            </RequestCard>
+                                            <RequestCard />
                                         )
                                     }
                                 </Stack>
