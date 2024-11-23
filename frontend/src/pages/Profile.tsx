@@ -113,8 +113,19 @@ const Profile = () => {
                 variant="outlined"
                 sx={textFieldSX}
               />
-            </Grid>
-          )}
+            </Grid>)}
+            {isEditing && (
+            <Grid size={{ xs: 12 }}>
+              <TextField
+                label="Confirm Password"
+                fullWidth
+                type="password"
+                placeholder="Confirm new password"
+                onChange={handleChange("password")}
+                variant="outlined"
+                sx={textFieldSX}
+              />
+            </Grid>)}
         </Grid>
         <Box sx={{ mt: 4, display: "flex", justifyContent: "space-between" }}>
           {isEditing ? (
