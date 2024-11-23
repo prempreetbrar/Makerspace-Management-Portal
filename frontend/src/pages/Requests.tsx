@@ -6,8 +6,8 @@ import RequestCard from '../Components/Requests/RequestCard';
 import MobileRequestCard from '../Components/Requests/MobileRequestCard';
 import MobileIssueCard from '../Components/Requests/MobileIssueCard';
 import IssueCard from '../Components/Requests/IssueCard';
-import { Button, useMediaQuery } from '@mui/material';
-
+import { Box, Button, useMediaQuery } from '@mui/material';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import ThreeDPrinterIcon from '../assets/3D_printer.svg';
 import LaserCutterIcon from '../assets/laser_cutter.svg';
 import CNCMillIcon from '../assets/laser_cutter.svg';
@@ -103,6 +103,27 @@ const Requests = () => {
             icon: MakerbotReplicatorImg,
         },
     ];
+    const theme = createTheme({
+        palette: {
+            primary: {
+                main: '#65558F',
+            },
+            secondary: {
+                main: '#ECE6F0',
+            },
+            text: {
+                primary: '#000000',
+                secondary: '#5F5F5F',
+            },
+            background: {
+                default: '#FFFFFF',
+            },
+        },
+        typography: {
+            fontFamily: 'Roboto, sans-serif',
+        },
+    });
+    
 
     const issues: IssueCardInfo[] = [
         {
@@ -141,8 +162,15 @@ const Requests = () => {
 
     return (
         <div className="requestContainer">
+            <ThemeProvider theme={theme}>
             <NavBar id="request" />
+            <Box sx={{paddingTop: 3, paddingLeft:3,
+                                justifyContent: 'center',
+                                width: '100%'
+                                }}>
             <ChangeUserButton />
+
+            </Box>
             <TabContainer value={status} onChange={setStatus} user={userState}>
                 {userState === 'admin'
                     ? status === 0
@@ -259,6 +287,7 @@ const Requests = () => {
                               )
                           )}
             </TabContainer>
+            </ThemeProvider>
         </div>
     );
 };
