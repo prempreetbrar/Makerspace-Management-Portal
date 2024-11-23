@@ -18,7 +18,6 @@ import { RequestsProvider } from '../hooks/RequestsProvider.tsx';
 import { request } from 'http';
 import { describe } from 'node:test';
 import RequestCard from '../Components/Requests/RequestCard.tsx';
-// like, really need to simplify these...
 
 type Booking = 
 {
@@ -54,14 +53,6 @@ const templateRequests = [requestTemplate1, requestTemplate1, requestTemplate2, 
 const theme = createTheme();
 const ManageBookings = () => {
 
-    {/* TO DO: 
-        * Fetch requests from the server
-        * Prerequisite: Need some sort of state to be implemented
-        * Possible workaround: Hardcode in the requests for a random user
-    << BIGGEST CHALLENGES  >>
-        * Admin vs Normal User view
-        * Getting a state
-    */}
     const { user, setUserByIndex } = useUser();
     const [currentUserIndex, setCurrentUserIndex] = React.useState(0);
     const [currentUserRole, setCurrentUserRole] = React.useState(user.userRole);
@@ -77,7 +68,6 @@ const ManageBookings = () => {
         setValue(newValue);
     };
 
-    const randomList: Array<String> = ["Apples", "Bananas", "Oranges", "Celery", "Carrots", "Avocados", "Pineapples", "Mangoes", "Potatoes", "Tomatoes", "Beans"];
     return (
         <>
         <NavBar id='manageBookings' />
@@ -100,30 +90,7 @@ const ManageBookings = () => {
                                 <Stack spacing={3} sx={{ alignSelf: 'center' }}>
                                     {
                                         templateRequests.filter(item => item.status === "approved").map((item, index) =>
-                                            <RequestCard>
-                                                <Box>
-                                                    <Typography key={index} variant='body2' sx={{
-                                                        color: 'black',
-                                                        fontWeight: 'bold',
-                                                        fontSize: '20pt',
-                                                    }}> {item.title}
-                                                    </Typography>
-                                                </Box>
-                                                <Box>
-                                                    <Accordion component={Typography} sx={{ boxShadow: 0 }}>
-                                                        <AccordionSummary>
-                                                            <Typography variant='body2'>
-                                                                View Details
-                                                            </Typography>
-                                                        </AccordionSummary>
-                                                        <AccordionDetails>
-                                                            <Typography variant='body1' sx={{ textAlign: 'left' }}>
-                                                                {item.description}
-                                                            </Typography>
-                                                        </AccordionDetails>
-                                                    </Accordion>
-                                                </Box>
-                                            </RequestCard>
+                                            <RequestCard status={''} title={''} description={''} date={''} file={''} icon={undefined} user={''}/>
                                         )
                                     }
                                 </Stack>
@@ -138,8 +105,7 @@ const ManageBookings = () => {
                                 <Stack spacing={3} sx={{ alignSelf: 'center' }}>
                                     {
                                         templateRequests.filter(item => item.status === "pending").map((item, index) =>
-                                            <RequestCard userRole={user.userRole}/>
-
+                                            <RequestCard user={user.userRole}/>
                                         )
                                     }
                                 </Stack>
@@ -154,7 +120,7 @@ const ManageBookings = () => {
                                 <Stack spacing={3} sx={{ alignSelf: 'center' }}>
                                     {
                                         templateRequests.filter(item => item.status === "denied").map((item, index) =>
-                                            <RequestCard />
+                                            <RequestCard key={index} user={user.userRole} />
                                         )
                                     }
                                 </Stack>

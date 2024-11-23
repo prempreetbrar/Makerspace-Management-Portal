@@ -14,13 +14,13 @@ import EventIcon from '@mui/icons-material/Event';
 import EditIcon from '@mui/icons-material/Edit';
 
 interface RequestCardProps {
-    status: 'approved' | 'pending' | 'rejected' | string;
-    title: string;
-    description: string;
-    date: string;
-    file: string;
-    icon: any;
-    user: string;
+    status?: 'approved' | 'pending' | 'rejected' | string;
+    title?: string;
+    description?: string;
+    date?: string;
+    file?: string;
+    icon?: any;
+    user?: string;
 }
 
 const RequestCard: React.FC<RequestCardProps> = ({
