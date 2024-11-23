@@ -3,12 +3,14 @@ import { Tabs, Tab, Box, ThemeProvider } from '@mui/material'; // Combine MUI im
 import theme from '../../theme'; // Correct relative import for your theme
 
 interface TabContainerProps {
+    user: string;
     value: number;
     onChange: (value: number) => void;
     children: React.ReactNode;
 }
 
 const TabContainer: React.FC<TabContainerProps> = ({
+    user,
     value,
     onChange,
     children,
@@ -52,7 +54,7 @@ const TabContainer: React.FC<TabContainerProps> = ({
                     variant="fullWidth"
                 >
                     <Tab
-                        label="Approved"
+                        label={user === 'admin' ? 'Requests' : 'Approved'}
                         className="custom-tab"
                         sx={{
                             fontWeight: 'bold',
@@ -73,7 +75,7 @@ const TabContainer: React.FC<TabContainerProps> = ({
                         }}
                     />
                     <Tab
-                        label="Pending"
+                        label={user === 'admin' ? 'Issues' : 'Pending'}
                         className="custom-tab"
                         sx={{
                             fontWeight: 'bold',
@@ -93,7 +95,11 @@ const TabContainer: React.FC<TabContainerProps> = ({
                         }}
                     />
                     <Tab
-                        label="Rejected"
+                        label={
+                            user === 'admin'
+                                ? 'Scheduled Maintenance'
+                                : 'Rejected'
+                        }
                         className="custom-tab"
                         sx={{
                             fontWeight: 'bold',

@@ -13,24 +13,22 @@ import DownloadIcon from '@mui/icons-material/CloudDownload';
 import EventIcon from '@mui/icons-material/Event';
 import EditIcon from '@mui/icons-material/Edit';
 
-interface RequestCardProps {
-    status: 'approved' | 'pending' | 'rejected' | string;
+interface IssueCardProps {
     title: string;
     description: string;
     date: string;
-    file: string;
     icon: any;
-    user: string;
+    isResolved: boolean;
+    status: number;
 }
 
-const RequestCard: React.FC<RequestCardProps> = ({
-    status,
+const IssueCard: React.FC<IssueCardProps> = ({
     title,
     description,
     date,
-    file,
     icon,
-    user,
+    isResolved,
+    status,
 }) => {
     const IconStyle: React.CSSProperties = {
         width: '100px',
@@ -99,49 +97,18 @@ const RequestCard: React.FC<RequestCardProps> = ({
                                 />{' '}
                                 {date}
                             </Typography>
-                            <Typography
-                                variant="body2"
-                                className="card-date"
+                            <Box
+                                className="download-link"
                                 sx={{
                                     flex: '1',
-                                    color: '#757575',
                                 }}
-                            >
-                                <DownloadIcon
-                                    className="icon"
-                                    sx={{
-                                        verticalAlign: 'middle',
-                                        color: '#757575',
-                                    }}
-                                />{' '}
-                                {file}
-                            </Typography>
+                            ></Box>
                         </Box>
-                    </Grid2>
-                    <Grid2 size="auto">
-                        {user !== 'admin' && (
-                            <Box
-                                className="icon-box"
-                                sx={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                }}
-                            >
-                                <IconButton className="card-delete">
-                                    <DeleteIcon />
-                                </IconButton>
-                                {status === 'pending' && (
-                                    <IconButton className="card-edit">
-                                        <EditIcon />
-                                    </IconButton>
-                                )}
-                            </Box>
-                        )}
                     </Grid2>
                 </Grid2>
 
-                {user === 'admin' && (
-                    <Grid2 container spacing={2}>
+                {isResolved == false ? (
+                    <Grid2 container>
                         <Grid2 size="grow"></Grid2>
                         <Grid2>
                             <Button
@@ -156,7 +123,7 @@ const RequestCard: React.FC<RequestCardProps> = ({
                                     fontWeight: 'bold',
                                 }}
                             >
-                                Reject
+                                Set Out-Of-Order
                             </Button>
                             <Button
                                 sx={{
@@ -166,13 +133,20 @@ const RequestCard: React.FC<RequestCardProps> = ({
                                     borderRadius: 2,
                                     boxShadow: '0px 1px 8px rgba(0, 0, 0, 0.7)',
                                     marginLeft: '15px',
-                                    paddingLeft: '30px',
-                                    paddingRight: '30px',
+                                    paddingLeft: '50px',
+                                    paddingRight: '50px',
                                     fontWeight: 'bold',
                                 }}
                             >
-                                Approve
+                                Resolve
                             </Button>
+                        </Grid2>
+                    </Grid2>
+                ) : (
+                    <Grid2 container spacing={2}>
+                        <Grid2 size="grow"></Grid2>
+                        <Grid2>
+                            <Button>Remove</Button>
                         </Grid2>
                     </Grid2>
                 )}
@@ -181,4 +155,4 @@ const RequestCard: React.FC<RequestCardProps> = ({
     );
 };
 
-export default RequestCard;
+export default IssueCard;
