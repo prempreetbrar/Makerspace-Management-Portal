@@ -28,14 +28,17 @@ const Landing = () => {
     navigate('/reserve');
   }
 
-  const goToLogin = () => {
-    navigate('/login');
+  const goToReserve = () => {
+    navigate('/reserve');
   };
 
-  const goToSignUp = () => {
-    navigate('/signup');
+  const goToRequests = () => {
+    navigate('/requests');
   };
 
+  // For testing
+  var isLoggedIn = false;
+  var isAdmin = false;
   return (
     <>
       <NavBar id='landing'></NavBar>
@@ -53,10 +56,20 @@ const Landing = () => {
               <p className="subheading">Bring your ideas to life by reserving tools, equipment, and workspace today.</p>
               <GetStartedButton onClick={goToReservePage}></GetStartedButton>
               <div className="auth-buttons2">
-                <LoginButton button_type='button' onClick={handleOpenLoginMobile}></LoginButton>
-                <br /><br />
-                <CreateAccountButton button_type='button' onClick={handleOpenCreateAccountMobile}></CreateAccountButton>
-              </div>
+                    {isLoggedIn ? (
+                        <>
+                          <button type='button' className="equipment-button" onClick={goToReserve}>{isAdmin? 'Manage Equipment' : 'Reserve Equipment'}</button>
+                          <br /><br />
+                          <button type='button' className="reserve-button" onClick={goToRequests}>{isAdmin? 'Manage Reservations' : 'My Reservations'}</button>
+                        </>
+                    ) : (
+                        <>
+                          <LoginButton button_type='button' onClick={handleOpenLoginMobile}></LoginButton>
+                          <br /><br />
+                          <CreateAccountButton button_type='button' onClick={handleOpenCreateAccountMobile}></CreateAccountButton>
+                        </>
+                    )}
+                </div>
             </div>
           </div>
           <div className="illustration-container">

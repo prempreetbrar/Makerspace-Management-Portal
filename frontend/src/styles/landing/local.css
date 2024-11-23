@@ -2,7 +2,7 @@
  * Put styles for the landing page in here 
  */
 
-#landing {
+ #landing {
   display: flex;
 }
 
@@ -98,6 +98,45 @@
     font-size: 1.2rem;
     margin-bottom: 30px;
     color: #555;
+}
+
+.equipment-button {
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.auth-buttons2 .equipment-button {
+  width: 350px;
+}
+
+.equipment-button {
+  background-color: #5f5084;
+  color: #fff;
+  border: none;
+}
+
+.equipment-button:hover {
+  background-color: #5a54d1;
+}
+
+.reserve-button {
+  background-color: #fff;
+  color: #333;
+  border: 1px solid #333;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.reserve-button:hover {
+  background-color: #f0f0f0;
+}
+
+.auth-buttons2 .reserve-button {
+  width: 350px;
 }
 
 /* Responsive adjustments */
