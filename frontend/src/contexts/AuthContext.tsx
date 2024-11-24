@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import axios from 'axios';
+import axios from '../axios';
 
 export enum UserRoles {
     ADMIN = 'admin',
