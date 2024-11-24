@@ -1,6 +1,12 @@
 import React, { ReactNode } from 'react';
 import axios from 'axios';
 
+export enum UserRoles {
+    ADMIN = 'admin',
+    BASIC = 'basic',
+    PREMIUM = 'premium',
+}
+
 // just copied the columns word for word from the backend
 export interface User {
     email: string;
@@ -8,7 +14,7 @@ export interface User {
     lastName: string;
     password?: string;
     confirmPassword?: string;
-    userRole?: 'admin' | 'basic' | 'premium';
+    userRole?: UserRoles;
     // additional properties just cause there was miscommunication between the FE and BE
     [key: string]: unknown;
 }
@@ -94,7 +100,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
     };
 
-    const signup = async (userData: U) => {
+    const signup = async (userData: User) => {
         try {
             const response = await axios.post('/users/signup', userData);
             const data = response.data;

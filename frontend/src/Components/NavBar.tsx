@@ -1,16 +1,19 @@
-// This will probably need to take some props to change the displayed links depending on the page
-
 import '../styles/navbar.css';
 import LoginButton from './LoginButton';
 import CreateAccountButton from './CreateAccountButton';
 import { Link, useNavigate } from 'react-router-dom';
 import NavLogo from '../assets/logo_grayscale.svg';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import LoginPopover from './LoginPopover.tsx';
 import CreateAccountPopover from './CreateAccountPopover.tsx';
 import ProfileLink from './ProfileLink.tsx';
+import { AuthContext, UserRoles } from '../contexts/AuthContext.tsx';
 
 const NavBar = ({ id }: { id: string }) => {
+    const { user } = useContext(AuthContext)!;
+    const isLoggedIn = !!user;
+    const isAdmin = user?.userRole === UserRoles.ADMIN;
+
     const [anchorElLogin, setAnchorElLogin] = useState<HTMLElement | null>(
         null
     );
@@ -34,19 +37,6 @@ const NavBar = ({ id }: { id: string }) => {
     const handleCloseCreateAccount = () => setAnchorElCreate(null);
     const openCreateAccount = Boolean(anchorElCreate);
 
-    const navigate = useNavigate();
-
-    const goToLogin = () => {
-        navigate('/login');
-    };
-
-    const goToSignUp = () => {
-        navigate('/signup');
-    };
-
-    // For testing
-    var isLoggedIn = true;
-    var isAdmin = false;
     return (
         <header className="nav-bar-container">
             <nav className="navbar" id={id}>
@@ -106,9 +96,7 @@ const NavBar = ({ id }: { id: string }) => {
                     anchorEl={anchorElCreate}
                     openCreateAccount={openCreateAccount}
                     handleCloseCreateAccount={handleCloseCreateAccount}
-                    handleOpenLogin={function (): void {
-                        throw new Error('Function not implemented.');
-                    }}
+                    handleOpenLogin={handleOpenLogin}
                 />
             </nav>
         </header>

@@ -1,60 +1,62 @@
-import * as React from "react";
-import * as ReactDOM from "react-dom/client";
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
-import Landing from './Landing.tsx'
-import Login from './Login.tsx'
-import Signup from './Signup.tsx'
-import Requests from "./Requests.tsx";
-import ReserveEquipment from "./ReserveEquipment.tsx";
-import Profile from "./Profile.tsx";
-import '../styles/index.css'
-import { UserProvider } from "../hooks/UserProvider.tsx";
-import ManageBookings from "./ManageBookings.tsx";
+import * as React from 'react';
+import * as ReactDOM from 'react-dom/client';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import Landing from './Landing.tsx';
+import Login from './Login.tsx';
+import Signup from './Signup.tsx';
+import Requests from './Requests.tsx';
+import ReserveEquipment from './ReserveEquipment.tsx';
+import Profile from './Profile.tsx';
+import '../styles/index.css';
+import { UserProvider } from '../hooks/UserProvider.tsx';
+import ManageBookings from './ManageBookings.tsx';
+import { AuthContext, AuthProvider } from '../contexts/AuthContext.tsx';
 
 const router = createBrowserRouter([
     {
-        path: "/",
+        path: '/',
         element: <Landing />,
     },
     {
-        path: "login",
+        path: 'login',
         element: <Login />,
     },
     {
-        path: "signup",
-        element: <Signup onClose={function (): void {
-            throw new Error("Function not implemented.");
-        } } />,
+        path: 'signup',
+        element: (
+            <Signup
+                onClose={function (): void {
+                    throw new Error('Function not implemented.');
+                }}
+            />
+        ),
     },
     {
-        path: "manage",
-        element: <ManageBookings />
+        path: 'manage',
+        element: <ManageBookings />,
     },
     {
-        path: "requests",
-        element: <Requests />
+        path: 'requests',
+        element: <Requests />,
     },
     {
-        path: "reserve",
-        element: <ReserveEquipment />
+        path: 'reserve',
+        element: <ReserveEquipment />,
     },
     {
-      path: "profile",
-      element: <Profile />
+        path: 'profile',
+        element: <Profile />,
     },
     {
-        path: "home",
+        path: 'home',
         element: <Landing />,
-    }
+    },
 ]);
 
-ReactDOM.createRoot(document.getElementById("root")!).render(
+ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
-        <UserProvider>
+        <AuthProvider>
             <RouterProvider router={router} />
-        </UserProvider>
+        </AuthProvider>
     </React.StrictMode>
 );
