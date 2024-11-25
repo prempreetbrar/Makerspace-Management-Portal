@@ -55,9 +55,6 @@ const equipmentModel: Equipment[] = [
   { id: 10, name: 'Laser Cutter', description: description, isUnderMaintenance: false, isBookable: true, isPremium: false, icon: LaserCutterIcon},
   { id: 11, name: 'CNC Machine', description: description, isUnderMaintenance: false, isBookable: true, isPremium: false, icon: CNCMillIcon},
   { id: 12, name: 'Laser Engraver', description: description, isUnderMaintenance: false, isBookable: true, isPremium: false },
-
-
-
   // Add more items as necessary...
 ];
 
@@ -83,6 +80,7 @@ const theme = createTheme({
 });
 
 
+
 function userCanBookItem(item: Equipment, userRole: string)
 {
     if(item.isPremium)
@@ -98,6 +96,9 @@ function userCanBookItem(item: Equipment, userRole: string)
 const ReserveEquipment = () => {
     // Note to graders: some of these hooks are for debugging purposes only, to make sure that the layout and different views 
     // will work correctly when connected to the backend.
+
+    // How do I find out what user I am?
+    
     const {height, width} = WindowDimensions();
     const [resultsFound, setResultsFound] = useState(true);
     const [searchText, setSearchText] = useState('');

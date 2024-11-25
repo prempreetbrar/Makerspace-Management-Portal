@@ -4,7 +4,7 @@ import CreateAccountButton from './CreateAccountButton';
 import { Link, useNavigate } from 'react-router-dom';
 import NavLogo from '../assets/logo_grayscale.svg';
 import { useState, useContext } from 'react';
-import LoginPopover from './LoginPopover.tsx';
+import LoginPopover from './Loginpopover.tsx';
 import CreateAccountPopover from './CreateAccountPopover.tsx';
 import ProfileLink from './ProfileLink.tsx';
 import { AuthContext, UserRoles } from '../contexts/AuthContext.tsx';
