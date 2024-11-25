@@ -130,8 +130,10 @@ const ReserveEquipment = () => {
 
     const handleChangeUser = () => {
         const nextIndex = (currentUserIndex + 1) % 3;
+        console.log(nextIndex);
         setCurrentUserIndex(nextIndex);
         setUserByIndex(nextIndex);
+        console.log(user.email);
         setCurrentUserRole(user.userRole);
     };
 

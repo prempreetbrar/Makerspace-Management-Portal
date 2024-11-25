@@ -31,11 +31,14 @@ const UserContext = createContext({
 export const UserProvider = ({ children }: { children: ReactNode }) => {
 
     const [currentUserIndex, setCurrentUserIndex] = useState(0);
+    const [user, setCurrentUser] = useState(users[currentUserIndex]);
     const setUserByIndex = (index: number) => {
         setCurrentUserIndex(index % users.length);
+        setCurrentUser(users[currentUserIndex]);
+        console.log(currentUserIndex);
     };
     return (
-        <UserContext.Provider value={{ user: users[currentUserIndex], setUserByIndex }}>
+        <UserContext.Provider value={{ user: user, setUserByIndex }}>
             {children}
         </UserContext.Provider>
     );

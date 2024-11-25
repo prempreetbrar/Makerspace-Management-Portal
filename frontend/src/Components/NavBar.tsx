@@ -96,7 +96,7 @@ const NavBar = ({ id }: { id: string }) => {
                     anchorEl={anchorElCreate}
                     openCreateAccount={openCreateAccount}
                     handleCloseCreateAccount={handleCloseCreateAccount}
-                    handleOpenLogin={handleOpenLogin}
+                    handleOpenLogin={()=>handleOpenLogin}
                 />
             </nav>
         </header>
