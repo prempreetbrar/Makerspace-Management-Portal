@@ -20,7 +20,7 @@ export interface User {
 }
 
 interface AuthState {
-    user: User | null | undefined;
+    user: User | null;
     isLoading: boolean;
 }
 
@@ -31,7 +31,7 @@ enum AuthActionsTypes {
 
 interface AuthAction {
     type: AuthActionsTypes;
-    payload?: User;
+    payload: User | null;
 }
 
 export interface AuthContext {
@@ -78,7 +78,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         if (user) {
             dispatch({ type: AuthActionsTypes.LOGIN, payload: user });
         } else {
-            dispatch({ type: AuthActionsTypes.LOGOUT });
+            dispatch({ type: AuthActionsTypes.LOGOUT, payload: null });
         }
     }, []);
 
