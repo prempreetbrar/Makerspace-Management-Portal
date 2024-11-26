@@ -3,7 +3,8 @@ import { Popover, TextField, Button, Link } from '@mui/material';
 import '../styles/authentication/login/local.css';
 
 import CreateAccountPopover from './CreateAccountPopover.tsx';
-import { AuthContext } from '../contexts/AuthContext'; // Import AuthContext
+import { AuthContext } from '../contexts/AuthContext';
+import { ErrorWithStatusCode } from '../axios.ts';
 
 interface LoginPopoverProps {
     anchorEl: HTMLElement | null;
@@ -16,7 +17,7 @@ const LoginPopover: React.FC<LoginPopoverProps> = ({
     openLogin,
     handleCloseLogin,
 }) => {
-    const { login } = useContext(AuthContext)!; // Access login from AuthContext
+    const { login } = useContext(AuthContext)!;
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -38,11 +39,16 @@ const LoginPopover: React.FC<LoginPopoverProps> = ({
 
     const handleLogin = async () => {
         try {
-            await login(email, password);
-            handleCloseLogin();
-        } catch (err) {
-            console.error('Login failed:', err);
-            setError('Login failed. Please check your credentials.');
+            const { isSuccess, message } = await login(email, password);
+            if (isSuccess) {
+                handleCloseLogin();
+            } else {
+                setError(message);
+            }
+        } catch (err: unknown) {
+            if (err instanceof ErrorWithStatusCode) {
+                setError(err.message);
+            }
         }
     };
 

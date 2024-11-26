@@ -8,14 +8,15 @@ import {
     DialogTitle,
 } from '@mui/material';
 import '../styles/authentication/login/Login-mobile.css';
-import { AuthContext } from '../contexts/AuthContext'; // Import AuthContext
+import { AuthContext } from '../contexts/AuthContext';
+import { ErrorWithStatusCode } from '../axios';
 
 interface LoginProps {
     onClose?: () => void;
 }
 
 const Login: React.FC<LoginProps> = ({ onClose }) => {
-    const { login } = useContext(AuthContext)!; // Access login from context
+    const { login } = useContext(AuthContext)!;
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -28,13 +29,16 @@ const Login: React.FC<LoginProps> = ({ onClose }) => {
         }
 
         try {
-            await login(email, password);
-            if (onClose) {
+            const { isSuccess, message } = await login(email, password);
+            if (isSuccess && onClose) {
                 onClose();
+            } else {
+                setError(message);
             }
-        } catch (err) {
-            console.error(err);
-            setError('Login failed. Please check your credentials.');
+        } catch (err: unknown) {
+            if (err instanceof ErrorWithStatusCode) {
+                setError(err.message);
+            }
         }
     };
 

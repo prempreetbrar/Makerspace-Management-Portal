@@ -9,6 +9,7 @@ import {
 } from '@mui/material';
 import '../styles/authentication/login/Login-mobile.css';
 import { User, AuthContext } from '../contexts/AuthContext';
+import { ErrorWithStatusCode } from '../axios';
 
 interface SignupProps {
     onClose: () => void;
@@ -85,11 +86,16 @@ const Signup: React.FC<SignupProps> = ({ onClose }) => {
         }
 
         try {
-            await signup(formData);
-            onClose();
-        } catch (e) {
-            console.error(e);
-            setError('Signup failed. Please try again.');
+            const { isSuccess, message } = await signup(formData);
+            if (isSuccess) {
+                onClose();
+            } else {
+                setError(message);
+            }
+        } catch (err: unknown) {
+            if (err instanceof ErrorWithStatusCode) {
+                setError(err.message);
+            }
         }
 
         console.log('User Data:', formData);
