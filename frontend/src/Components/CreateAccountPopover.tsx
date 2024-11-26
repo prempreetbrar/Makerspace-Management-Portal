@@ -1,7 +1,8 @@
 import React, { useState, useContext } from 'react';
 import { Popover, TextField, Button, Link } from '@mui/material';
 import '../styles/authentication/login/local.css';
-import { AuthContext } from '../contexts/AuthContext'; // Import AuthContext
+import { AuthContext } from '../contexts/AuthContext';
+import { ErrorWithStatusCode } from '../axios';
 
 interface CreateAccountPopoverProps {
     anchorEl: HTMLElement | null;
@@ -16,7 +17,7 @@ const CreateAccountPopover: React.FC<CreateAccountPopoverProps> = ({
     handleCloseCreateAccount,
     handleOpenLogin,
 }) => {
-    const { signup } = useContext(AuthContext)!; // Access signup from AuthContext
+    const { signup } = useContext(AuthContext)!;
 
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
@@ -45,7 +46,7 @@ const CreateAccountPopover: React.FC<CreateAccountPopoverProps> = ({
         }
 
         try {
-            await signup({
+            const { isSuccess, message } = await signup({
                 firstName,
                 lastName,
                 studentNumber,
@@ -54,10 +55,15 @@ const CreateAccountPopover: React.FC<CreateAccountPopoverProps> = ({
                 confirmPassword,
             });
 
-            handleCloseCreateAccount();
-        } catch (err) {
-            console.error('Signup failed:', err);
-            setError('Signup failed. Please try again.');
+            if (isSuccess) {
+                handleCloseCreateAccount();
+            } else {
+                setError(message);
+            }
+        } catch (err: unknown) {
+            if (err instanceof ErrorWithStatusCode) {
+                setError(err.message);
+            }
         }
     };
 

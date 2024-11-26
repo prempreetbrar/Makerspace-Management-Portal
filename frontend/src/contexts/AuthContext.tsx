@@ -37,8 +37,8 @@ interface AuthAction {
 export interface AuthContext {
     user: User | null | undefined;
     isLoading: boolean;
-    login: (email: string, password: string) => Promise<void>;
-    signup: (userData: User) => Promise<void>;
+    login: (email: string, password: string) => AuthFunctionStatus;
+    signup: (userData: User) => AuthFunctionStatus;
     logout: () => void;
 }
 
@@ -53,6 +53,11 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
             return state;
     }
 };
+
+type AuthFunctionStatus = Promise<{
+    isSuccess: boolean;
+    message: string | null;
+}>;
 
 /*
   We "provide" the children with authentication context.
@@ -77,7 +82,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
     }, []);
 
-    const login = async (email: string, password: string) => {
+    const login = async (
+        email: string,
+        password: string
+    ): AuthFunctionStatus => {
         try {
             const response = await axios.post('/users/login', {
                 email,
@@ -89,18 +97,29 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             // dispatch ensures the user is available for the entire application.
             localStorage.setItem('user', JSON.stringify(data));
             dispatch({ type: AuthActionsTypes.LOGIN, payload: data });
+
+            return { isSuccess: true, message: 'success' };
         } catch (error: unknown) {
             if (axios.isAxiosError(error)) {
                 console.error(
                     'Login failed:',
                     error.response?.data || error.message
                 );
-                alert('Login failed. Please check your credentials.');
+
+                return {
+                    isSuccess: false,
+                    message: error.response?.data.message,
+                };
             }
         }
+
+        return {
+            isSuccess: false,
+            message: 'Something went wrong. Please try again later.',
+        };
     };
 
-    const signup = async (userData: User) => {
+    const signup = async (userData: User): AuthFunctionStatus => {
         try {
             const response = await axios.post('/users/signup', userData);
             const data = response.data;
@@ -112,15 +131,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             // for an account, we don't want them to have to log in manually, so we give them the logged in state.
             localStorage.setItem('user', JSON.stringify(data));
             dispatch({ type: AuthActionsTypes.LOGIN, payload: data });
+
+            return { isSuccess: true, message: 'success' };
         } catch (error: unknown) {
             if (axios.isAxiosError(error)) {
                 console.error(
                     'Signup failed:',
                     error.response?.data || error.message
                 );
-                alert('Signup failed. Please try again.');
+
+                return {
+                    isSuccess: false,
+                    message: error.response?.data.message,
+                };
             }
         }
+
+        return {
+            isSuccess: false,
+            message: 'Something went wrong. Please try again later.',
+        };
     };
 
     const logout = () => {
