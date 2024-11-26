@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import axios from '../axios'; // the
-import Axios from 'axios' // the module
+import Axios from 'axios'; // the module
 export enum UserRoles {
     ADMIN = 'admin',
     BASIC = 'basic',
@@ -91,12 +91,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 email,
                 password,
             });
-            const data = response.data;
+            const user = response.data?.user;
 
             // these two lines aren't redundant. localStorage remembers the user for future visits to the website.
             // dispatch ensures the user is available for the entire application.
-            localStorage.setItem('user', JSON.stringify(data));
-            dispatch({ type: AuthActionsTypes.LOGIN, payload: data });
+            localStorage.setItem('user', JSON.stringify(user));
+            dispatch({ type: AuthActionsTypes.LOGIN, payload: user });
 
             return { isSuccess: true, message: 'success' };
         } catch (error: unknown) {
@@ -122,15 +122,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const signup = async (userData: User): AuthFunctionStatus => {
         try {
             const response = await axios.post('/users/signup', userData);
-            const data = response.data;
+            const user = response.data?.user;
 
             // these two lines aren't redundant. localStorage remembers the user for future visits to the website.
             // dispatch ensures the user is available for the entire application.
-            //
-            // there's only two states. Either the user is logged in, or the user is logged out. After a user signs up
-            // for an account, we don't want them to have to log in manually, so we give them the logged in state.
-            localStorage.setItem('user', JSON.stringify(data));
-            dispatch({ type: AuthActionsTypes.LOGIN, payload: data });
+            localStorage.setItem('user', JSON.stringify(user));
+            dispatch({ type: AuthActionsTypes.LOGIN, payload: user });
 
             return { isSuccess: true, message: 'success' };
         } catch (error: unknown) {
@@ -155,7 +152,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const logout = () => {
         localStorage.removeItem('user');
-        dispatch({ type: AuthActionsTypes.LOGOUT });
+        dispatch({ type: AuthActionsTypes.LOGOUT, payload: null });
     };
 
     return (

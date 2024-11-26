@@ -65,13 +65,6 @@ const signup = errorsController.catchAsync(async (request, response) => {
     const cookie = _getAuthenticatedCookie();
     // https://stackoverflow.com/a/48231372
     response.cookie('jwt', token, cookie);
-    response.header('Access-Control-Allow-Origin', 'http://localhost');
-    response.header('Access-Control-Allow-Credentials', true);
-    response.header(
-        'Access-Control-Allow-Headers',
-        'Origin, X-Requested-With, Content-Type, Accept'
-    );
-
     response.status(201).json({
         status: 'success',
         token,
@@ -112,14 +105,6 @@ const login = errorsController.catchAsync(async (request, response) => {
     const token = _getAuthenticatedToken(user);
     const cookie = _getAuthenticatedCookie();
     response.cookie('jwt', token, cookie);
-    // https://stackoverflow.com/a/48231372
-    response.header('Access-Control-Allow-Origin', 'http://localhost');
-    response.header('Access-Control-Allow-Credentials', true);
-    response.header(
-        'Access-Control-Allow-Headers',
-        'Origin, X-Requested-With, Content-Type, Accept'
-    );
-
     response.status(200).json({
         status: 'success',
         token,
@@ -131,6 +116,7 @@ const isUserLoggedIn = errorsController.catchAsync(
     async (request, response, next) => {
         // 1) check if the JWT token was sent with the request. Either sent as header "Bearer: Token" or by browser as a cookie
         let token;
+
         if (
             request.headers.authorization &&
             request.headers.authorization.startsWith('Bearer') &&

@@ -9,6 +9,7 @@ dotenv.config({ path: `${__dirname}/config.env` });
 const express = require('express');
 const app = express();
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 
 const seedDatabase = require('./seed');
@@ -46,6 +47,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 app.use(cors(corsOptions));
 app.use(express.json()); // lets us have JSON bodies in our requests
+app.use(cookieParser()); // lets us parse cookies from our requests
 
 seedDatabase();
 app.use('/users', userRoutes);

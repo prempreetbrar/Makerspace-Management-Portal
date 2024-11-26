@@ -1,4 +1,9 @@
-import axios, { AxiosInstance } from 'axios';
+import axios, {
+    AxiosHeaders,
+    AxiosInstance,
+    InternalAxiosRequestConfig,
+} from 'axios';
+import Cookies from 'js-cookie';
 
 // The frontend will use its own port unless we manually intercept it and redirect it to the backend.
 const axiosInstance = axios.create({
@@ -6,6 +11,30 @@ const axiosInstance = axios.create({
 }) as AxiosInstance & typeof axios;
 
 axiosInstance.defaults.withCredentials = true;
+
+// add an interceptor to include the Authorization header in all requests, that way frontend doesn't have to repeat the same code
+// over and over for every request
+axiosInstance.interceptors.request.use(
+    (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
+        const token = Cookies.get('jwt');
+
+        if (token) {
+            if (!config.headers) {
+                config.headers = new AxiosHeaders();
+            }
+            (config.headers as AxiosHeaders).set(
+                'Authorization',
+                `Bearer ${token}`
+            );
+        }
+        return config;
+    },
+    (error) => {
+        // axios forces us to have some fallback if the interception fails
+        return Promise.reject(error);
+    }
+);
+
 // we still want to be able to use everything else that's on axios.
 Object.setPrototypeOf(axiosInstance, axios);
 

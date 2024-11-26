@@ -1,5 +1,19 @@
-import React, { useState, useContext} from 'react';
-import { Button, Card, CardContent, Modal, Box, TextField, Typography, Stack, CardActionArea, Chip, CardActions, CardHeader, colors } from '@mui/material';
+import React, { useState, useContext } from 'react';
+import {
+    Button,
+    Card,
+    CardContent,
+    Modal,
+    Box,
+    TextField,
+    Typography,
+    Stack,
+    CardActionArea,
+    Chip,
+    CardActions,
+    CardHeader,
+    colors,
+} from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Grid2 from '@mui/material/Grid2'; // Import Grid2 from MUI
 import '../styles/reserve_equipment/local.css';
@@ -12,7 +26,7 @@ import BookingCalendar from '../Components/ReserveEquipmentPage/BookingModal.tsx
 import ThreeDPrinterIcon from '../assets/3D_printer.svg';
 import LaserCutterIcon from '../assets/laser_cutter.svg';
 import CNCMillIcon from '../assets/laser_cutter.svg';
-import MakerbotReplicatorImg from '../assets/mb_replicator.jpeg'
+import MakerbotReplicatorImg from '../assets/mb_replicator.jpeg';
 import '../styles/reserve_equipment/local.css';
 import zIndex from '@mui/material/styles/zIndex';
 import WindowDimensions from '../Components/WindowDimensions.tsx';
@@ -20,54 +34,151 @@ import DisguisedButton from '../Components/DisguisedSwitch.tsx';
 import ErrorIcon from '@mui/icons-material/Error';
 import StarsIcon from '@mui/icons-material/Stars';
 import ConditionalWrapper from '../Components/ConditionalWrapper.tsx';
-import { AuthContext, AuthProvider, User, UserRoles } from '../contexts/AuthContext.tsx';
+import {
+    AuthContext,
+    AuthProvider,
+    User,
+    UserRoles,
+} from '../contexts/AuthContext.tsx';
 import { UserProvider } from '../hooks/UserProvider.tsx';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../axios.ts';
 import axios, { AxiosError } from 'axios';
 import { Search } from '@mui/icons-material';
 
-
 // a fallback state in case we are provided with bad context
 
 const axiosHeaders = {
-    'Access-Control-Allow-Origin': '*', 
-    'Content-Type': 'application/json'
-}
+    'Access-Control-Allow-Origin': '*',
+    'Content-Type': 'application/json',
+};
 
 type Equipment = {
-  id: number,
-  name: string,
-  description: string,
-  isUnderMaintenance: boolean,
-  isBookable: boolean,
-  isPremium: boolean,
-  icon?: any,
-  setUnderMaintenece?: (value: boolean)=>void
-}
+    id: number;
+    name: string;
+    description: string;
+    isUnderMaintenance: boolean;
+    isBookable: boolean;
+    isPremium: boolean;
+    icon?: any;
+    setUnderMaintenece?: (value: boolean) => void;
+};
 
 type Booking = {
-  id: number;
-  userEmail: string;
-  equipmentID: number;
-  bookingDateTime: Date;
-  bookingDuration: number
+    id: number;
+    userEmail: string;
+    equipmentID: number;
+    bookingDateTime: Date;
+    bookingDuration: number;
 };
-const description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit." 
+const description = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.';
 const equipmentModel: Equipment[] = [
-  { id: 1, name: '3D Printer', description: description, isUnderMaintenance: false, isBookable: true, isPremium: false, icon: ThreeDPrinterIcon},
-  { id: 2, name: 'Laser Cutter', description: description, isUnderMaintenance: false, isBookable: true, isPremium: false, icon: LaserCutterIcon},
-  { id: 3, name: 'CNC Machine', description: description, isUnderMaintenance: true, isBookable: true, isPremium: false, icon: CNCMillIcon },
-  { id: 4, name: 'Laser Engraver', description: description, isUnderMaintenance: false, isBookable: true, isPremium: false },
-  { id: 5, name: 'Makerbot Replicator+', description: description, isUnderMaintenance: false, isBookable: true, isPremium: true, icon: MakerbotReplicatorImg},
-  { id: 6, name: 'Laser Cutter', description: description, isUnderMaintenance: false, isBookable: true, isPremium: false, icon: LaserCutterIcon},
-  { id: 7, name: 'CNC Machine', description: description, isUnderMaintenance: true, isBookable: true, isPremium: false, icon: CNCMillIcon },
-  { id: 8, name: 'Laser Engraver', description: description, isUnderMaintenance: false, isBookable: true, isPremium: false },
-  { id: 9, name: 'Makerbot Replicator', description: description, isUnderMaintenance: false, isBookable: true, isPremium: true, icon: ThreeDPrinterIcon},
-  { id: 10, name: 'Laser Cutter', description: description, isUnderMaintenance: false, isBookable: true, isPremium: false, icon: LaserCutterIcon},
-  { id: 11, name: 'CNC Machine', description: description, isUnderMaintenance: false, isBookable: true, isPremium: false, icon: CNCMillIcon},
-  { id: 12, name: 'Laser Engraver', description: description, isUnderMaintenance: false, isBookable: true, isPremium: false },
-  // Add more items as necessary...
+    {
+        id: 1,
+        name: '3D Printer',
+        description: description,
+        isUnderMaintenance: false,
+        isBookable: true,
+        isPremium: false,
+        icon: ThreeDPrinterIcon,
+    },
+    {
+        id: 2,
+        name: 'Laser Cutter',
+        description: description,
+        isUnderMaintenance: false,
+        isBookable: true,
+        isPremium: false,
+        icon: LaserCutterIcon,
+    },
+    {
+        id: 3,
+        name: 'CNC Machine',
+        description: description,
+        isUnderMaintenance: true,
+        isBookable: true,
+        isPremium: false,
+        icon: CNCMillIcon,
+    },
+    {
+        id: 4,
+        name: 'Laser Engraver',
+        description: description,
+        isUnderMaintenance: false,
+        isBookable: true,
+        isPremium: false,
+    },
+    {
+        id: 5,
+        name: 'Makerbot Replicator+',
+        description: description,
+        isUnderMaintenance: false,
+        isBookable: true,
+        isPremium: true,
+        icon: MakerbotReplicatorImg,
+    },
+    {
+        id: 6,
+        name: 'Laser Cutter',
+        description: description,
+        isUnderMaintenance: false,
+        isBookable: true,
+        isPremium: false,
+        icon: LaserCutterIcon,
+    },
+    {
+        id: 7,
+        name: 'CNC Machine',
+        description: description,
+        isUnderMaintenance: true,
+        isBookable: true,
+        isPremium: false,
+        icon: CNCMillIcon,
+    },
+    {
+        id: 8,
+        name: 'Laser Engraver',
+        description: description,
+        isUnderMaintenance: false,
+        isBookable: true,
+        isPremium: false,
+    },
+    {
+        id: 9,
+        name: 'Makerbot Replicator',
+        description: description,
+        isUnderMaintenance: false,
+        isBookable: true,
+        isPremium: true,
+        icon: ThreeDPrinterIcon,
+    },
+    {
+        id: 10,
+        name: 'Laser Cutter',
+        description: description,
+        isUnderMaintenance: false,
+        isBookable: true,
+        isPremium: false,
+        icon: LaserCutterIcon,
+    },
+    {
+        id: 11,
+        name: 'CNC Machine',
+        description: description,
+        isUnderMaintenance: false,
+        isBookable: true,
+        isPremium: false,
+        icon: CNCMillIcon,
+    },
+    {
+        id: 12,
+        name: 'Laser Engraver',
+        description: description,
+        isUnderMaintenance: false,
+        isBookable: true,
+        isPremium: false,
+    },
+    // Add more items as necessary...
 ];
 
 const theme = createTheme({
@@ -91,42 +202,33 @@ const theme = createTheme({
     },
 });
 
-
-
-function userCanBookItem(item: Equipment, userRole: string | undefined)
-{  
-    if(userRole === undefined)
-    {
-        console.log("role is undefined");
+function userCanBookItem(item: Equipment, userRole: string | undefined) {
+    if (userRole === undefined) {
+        console.log('role is undefined');
         return false;
-    }
-    else if(item.isPremium)
-    {
+    } else if (item.isPremium) {
         return userRole === 'Premium';
-    }
-    else
-    {
-        return !item.isUnderMaintenance
+    } else {
+        return !item.isUnderMaintenance;
     }
 }
 
 const ReserveEquipment = () => {
-    // Note to graders: some of these hooks are for debugging purposes only, to make sure that the layout and different views 
+    // Note to graders: some of these hooks are for debugging purposes only, to make sure that the layout and different views
     // will work correctly when connected to the backend.
     const navigate = useNavigate();
-    const { user } = useContext(AuthContext)!; 
+    const { user } = useContext(AuthContext)!;
     // BLOCKED: Cannot deal with "possibly undefined" and "possibly null" -> when does this happen?
     const userProviderContext = useUser(); // dummy context
-    const {height, width} = WindowDimensions();
+    const { height, width } = WindowDimensions();
     const [resultsFound, setResultsFound] = useState(true);
     const [searchText, setSearchText] = useState('');
     const [open, setOpen] = useState(false);
     const [equipModel, setEquipModel] = useState<any>(undefined); // I don't know what the equipment model is
     const [displayModel, setDisplayModel] = useState(equipmentModel);
     const [loading, setLoading] = useState(false);
-    
-    function handleChangeUser()
-    {
+
+    function handleChangeUser() {
         userProviderContext.setUser();
     }
 
@@ -147,36 +249,30 @@ const ReserveEquipment = () => {
             setResultsFound(filteredResults.length > 0);
         }
     };
-    React.useEffect(()=>{
-
-        if(user === null || user === undefined)
-        {
-           navigate('/'); // just go home. 
+    React.useEffect(() => {
+        if (user === null || user === undefined) {
+            navigate('/'); // just go home.
         }
     }, [user, navigate, userProviderContext]);
 
     React.useEffect(() => {
         setLoading(true);
-        const fetchEquipment = async() =>
-        {
-            try{
-                const response = await axiosInstance.get('/equipment', {headers: axiosHeaders});
+        const fetchEquipment = async () => {
+            try {
+                const response = await axiosInstance.get('/equipment');
                 setEquipModel(response.data);
                 console.log(equipModel);
-                /* BLOCKED: 
+                /* BLOCKED:
                  * What is the format of the response?
                  * What is the type of error?
                  * How do I make this update?
-                */
-            }
-            catch(error: any)
-            {
-                console.log("Failed to fetch equipment");
+                 */
+            } catch (error: any) {
+                console.log('Failed to fetch equipment');
                 console.error(error.response.data);
             }
-        }
+        };
         fetchEquipment();
-        
     }, [loading]);
     console.log(equipModel);
     const handleOpen = () => setOpen(true);
@@ -186,23 +282,24 @@ const ReserveEquipment = () => {
         height: '80px',
         top: '30px',
         left: '135px',
-    }
-    const SearchBar = ()=>
-    {
-       return( <TextField
-            sx={{
-                marginTop: 2,
-                backgroundColor: 'white',
-                display: 'flex',
-                justifyContent: 'center',
-                width: '100%',
-                borderRadius: 2,
-            }}
-            placeholder='Search for equipment...'
-            value={searchText}
-            onChange={handleSearch}
-        />)
-    }
+    };
+    const SearchBar = () => {
+        return (
+            <TextField
+                sx={{
+                    marginTop: 2,
+                    backgroundColor: 'white',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    width: '100%',
+                    borderRadius: 2,
+                }}
+                placeholder="Search for equipment..."
+                value={searchText}
+                onChange={handleSearch}
+            />
+        );
+    };
 
     const ModalStyle = {
         overflow: 'hidden',
@@ -215,20 +312,18 @@ const ReserveEquipment = () => {
         left: '50%',
         transform: 'translate(-50%, -50%)',
         width: { xs: width, md: 900 },
-        height: {xs: height, md: 600},
+        height: { xs: height, md: 600 },
         bgcolor: 'rgba(255, 255, 255, 0)',
         boxShadow: 80,
         p: { xs: 1, s: 2, md: 4 },
     };
 
-    const equipmentCardWidth = 
-    {
+    const equipmentCardWidth = {
         xs: '350px',
         md: '225px',
-    }
+    };
 
-    const hoverBoxStyle = 
-    {
+    const hoverBoxStyle = {
         opacity: 0,
         padding: 2,
         display: 'flex',
@@ -238,8 +333,7 @@ const ReserveEquipment = () => {
         backgroundColor: 'black',
         zIndex: 20,
         width: equipmentCardWidth,
-        height: 
-        {
+        height: {
             xs: 150,
             md: 225,
         },
@@ -249,16 +343,14 @@ const ReserveEquipment = () => {
         transform: 'translate(-50%, -50%)',
         color: theme.palette.primary.contrastText,
         textAlign: 'left',
-    }
+    };
 
-    const equipmentCardStyle =
-    {
+    const equipmentCardStyle = {
         border: '0px solid black',
-        backgroundColor: "FFFAFA",
+        backgroundColor: 'FFFAFA',
         width: equipmentCardWidth,
         boxShadow: 5,
-        height: 
-        { 
+        height: {
             xs: 150,
             md: 225,
         },
@@ -276,17 +368,15 @@ const ReserveEquipment = () => {
         '&:hover .title': {
             opacity: 0,
         },
-    }
-    
-    const errorChipStyle = 
-    {
-        position:
-            'absolute',
+    };
+
+    const errorChipStyle = {
+        position: 'absolute',
         top: '10px',
         left: '10px',
         backgroundColor: theme.palette.error.light,
         color: 'white',
-    }
+    };
 
     // Why would user be null or undefined??
     return (
@@ -305,88 +395,204 @@ const ReserveEquipment = () => {
                             padding: 0,
                             scroll: 'none',
                             overflow: 'hidden',
-                        }}>
+                        }}
+                    >
                         <NavBar id="reserve" />
                         <Box
                             sx={{
                                 padding: 3,
                                 justifyContent: 'center',
                                 width: '100%',
-                            }}>
-                            <Button variant='contained' onClick={userProviderContext.setUser}>Change User: {userProviderContext.user.userRole} </Button>
+                            }}
+                        >
+                            <Button
+                                variant="contained"
+                                onClick={userProviderContext.setUser}
+                            >
+                                Change User: {userProviderContext.user.userRole}{' '}
+                            </Button>
                             <SearchBar />
                         </Box>
                         <Modal open={open} onClose={handleClose}>
                             <Box sx={ModalStyle} borderColor={'white'}>
-                                <BookingCalendar onClose={handleClose} onSubmit={handleClose} userRole={userProviderContext.user.userRole}/>
+                                <BookingCalendar
+                                    onClose={handleClose}
+                                    onSubmit={handleClose}
+                                    userRole={userProviderContext.user.userRole}
+                                />
                             </Box>
                         </Modal>
-                            {displayModel.length === 0 &&
-                            resultsFound === false ? (
-                                <Typography>No results found</Typography>
-                            ) : (
-                                <Box
-                                    sx={{
-                                        backgroundColor: '#cac5d4',
-                                        padding: 0.1,
-                                        borderRadius: 2,
-                                        margin: 2,
-                                        overflowY: 'scroll'
-                                    }}>
-                                    <Grid2
-                                        container
-                                        spacing={3}
-                                        justifyContent={'center'}
-                                        alignItems={'center'}
-                                        sx={{ padding: 3}}>
-
-                                        {displayModel.map((item, index) => (
-                                                <Card key={index} sx={equipmentCardStyle}>
-                                                    {/* Conditionally render the maintenance icon if the item is under maintenance */}
-                                                    <ConditionalWrapper displayCondition={item.isUnderMaintenance}>
-                                                        <Chip sx={errorChipStyle}icon={<ErrorIcon fontSize='medium' sx={{color: 'white'}}/>}label = "Out of order" />
-                                                    </ConditionalWrapper>
-                                                    {/* Conditionally render the star icon if the item is premium */}
-                                                    <ConditionalWrapper displayCondition={item.isPremium}>
-                                                        <StarsIcon sx={{position: 'absolute', top: '10px', right: '10px', fontSize: '30px', color: '#e3c011', borderRadius: '30px'}}/>
-                                                    </ConditionalWrapper>
-                                                    <CardContent sx={{textAlign: 'center', position: 'static'}}>
-                                                        <ConditionalWrapper displayCondition={item.icon !== undefined}>
-                                                            <img src={item.icon} style={IconStyle} alt={item.name}></img>
-                                                        </ConditionalWrapper>
-                                                        <Typography
-                                                            className="title"
-                                                            variant="h3"
+                        {displayModel.length === 0 && resultsFound === false ? (
+                            <Typography>No results found</Typography>
+                        ) : (
+                            <Box
+                                sx={{
+                                    backgroundColor: '#cac5d4',
+                                    padding: 0.1,
+                                    borderRadius: 2,
+                                    margin: 2,
+                                    overflowY: 'scroll',
+                                }}
+                            >
+                                <Grid2
+                                    container
+                                    spacing={3}
+                                    justifyContent={'center'}
+                                    alignItems={'center'}
+                                    sx={{ padding: 3 }}
+                                >
+                                    {displayModel.map((item, index) => (
+                                        <Card
+                                            key={index}
+                                            sx={equipmentCardStyle}
+                                        >
+                                            {/* Conditionally render the maintenance icon if the item is under maintenance */}
+                                            <ConditionalWrapper
+                                                displayCondition={
+                                                    item.isUnderMaintenance
+                                                }
+                                            >
+                                                <Chip
+                                                    sx={errorChipStyle}
+                                                    icon={
+                                                        <ErrorIcon
+                                                            fontSize="medium"
                                                             sx={{
-                                                                color: theme.palette.primary.main,
-                                                                fontWeight: 'bold',
-                                                                fontSize: '12pt',
-                                                                padding: '5px',
-                                                                transition: 'opacity 0.2s ease', 
-                                                            }}>
-                                                            {item.name}
+                                                                color: 'white',
+                                                            }}
+                                                        />
+                                                    }
+                                                    label="Out of order"
+                                                />
+                                            </ConditionalWrapper>
+                                            {/* Conditionally render the star icon if the item is premium */}
+                                            <ConditionalWrapper
+                                                displayCondition={
+                                                    item.isPremium
+                                                }
+                                            >
+                                                <StarsIcon
+                                                    sx={{
+                                                        position: 'absolute',
+                                                        top: '10px',
+                                                        right: '10px',
+                                                        fontSize: '30px',
+                                                        color: '#e3c011',
+                                                        borderRadius: '30px',
+                                                    }}
+                                                />
+                                            </ConditionalWrapper>
+                                            <CardContent
+                                                sx={{
+                                                    textAlign: 'center',
+                                                    position: 'static',
+                                                }}
+                                            >
+                                                <ConditionalWrapper
+                                                    displayCondition={
+                                                        item.icon !== undefined
+                                                    }
+                                                >
+                                                    <img
+                                                        src={item.icon}
+                                                        style={IconStyle}
+                                                        alt={item.name}
+                                                    ></img>
+                                                </ConditionalWrapper>
+                                                <Typography
+                                                    className="title"
+                                                    variant="h3"
+                                                    sx={{
+                                                        color: theme.palette
+                                                            .primary.main,
+                                                        fontWeight: 'bold',
+                                                        fontSize: '12pt',
+                                                        padding: '5px',
+                                                        transition:
+                                                            'opacity 0.2s ease',
+                                                    }}
+                                                >
+                                                    {item.name}
+                                                </Typography>
+                                                <Box
+                                                    id="detailsBox"
+                                                    className="details"
+                                                    sx={hoverBoxStyle}
+                                                >
+                                                    <Box
+                                                        sx={{
+                                                            height: {
+                                                                xs: '150px',
+                                                                md: '157.5px',
+                                                            },
+                                                        }}
+                                                    >
+                                                        <Typography
+                                                            variant="body2"
+                                                            color="white"
+                                                        >
+                                                            {item.description}{' '}
                                                         </Typography>
-                                                        <Box id="detailsBox" className="details" sx={hoverBoxStyle}>
-                                                            <Box sx={{height: {xs: '150px', md: '157.5px'}}}>
-                                                                <Typography variant="body2"  color="white">{item.description} </Typography>
-                                                            </Box>
-                                                            <Box display="flex" flexDirection="column" alignContent={'center'}>
-                                                                <ConditionalWrapper displayCondition={user?.userRole === UserRoles.ADMIN}>
-                                                                        <Button sx={{opacity: 100, zIndex: 30}} variant="contained">
-                                                                            {item.isUnderMaintenance ? (<>Enable Booking</>) : (<>Disable Booking</>)}
-                                                                        </Button>
-                                                                </ConditionalWrapper>
-                                                                <ConditionalWrapper displayCondition={userCanBookItem(item, user?.userRole)}>
-                                                                        <Button sx={{opacity: 100, zIndex: 30}} variant="contained" onClick={handleOpen}> Book </Button>
-                                                                </ConditionalWrapper>
-                                                            </Box>
-                                                        </Box>
-                                                    </CardContent>
-                                                </Card>
-                                        ))}
-                                    </Grid2>
-                                </Box>
-                            )}
+                                                    </Box>
+                                                    <Box
+                                                        display="flex"
+                                                        flexDirection="column"
+                                                        alignContent={'center'}
+                                                    >
+                                                        <ConditionalWrapper
+                                                            displayCondition={
+                                                                user?.userRole ===
+                                                                UserRoles.ADMIN
+                                                            }
+                                                        >
+                                                            <Button
+                                                                sx={{
+                                                                    opacity: 100,
+                                                                    zIndex: 30,
+                                                                }}
+                                                                variant="contained"
+                                                            >
+                                                                {item.isUnderMaintenance ? (
+                                                                    <>
+                                                                        Enable
+                                                                        Booking
+                                                                    </>
+                                                                ) : (
+                                                                    <>
+                                                                        Disable
+                                                                        Booking
+                                                                    </>
+                                                                )}
+                                                            </Button>
+                                                        </ConditionalWrapper>
+                                                        <ConditionalWrapper
+                                                            displayCondition={userCanBookItem(
+                                                                item,
+                                                                user?.userRole
+                                                            )}
+                                                        >
+                                                            <Button
+                                                                sx={{
+                                                                    opacity: 100,
+                                                                    zIndex: 30,
+                                                                }}
+                                                                variant="contained"
+                                                                onClick={
+                                                                    handleOpen
+                                                                }
+                                                            >
+                                                                {' '}
+                                                                Book{' '}
+                                                            </Button>
+                                                        </ConditionalWrapper>
+                                                    </Box>
+                                                </Box>
+                                            </CardContent>
+                                        </Card>
+                                    ))}
+                                </Grid2>
+                            </Box>
+                        )}
                     </Box>
                 </ThemeProvider>
             </MainContainer>
