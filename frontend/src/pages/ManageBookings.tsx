@@ -67,7 +67,6 @@ const ManageBookings = () => {
     const handleChange = (_event: React.SyntheticEvent, newValue: string) => {
         setValue(newValue);
     };
-
     return (
         <>
         <NavBar id='manageBookings' />

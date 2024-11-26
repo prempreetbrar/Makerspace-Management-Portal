@@ -2,9 +2,10 @@ import axios, { AxiosInstance } from 'axios';
 
 // The frontend will use its own port unless we manually intercept it and redirect it to the backend.
 const axiosInstance = axios.create({
-    baseURL: `${window.location.protocol}//${window.location.hostname}:8080`,
+    baseURL: `http://localhost:8080`,
 }) as AxiosInstance & typeof axios;
 
+axiosInstance.defaults.withCredentials = true;
 // we still want to be able to use everything else that's on axios.
 Object.setPrototypeOf(axiosInstance, axios);
 

@@ -21,7 +21,6 @@ const CreateAccountPopover: React.FC<CreateAccountPopoverProps> = ({
 
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
-    const [studentNumber, setStudentNumber] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -31,7 +30,6 @@ const CreateAccountPopover: React.FC<CreateAccountPopoverProps> = ({
         if (
             !firstName ||
             !lastName ||
-            !studentNumber ||
             !email ||
             !password ||
             !confirmPassword
@@ -49,7 +47,6 @@ const CreateAccountPopover: React.FC<CreateAccountPopoverProps> = ({
             const { isSuccess, message } = await signup({
                 firstName,
                 lastName,
-                studentNumber,
                 email,
                 password,
                 confirmPassword,
@@ -107,15 +104,6 @@ const CreateAccountPopover: React.FC<CreateAccountPopoverProps> = ({
                     variant="outlined"
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
-                />
-                <TextField
-                    margin="dense"
-                    label="Student Number"
-                    type="text"
-                    fullWidth
-                    variant="outlined"
-                    value={studentNumber}
-                    onChange={(e) => setStudentNumber(e.target.value)}
                 />
                 <TextField
                     margin="dense"

@@ -29,6 +29,7 @@ const sampleUser = {
 };
 
 const Profile = () => {
+    
   const [userDetails, setUserDetails] = useState(sampleUser);
   const [isEditing, setIsEditing] = useState(false);
 

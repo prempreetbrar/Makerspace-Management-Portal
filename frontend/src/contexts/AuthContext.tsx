@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
-import axios from '../axios';
-
+import axios from '../axios'; // the
+import Axios from 'axios' // the module
 export enum UserRoles {
     ADMIN = 'admin',
     BASIC = 'basic',
@@ -100,7 +100,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
             return { isSuccess: true, message: 'success' };
         } catch (error: unknown) {
-            if (axios.isAxiosError(error)) {
+            if (Axios.isAxiosError(error)) {
                 console.error(
                     'Login failed:',
                     error.response?.data || error.message
@@ -134,7 +134,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
             return { isSuccess: true, message: 'success' };
         } catch (error: unknown) {
-            if (axios.isAxiosError(error)) {
+            if (Axios.isAxiosError(error)) {
                 console.error(
                     'Signup failed:',
                     error.response?.data || error.message
