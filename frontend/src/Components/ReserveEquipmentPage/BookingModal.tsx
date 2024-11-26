@@ -12,7 +12,7 @@ import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import dayjs, { Dayjs } from "dayjs";
 import { TimePicker } from "@mui/x-date-pickers";
 import { CancelRounded, TheaterComedyOutlined } from "@mui/icons-material";
-import WindowDimensions from "./WindowDimensions";
+import WindowDimensions from "../WindowDimensions";
 const theme = createTheme();
 type TimeEntry = {
     time: string,

@@ -6,7 +6,7 @@ import '../styles/reserve_equipment/local.css';
 import NavBar from '../Components/NavBar.tsx';
 import MainContainer from '../Components/MainContainer.tsx';
 import { useUser } from '../hooks/UserProvider.tsx';
-import BookingCalendar from '../Components/BookingModal.tsx';
+import BookingCalendar from '../Components/ReserveEquipmentPage/BookingModal.tsx';
 
 // These are stub-ins. Images are saved on the server side
 import ThreeDPrinterIcon from '../assets/3D_printer.svg';
@@ -24,12 +24,16 @@ import { AuthContext, AuthProvider, User, UserRoles } from '../contexts/AuthCont
 import { UserProvider } from '../hooks/UserProvider.tsx';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../axios.ts';
-import { AxiosError } from 'axios';
+import axios, { AxiosError } from 'axios';
 import { Search } from '@mui/icons-material';
 
 
 // a fallback state in case we are provided with bad context
 
+const axiosHeaders = {
+    'Access-Control-Allow-Origin': '*', 
+    'Content-Type': 'application/json'
+}
 
 type Equipment = {
   id: number,
@@ -93,6 +97,7 @@ function userCanBookItem(item: Equipment, userRole: string | undefined)
 {  
     if(userRole === undefined)
     {
+        console.log("role is undefined");
         return false;
     }
     else if(item.isPremium)
@@ -111,7 +116,7 @@ const ReserveEquipment = () => {
     const navigate = useNavigate();
     const { user } = useContext(AuthContext)!; 
     // BLOCKED: Cannot deal with "possibly undefined" and "possibly null" -> when does this happen?
-    const userProviderContext = useUser();
+    const userProviderContext = useUser(); // dummy context
     const {height, width} = WindowDimensions();
     const [resultsFound, setResultsFound] = useState(true);
     const [searchText, setSearchText] = useState('');
@@ -155,7 +160,7 @@ const ReserveEquipment = () => {
         const fetchEquipment = async() =>
         {
             try{
-                const response = await axiosInstance.get('/equipment');
+                const response = await axiosInstance.get('/equipment', {headers: axiosHeaders});
                 setEquipModel(response.data);
                 console.log(equipModel);
                 /* BLOCKED: 
@@ -166,6 +171,7 @@ const ReserveEquipment = () => {
             }
             catch(error: any)
             {
+                console.log("Failed to fetch equipment");
                 console.error(error.response.data);
             }
         }
@@ -309,7 +315,6 @@ const ReserveEquipment = () => {
                             }}>
                             <Button variant='contained' onClick={userProviderContext.setUser}>Change User: {userProviderContext.user.userRole} </Button>
                             <SearchBar />
-                            
                         </Box>
                         <Modal open={open} onClose={handleClose}>
                             <Box sx={ModalStyle} borderColor={'white'}>
