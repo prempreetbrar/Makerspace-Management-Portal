@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext} from 'react';
 import { Button, Card, CardContent, Modal, Box, TextField, Typography, Stack, CardActionArea, Chip, CardActions, CardHeader, colors } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Grid2 from '@mui/material/Grid2'; // Import Grid2 from MUI
@@ -20,8 +20,16 @@ import DisguisedButton from '../Components/DisguisedSwitch.tsx';
 import ErrorIcon from '@mui/icons-material/Error';
 import StarsIcon from '@mui/icons-material/Stars';
 import ConditionalWrapper from '../Components/ConditionalWrapper.tsx';
+import { AuthContext, AuthProvider, User, UserRoles } from '../contexts/AuthContext.tsx';
+import { UserProvider } from '../hooks/UserProvider.tsx';
+import { useNavigate } from 'react-router-dom';
+import axiosInstance from '../axios.ts';
+import { AxiosError } from 'axios';
+import { Search } from '@mui/icons-material';
 
-// like, really need to simplify these...
+
+// a fallback state in case we are provided with bad context
+
 
 type Equipment = {
   id: number,
@@ -81,9 +89,13 @@ const theme = createTheme({
 
 
 
-function userCanBookItem(item: Equipment, userRole: string)
-{
-    if(item.isPremium)
+function userCanBookItem(item: Equipment, userRole: string | undefined)
+{  
+    if(userRole === undefined)
+    {
+        return false;
+    }
+    else if(item.isPremium)
     {
         return userRole === 'Premium';
     }
@@ -96,17 +108,23 @@ function userCanBookItem(item: Equipment, userRole: string)
 const ReserveEquipment = () => {
     // Note to graders: some of these hooks are for debugging purposes only, to make sure that the layout and different views 
     // will work correctly when connected to the backend.
-
-    // How do I find out what user I am?
-    
+    const navigate = useNavigate();
+    const { user } = useContext(AuthContext)!; 
+    // BLOCKED: Cannot deal with "possibly undefined" and "possibly null" -> when does this happen?
+    const userProviderContext = useUser();
     const {height, width} = WindowDimensions();
     const [resultsFound, setResultsFound] = useState(true);
     const [searchText, setSearchText] = useState('');
     const [open, setOpen] = useState(false);
+    const [equipModel, setEquipModel] = useState<any>(undefined); // I don't know what the equipment model is
     const [displayModel, setDisplayModel] = useState(equipmentModel);
-    const { user, setUserByIndex } = useUser();
-    const [currentUserRole, setCurrentUserRole] = useState(user.userRole);
-    const [currentUserIndex, setCurrentUserIndex] = useState(0);
+    const [loading, setLoading] = useState(false);
+    
+    function handleChangeUser()
+    {
+        userProviderContext.setUser();
+    }
+
     const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSearchText(event.target.value);
         if (event.target.value === '') {
@@ -124,36 +142,60 @@ const ReserveEquipment = () => {
             setResultsFound(filteredResults.length > 0);
         }
     };
-    
+    React.useEffect(()=>{
+
+        if(user === null || user === undefined)
+        {
+           navigate('/'); // just go home. 
+        }
+    }, [user, navigate, userProviderContext]);
+
+    React.useEffect(() => {
+        setLoading(true);
+        const fetchEquipment = async() =>
+        {
+            try{
+                const response = await axiosInstance.get('/equipment');
+                setEquipModel(response.data);
+                console.log(equipModel);
+                /* BLOCKED: 
+                 * What is the format of the response?
+                 * What is the type of error?
+                 * How do I make this update?
+                */
+            }
+            catch(error: any)
+            {
+                console.error(error.response.data);
+            }
+        }
+        fetchEquipment();
+        
+    }, [loading]);
+    console.log(equipModel);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
-
-    const handleChangeUser = () => {
-        const nextIndex = (currentUserIndex + 1) % 3;
-        console.log(nextIndex);
-        setCurrentUserIndex(nextIndex);
-        setUserByIndex(nextIndex);
-        console.log(user.email);
-        setCurrentUserRole(user.userRole);
-    };
-
-    const ChangeUserButton = () => (
-        <Button
-            id="debugButton"
-            fullWidth={false}
-            sx={{ width: '250px', position: 'sticky', bottom: 2, zIndex: 1000 }}
-            variant={'contained'}
-            onClick={handleChangeUser}
-        >
-            Change User: {currentUserRole}
-        </Button>
-    );
-
     const IconStyle: React.CSSProperties = {
         width: '80px',
         height: '80px',
         top: '30px',
         left: '135px',
+    }
+    const SearchBar = ()=>
+    {
+       return( <TextField
+            sx={{
+                marginTop: 2,
+                backgroundColor: 'white',
+                display: 'flex',
+                justifyContent: 'center',
+                width: '100%',
+                borderRadius: 2,
+            }}
+            placeholder='Search for equipment...'
+            value={searchText}
+            onChange={handleSearch}
+        />)
     }
 
     const ModalStyle = {
@@ -240,6 +282,7 @@ const ReserveEquipment = () => {
         color: 'white',
     }
 
+    // Why would user be null or undefined??
     return (
         <>
             <MainContainer>
@@ -264,24 +307,13 @@ const ReserveEquipment = () => {
                                 justifyContent: 'center',
                                 width: '100%',
                             }}>
-                            <ChangeUserButton />
-                            <TextField
-                                sx={{
-                                    marginTop: 2,
-                                    backgroundColor: 'white',
-                                    display: 'flex',
-                                    justifyContent: 'center',
-                                    width: '100%',
-                                    borderRadius: 2,
-                                }}
-                                placeholder='Search for equipment...'
-                                value={searchText}
-                                onChange={handleSearch}
-                            />
+                            <Button variant='contained' onClick={userProviderContext.setUser}>Change User: {userProviderContext.user.userRole} </Button>
+                            <SearchBar />
+                            
                         </Box>
                         <Modal open={open} onClose={handleClose}>
                             <Box sx={ModalStyle} borderColor={'white'}>
-                                <BookingCalendar onClose={handleClose} onSubmit={handleClose} userRole={currentUserRole}/>
+                                <BookingCalendar onClose={handleClose} onSubmit={handleClose} userRole={userProviderContext.user.userRole}/>
                             </Box>
                         </Modal>
                             {displayModel.length === 0 &&
@@ -295,8 +327,7 @@ const ReserveEquipment = () => {
                                         borderRadius: 2,
                                         margin: 2,
                                         overflowY: 'scroll'
-                                    }}
-                                >
+                                    }}>
                                     <Grid2
                                         container
                                         spacing={3}
@@ -335,12 +366,12 @@ const ReserveEquipment = () => {
                                                                 <Typography variant="body2"  color="white">{item.description} </Typography>
                                                             </Box>
                                                             <Box display="flex" flexDirection="column" alignContent={'center'}>
-                                                                <ConditionalWrapper displayCondition={currentUserRole === 'Admin'}>
+                                                                <ConditionalWrapper displayCondition={user?.userRole === UserRoles.ADMIN}>
                                                                         <Button sx={{opacity: 100, zIndex: 30}} variant="contained">
                                                                             {item.isUnderMaintenance ? (<>Enable Booking</>) : (<>Disable Booking</>)}
                                                                         </Button>
                                                                 </ConditionalWrapper>
-                                                                <ConditionalWrapper displayCondition={userCanBookItem(item, currentUserRole) && currentUserRole !== 'Admin'}>
+                                                                <ConditionalWrapper displayCondition={userCanBookItem(item, user?.userRole)}>
                                                                         <Button sx={{opacity: 100, zIndex: 30}} variant="contained" onClick={handleOpen}> Book </Button>
                                                                 </ConditionalWrapper>
                                                             </Box>
