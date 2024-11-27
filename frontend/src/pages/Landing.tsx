@@ -7,12 +7,20 @@ import CreateAccountButton from '../Components/CreateAccountButton.tsx';
 import GetStartedButton from '../Components/GetStartedButton.tsx';
 import { useNavigate } from 'react-router-dom';
 import '../styles/landing/local.css';
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import Login from './Login.tsx';
 import Signup from './Signup.tsx';
 import MobileLogo from "../assets/logo_purple.svg";
+import {
+  AuthContext,
+  AuthProvider,
+  User,
+  UserRoles,
+} from '../contexts/AuthContext.tsx';
 
 const Landing = () => {
+  const { user } = useContext(AuthContext)!;
+  const { logout } = useContext(AuthContext)!;
   const [isMobileLoginOpen, setIsMobileLoginOpen] = useState(false); 
   const handleOpenLoginMobile = () => setIsMobileLoginOpen(true);  
   const handleCloseLoginMobile = () => setIsMobileLoginOpen(false);  
@@ -36,9 +44,18 @@ const Landing = () => {
     navigate('/requests');
   };
 
-  // For testing
-  var isLoggedIn = false;
-  var isAdmin = false;
+  const goToProfile = () => {
+    navigate('/profile');
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
+
+  var isLoggedIn = !(user === null || user === undefined);
+  var isAdmin = user?.userRole === 'admin';
+  
   return (
     <>
       <NavBar id='landing'></NavBar>
@@ -59,8 +76,11 @@ const Landing = () => {
                     {isLoggedIn ? (
                         <>
                           <button type='button' className="equipment-button" onClick={goToReserve}>{isAdmin? 'Manage Equipment' : 'Reserve Equipment'}</button>
-                          <br /><br />
                           <button type='button' className="reserve-button" onClick={goToRequests}>{isAdmin? 'Manage Reservations' : 'My Reservations'}</button>
+                          <div className='account-buttons'>
+                            <button type='button' className="profile" onClick={goToProfile}>{'Profile'}</button>
+                            <button type='button' className="logout" onClick={handleLogout}>{'Logout'}</button>
+                          </div>
                         </>
                     ) : (
                         <>
@@ -69,7 +89,7 @@ const Landing = () => {
                           <CreateAccountButton button_type='button' onClick={handleOpenCreateAccountMobile}></CreateAccountButton>
                         </>
                     )}
-                </div>
+              </div>
             </div>
           </div>
           <div className="illustration-container">

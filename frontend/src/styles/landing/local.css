@@ -2,7 +2,7 @@
  * Put styles for the landing page in here 
  */
 
- #landing {
+#landing {
   display: flex;
 }
 
@@ -135,8 +135,39 @@
   background-color: #f0f0f0;
 }
 
+.auth-buttons2 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
 .auth-buttons2 .reserve-button {
   width: 350px;
+}
+
+.account-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  border-radius: 5px;
+  width: 350px;
+  gap: 15px;
+}
+
+.profile:hover, .logout:hover {
+  background-color: #ffffff;
+  border: 1px solid #333;
+}
+
+.profile, .logout {
+  font-size: 1rem;
+  border-radius: 5px;
+  width: 100%;
+  padding: 10px 20px;
+  background-color: #d4d4d4;
+  color: #333;
+  border: 1px solid #ffffff;
 }
 
 /* Responsive adjustments */
