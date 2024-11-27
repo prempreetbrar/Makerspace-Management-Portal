@@ -249,6 +249,35 @@ const setUserPremium = errorsController.catchAsync(
     }
 );
 
+const updateUserProfile = errorsController.catchAsync(async (request, response) => {
+  const user = await User.findByPk(request.body.email);
+
+  if (!user) {
+      throw new errorsController.ErrorWithStatusCode(
+          'User not found.',
+          404
+      );
+  }
+
+  const updatedFields = {
+      firstName: request.body.firstName || user.firstName,
+      lastName: request.body.lastName || user.lastName,
+  };
+
+  Object.assign(user, updatedFields);
+  await user.save();
+
+  response.status(200).json({
+      status: 'success',
+      user: {
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+      },
+  });
+});
+
+
 module.exports = {
     signup,
     login,
@@ -256,4 +285,5 @@ module.exports = {
     isUserAuthorized,
     checkout,
     setUserPremium,
+    updateUserProfile,
 };

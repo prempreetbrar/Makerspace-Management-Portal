@@ -1,8 +1,17 @@
 import '../styles/profile/local.css';
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import NavBar from "../Components/NavBar";
 import { Box, TextField, Typography, Button } from "@mui/material";
 import Grid from '@mui/material/Grid2';
+import {
+  AuthContext,
+  AuthProvider,
+  User,
+  UserRoles,
+} from '../contexts/AuthContext.tsx';
+import { useNavigate } from 'react-router-dom';
+import axios from '../axios'; // the
+import Axios from 'axios'; // the module
 
 const textFieldSX = {
   backgroundColor: "#fff",
@@ -21,17 +30,19 @@ const textFieldSX = {
   },
 };
 
-const sampleUser = {
-  email: "real_email1@email.com",
-  firstName: "Conner",
-  lastName: "McDavid",
-  password: "secret_pass123",
-};
 
 const Profile = () => {
-    
-  const [userDetails, setUserDetails] = useState(sampleUser);
+  const { user } = useContext(AuthContext)!;
+  const [userDetails, setUserDetails] = useState(user);
   const [isEditing, setIsEditing] = useState(false);
+  const navigate = useNavigate();
+
+  // Navigate to home page if user is not authenticated
+  useEffect(() => {
+    if (!user) {
+      navigate('/'); // Navigate to the home page
+    }
+  }, [user, navigate]);
 
   const handleChange = (field: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
     setUserDetails({ ...userDetails, [field]: event.target.value });
@@ -41,11 +52,45 @@ const Profile = () => {
     setIsEditing(!isEditing);
   };
 
-  const handleSave = () => {
-    setIsEditing(false);
-    // Add logic to save changes
-    console.log("Saved details:", userDetails);
+  const saveUserDetails = async (updatedDetails: Partial<User>) => {
+    try {
+      const response = await axios.put('/users/profile', updatedDetails);
+      const updatedUser = response.data?.user;
+  
+      return { isSuccess: true, message: 'Profile updated successfully!' };
+    } catch (error: unknown) {
+      if (Axios.isAxiosError(error)) {
+        console.error('Profile update failed:', error.response?.data || error.message);
+  
+        return {
+          isSuccess: false,
+          message: error.response?.data?.message || 'Failed to update profile.',
+        };
+      }
+    }
+  
+    return {
+      isSuccess: false,
+      message: 'Something went wrong. Please try again later.',
+    };
   };
+  
+  const handleSave = async () => {
+    if (userDetails) {
+      const result = await saveUserDetails(userDetails);
+  
+      if (result.isSuccess) {
+        console.log("In handleSave: " + result.message);
+        setIsEditing(false); // Exit editing mode
+      } else {
+        console.error("Error in handleSave: " + result.message);
+      }
+    }
+  };
+
+  if (!user) {
+    return null;
+  }
 
   return (
     <>

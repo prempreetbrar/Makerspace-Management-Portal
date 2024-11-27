@@ -14,6 +14,7 @@ const usersController = require('../controllers/users');
 // routes
 router.post('/signup', usersController.signup);
 router.post('/login', usersController.login);
+router.put('/profile', usersController.updateUserProfile);
 
 // all routes from this point onwards are only available to logged in, basic users
 router.use(
