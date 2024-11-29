@@ -77,10 +77,12 @@ const NavBar = ({ id }: { id: string }) => {
                     ) : (
                         <>
                             <LoginButton
+                                id="nav-login"
                                 button_type="button"
                                 onClick={handleOpenLogin}
                             />
                             <CreateAccountButton
+                                id="nav-create-account"
                                 button_type="button"
                                 onClick={handleOpenCreateAccount}
                             />

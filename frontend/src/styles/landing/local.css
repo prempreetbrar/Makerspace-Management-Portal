@@ -275,4 +275,32 @@
     .illustration {
         max-width: 250px;
     }
+
+    .equipment-button, .reserve-button, .account-buttons , #landing-login, #landing-create-account{
+      max-width: 300px;
+    }
+}
+
+@media (max-width: 380px) {
+
+  /* Extra small devices */
+  .heading {
+      font-size: 1.25rem;
+  }
+
+  .equipment-button, .reserve-button, .account-buttons, #landing-login, #landing-create-account {
+    max-width: 300px;
+  }
+}
+
+@media (max-width: 320px) {
+
+  /* Extra small devices */
+  .heading {
+      font-size: 1.1rem;
+  }
+
+  .equipment-button, .reserve-button, .account-buttons, #landing-login, #landing-create-account {
+    max-width: 280px;
+  }
 }
