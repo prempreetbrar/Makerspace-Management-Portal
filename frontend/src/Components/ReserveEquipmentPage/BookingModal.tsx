@@ -68,7 +68,7 @@ const customTheme = createTheme({
 });
 const timeButtonStyle = { width: 100, margin: '2px', fontSize: 11 };
 // Need to link clicking off the modal to the close event. For now, linked to the close button only.
-const BookingCalendar = ({userRole, onClose, onSubmit, externalProps}:BookingCalendarProps) => {
+const BookingCalendar = ({userRole, onClose, externalProps}:BookingCalendarProps) => {
     //@ts-ignore
     const passedInProps = externalProps;
 

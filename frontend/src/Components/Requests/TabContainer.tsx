@@ -35,7 +35,7 @@ const TabContainer: React.FC<TabContainerProps> = ({
             >
                 <Tabs
                     value={value}
-                    onChange={(event, newValue) => onChange(newValue)}
+                    onChange={(_event, newValue) => onChange(newValue)}
                     className="tab-bar"
                     sx={{
                         backgroundColor: '#E8DEF8',

@@ -28,7 +28,6 @@ const IssueCard: React.FC<IssueCardProps> = ({
     date,
     icon,
     isResolved,
-    status,
 }) => {
     const IconStyle: React.CSSProperties = {
         width: '100px',

@@ -14,7 +14,6 @@ import TabPanel from '@mui/lab/TabPanel';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import { UserProvider, useUser } from '../hooks/UserProvider.tsx';
-import { RequestsProvider } from '../hooks/RequestsProvider.tsx';
 import { request } from 'http';
 import { describe } from 'node:test';
 import RequestCard from '../Components/Requests/RequestCard.tsx';
@@ -53,13 +52,12 @@ const templateRequests = [requestTemplate1, requestTemplate1, requestTemplate2, 
 const theme = createTheme();
 const ManageBookings = () => {
 
-    const { user, setUserByIndex } = useUser();
+    const { user } = useUser();
     const [currentUserIndex, setCurrentUserIndex] = React.useState(0);
     const [currentUserRole, setCurrentUserRole] = React.useState(user.userRole);
     const handleChangeUser = () => {
         const nextIndex = currentUserIndex + 1 % 3;
         setCurrentUserIndex(nextIndex);
-        setUserByIndex(nextIndex);
         setCurrentUserRole(user.userRole);
     }
 
@@ -88,7 +86,7 @@ const ManageBookings = () => {
                             }}>
                                 <Stack spacing={3} sx={{ alignSelf: 'center' }}>
                                     {
-                                        templateRequests.filter(item => item.status === "approved").map((item, index) =>
+                                        templateRequests.filter(item => item.status === "approved").map((_item, _index) =>
                                             <RequestCard status={''} title={''} description={''} date={''} file={''} icon={undefined} user={''}/>
                                         )
                                     }
@@ -103,7 +101,7 @@ const ManageBookings = () => {
                             }}>
                                 <Stack spacing={3} sx={{ alignSelf: 'center' }}>
                                     {
-                                        templateRequests.filter(item => item.status === "pending").map((item, index) =>
+                                        templateRequests.filter(item => item.status === "pending").map((_item, _index) =>
                                             <RequestCard user={user.userRole}/>
                                         )
                                     }
@@ -118,7 +116,7 @@ const ManageBookings = () => {
                             }}>
                                 <Stack spacing={3} sx={{ alignSelf: 'center' }}>
                                     {
-                                        templateRequests.filter(item => item.status === "denied").map((item, index) =>
+                                        templateRequests.filter(item => item.status === "denied").map((_item, index) =>
                                             <RequestCard key={index} user={user.userRole} />
                                         )
                                     }

@@ -33,7 +33,7 @@ const textFieldSX = {
 
 const Profile = () => {
   const { user } = useContext(AuthContext)!;
-  const [userDetails, setUserDetails] = useState(user);
+  const [userDetails, setUserDetails] = useState({email: user?.email, firstName: user?.firstName, lastName: user?.lastName, password: user?.password});
   const [isEditing, setIsEditing] = useState(false);
   const navigate = useNavigate();
 

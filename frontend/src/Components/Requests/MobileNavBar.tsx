@@ -15,7 +15,7 @@ interface NavbarProps {
 }
 
 const MobileNavbar: React.FC<NavbarProps> = ({ selectedTab, onTabChange }) => {
-    const handleChange = (event: React.SyntheticEvent, newValue: string) => {
+    const handleChange = (_event: React.SyntheticEvent, newValue: string) => {
         onTabChange(newValue);
     };
 
