@@ -86,7 +86,7 @@ const seedDatabase = async (clear = false) => {
             await Equipment.bulkCreate(
                 [
                     {
-                        id: 1,
+                        id: 0,
                         name: '3D Printer',
                         description:
                             'This machine prints things in three dimensions!',
@@ -102,7 +102,7 @@ const seedDatabase = async (clear = false) => {
                         isPremium: false,
                     },
                     {
-                        id: 2,
+                        id: 1,
                         name: 'Stapler',
                         description: 'Staples stuff',
                         icon: fs.readFileSync(
@@ -111,6 +111,109 @@ const seedDatabase = async (clear = false) => {
                         isUnderMaintenance: false,
                         isBookable: false,
                         isPremium: false,
+                    },
+                    {
+                        id: 2,
+                        name: 'Makerbot Replicator +',
+                        description:
+                            'A state-of-the-art 3D printer that can produce high-quality prints',
+                        icon: fs.readFileSync(
+                            path.join(
+                                __dirname,
+                                '/assets/icons/',
+                                'mb_replicator.png'
+                            )
+                        ),
+                        isUnderMaintenance: false,
+                        isBookable: true,
+                        isPremium: true,
+                    },
+                    {
+                        id: 3,
+                        name: 'CNC Milling Machine',
+                        description:
+                            'For precise drilling, reshaping and cutting',
+                        icon: fs.readFileSync(
+                            path.join(
+                                __dirname,
+                                '/assets/icons/',
+                                'cnc_machine.png'
+                            )
+                        ),
+                        isUnderMaintenance: false,
+                        isBookable: true,
+                        isPremium: false,
+                    },
+                    {
+                        id: 4,
+                        name: 'Hammer',
+                        description: 'A regular claw hammer',
+                        icon: fs.readFileSync(
+                            path.join(__dirname, '/assets/icons/', 'hammer.png')
+                        ),
+                        isUnderMaintenance: false,
+                        isBookable: false,
+                        isPremium: false,
+                    },
+                    {
+                        id: 5,
+                        name: 'Drill Press',
+                        description:
+                            'For tapping screws or drilling into tough materials.',
+                        icon: fs.readFileSync(
+                            path.join(
+                                __dirname,
+                                '/assets/icons/',
+                                'drill_press.png'
+                            )
+                        ),
+                        isUnderMaintenance: true,
+                        isBookable: true,
+                        isPremium: true,
+                    },
+                    {
+                        id: 6,
+                        name: 'Raspberry Pi 4',
+                        description:
+                            'A mini computer with 2GB of RAM and 2 USB Ports. Data will be wiped between users.',
+                        icon: fs.readFileSync(
+                            path.join(__dirname, '/assets/icons/', 'hammer.png')
+                        ),
+                        isUnderMaintenance: false,
+                        isBookable: true,
+                        isPremium: false,
+                    },
+                    {
+                        id: 7,
+                        name: 'Small Angle Grinder',
+                        description:
+                            'For grinding or cutting through metal. We provide PPE for this equipment',
+                        icon: fs.readFileSync(
+                            path.join(
+                                __dirname,
+                                '/assets/icons/',
+                                'small_angle_grinder.png'
+                            )
+                        ),
+                        isUnderMaintenance: false,
+                        isBookable: true,
+                        isPremium: false,
+                    },
+                    {
+                        id: 8,
+                        name: 'Welding kit',
+                        description:
+                            'Join metal together using heat and electricity',
+                        icon: fs.readFileSync(
+                            path.join(
+                                __dirname,
+                                '/assets/icons/',
+                                'toolbox.png'
+                            )
+                        ),
+                        isUnderMaintenance: false,
+                        isBookable: true,
+                        isPremium: true,
                     },
                 ],
                 { individualHooks: true }

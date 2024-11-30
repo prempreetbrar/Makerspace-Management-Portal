@@ -11,7 +11,6 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import ThreeDPrinterIcon from '../assets/3D_printer.svg';
 import LaserCutterIcon from '../assets/laser_cutter.svg';
 import CNCMillIcon from '../assets/laser_cutter.svg';
-import MakerbotReplicatorImg from '../assets/mb_replicator.jpeg';
 
 interface RequestCardInfo {
     key: number;
@@ -100,7 +99,7 @@ const Requests = () => {
             description: 'I plan on using this machine to create a model.',
             date: 'Sep 10, 10:00-11:00AM',
             file: 'vinylfile.svg',
-            icon: MakerbotReplicatorImg,
+            icon: ThreeDPrinterIcon,
         },
     ];
     const theme = createTheme({

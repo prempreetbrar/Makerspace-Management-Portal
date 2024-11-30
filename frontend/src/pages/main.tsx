@@ -11,6 +11,7 @@ import '../styles/index.css';
 import { UserProvider } from '../hooks/UserProvider.tsx';
 import ManageBookings from './ManageBookings.tsx';
 import { AuthContext, AuthProvider } from '../contexts/AuthContext.tsx';
+import { EquipmentContext, EquipmentDataProvider } from '../contexts/EquipmentContext.tsx';
 
 const router = createBrowserRouter([
     {
@@ -41,7 +42,10 @@ const router = createBrowserRouter([
     },
     {
         path: 'reserve',
-        element: <ReserveEquipment />,
+        element:
+            <EquipmentDataProvider> {/* scope context just to here */}
+                <ReserveEquipment />
+             </EquipmentDataProvider>,
     },
     {
         path: 'profile',

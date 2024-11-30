@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 
 
 import { Fab, Tab, Tabs, Stack, Typography, Button, Card, CardContent, CardActionArea, CardActions, Accordion, ButtonGroup, CircularProgress, Grid2, IconButton, TextField, FormGroup, Tooltip } from '@mui/material';
@@ -13,11 +13,13 @@ import dayjs, { Dayjs } from "dayjs";
 import { TimePicker } from "@mui/x-date-pickers";
 import { CancelRounded, TheaterComedyOutlined } from "@mui/icons-material";
 import WindowDimensions from "../WindowDimensions";
+import { AuthContext, UserRoles } from "../../contexts/AuthContext";
 const theme = createTheme();
 type TimeEntry = {
     time: string,
     premiumOnly: boolean,
 }
+
 type DateEntry = 
 {
     date: string,
@@ -44,6 +46,7 @@ interface BookingCalendarProps
     userRole: string,
     onClose: ()=> void,
     onSubmit: ()=>void,
+    equipmentID: number,
     externalProps?: any,
 }
 const customTheme = createTheme({
@@ -68,13 +71,13 @@ const customTheme = createTheme({
 });
 const timeButtonStyle = { width: 100, margin: '2px', fontSize: 11 };
 // Need to link clicking off the modal to the close event. For now, linked to the close button only.
-const BookingCalendar = ({userRole, onClose, onSubmit, externalProps}:BookingCalendarProps) => {
+const BookingCalendar = ({userRole, onClose, onSubmit, equipmentID, externalProps}:BookingCalendarProps) => {
     //@ts-ignore
+    const bookings, setBookings = useState
     const passedInProps = externalProps;
-
+    const {user} = useContext(AuthContext)!;
     const {height, width} = WindowDimensions();
     // all event listeners would need to be exposed at some point via Props. 
-    
     //@ts-ignore
     const [jsSelectedDate, setJSSelectedDate] = useState() // this would eventually convert dayJS into a string format
     const [selectedTime, setSelectedTime] = useState("");
@@ -105,7 +108,21 @@ const BookingCalendar = ({userRole, onClose, onSubmit, externalProps}:BookingCal
         setSelectedTime("");
         onClose();
     }
+    useEffect(()=>{
+        // Get bookings for equipment by day
+        // Add a new booking entry
+        // format ? 
+        // 
+        
+        axios.post("url", {
+            equipmentID: equipmentID,
+            timeSlot1: "string",
+        });
 
+    }, [user, equipmentID])
+    useEffect(() =>
+    {
+    }, []);
     const today = dayjs();
     const nMonthsFromNow = today.add(2, "month");
     return (
@@ -157,7 +174,7 @@ const BookingCalendar = ({userRole, onClose, onSubmit, externalProps}:BookingCal
                                         {
                                             timesArray.map((listing, index)=>(
                                                     <Button key={index} variant={ selectedTimeButton !== index? 'outlined' : 'contained'}  sx={timeButtonStyle} onClick={() => handleTimeSelect(index, listing.time)} 
-                                                    disabled={userRole !== "Premium" && listing.premiumOnly}>
+                                                    disabled={user!.userRole !== UserRoles.PREMIUM && listing.premiumOnly}>
                                                         {listing.time}
                                                     </Button>
                                                 ))
@@ -168,7 +185,7 @@ const BookingCalendar = ({userRole, onClose, onSubmit, externalProps}:BookingCal
                                     <TextField id="DescriptionField" label="Request Details" placeholder="Description"sx={{fontSize: 10}} maxRows={2}  variant="filled" onChange={handleTextUpdate} multiline fullWidth required>
                                     </TextField>
                                 </Box>                            
-                                <Button variant="contained" sx={{marginTop: 3, backgroundColor: '#65558F', color:"#FFFFFF", width:'120px'}} onClick={()=>handleCloseModal(true)} disabled={(inputText === "" || selectedTime === "")}>
+                                <Button variant="contained" sx={{marginTop: 3, backgroundColor: '#65558F', color:"#FFFFFF", width:'120px'}} onClick={onSubmit} disabled={(inputText === "" || selectedTime === "")}>
                                     Submit
                                 </Button>
                             </Box>
