@@ -69,9 +69,9 @@ Note that this is not a comprehensive guide and you will likely encounter issues
   - The backend terminal should look similar to this:
     ![screenshot](frontend/public/backend_terminal_dev.png)
 - Open a browser and go to http://localhost:5173/
-  - If this link doesn't work, try selecting one of the links displayed in the frontend terminal.
-  - The page should like this:<br>
-    ![screenshot](frontend/public/landing_page.png)
+  - If this link doesn't work, try selecting one of the other links displayed in the frontend terminal.
+  - The page should look like this:<br>
+    <div style="border: 1px solid black;">![screenshot](frontend/public/landing_page.png)</div>
 
 ## Docker Containers
 - Confirm that you can run the project on local development servers as detailed above before attempting to run it in Docker.
