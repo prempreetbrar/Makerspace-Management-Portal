@@ -100,6 +100,7 @@ const login = errorsController.catchAsync(async (request, response) => {
         );
     }
 
+
     // we don't need to send the password back (the token is all the user needs). Since it's sensitive, hide it.
     user.password = undefined;
     const token = _getAuthenticatedToken(user);
@@ -250,30 +251,31 @@ const setUserPremium = errorsController.catchAsync(
 );
 
 const updateUserProfile = errorsController.catchAsync(async (request, response) => {
-  const user = await User.findByPk(request.body.email);
+  const updatedUser = await User.findByPk(request.body.email);
 
-  if (!user) {
-      throw new errorsController.ErrorWithStatusCode(
-          'User not found.',
-          404
-      );
+  if (!updatedUser) {
+    throw new errorsController.ErrorWithStatusCode(
+      'User not found.',
+      404
+    );
   }
 
-  const updatedFields = {
-      firstName: request.body.firstName || user.firstName,
-      lastName: request.body.lastName || user.lastName,
-  };
+  updatedUser.set({
+    firstName: request.body.firstName || updatedUser.firstName,
+    lastName: request.body.lastName || updatedUser.lastName,
+    confirmPassword: request.body.confirmPassword || updatedUser.confirmPassword,
+    password: request.body.password || updatedUser.password,
+  });
 
-  Object.assign(user, updatedFields);
-  await user.save();
+  await updatedUser.save();
 
-  response.status(200).json({
-      status: 'success',
-      user: {
-          email: user.email,
-          firstName: user.firstName,
-          lastName: user.lastName,
-      },
+  const token = _getAuthenticatedToken(updatedUser);
+  const cookie = _getAuthenticatedCookie();
+  response.cookie('jwt', token, cookie);
+  response.status(201).json({
+    status: 'success',
+    token,
+    user: updatedUser,
   });
 });
 
