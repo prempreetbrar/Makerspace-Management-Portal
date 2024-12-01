@@ -1,4 +1,5 @@
 import React, { useState, useContext } from 'react';
+import crypto from 'node:crypto';
 import {
     Button,
     TextField,
@@ -14,14 +15,18 @@ import { ErrorWithStatusCode } from '../axios';
 interface LoginProps {
     onClose?: () => void;
 }
+function performHash(password: string)
+{
+    return crypto.createHash('sha256').update(password).digest('hex');
+}
 
 const Login: React.FC<LoginProps> = ({ onClose }) => {
     const { login } = useContext(AuthContext)!;
-
+    const passwordRef = React.useRef('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState<string | null>(null);
-
+    
     const handleLogin = async () => {
         if (!email || !password) {
             setError('Email and Password are required.');
@@ -29,7 +34,7 @@ const Login: React.FC<LoginProps> = ({ onClose }) => {
         }
 
         try {
-            const { isSuccess, message } = await login(email, password);
+            const { isSuccess, message } = await login(email, passwordRef.current);
             if (isSuccess && onClose) {
                 onClose();
             } else {
@@ -71,7 +76,12 @@ const Login: React.FC<LoginProps> = ({ onClose }) => {
                     margin="normal"
                     className="text-field"
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) => 
+                        {
+                            passwordRef.current = performHash(e.target.value);
+                            setPassword(e.target.value)
+                        }
+                    }
                 />
             </DialogContent>
             <DialogActions className="button-container">

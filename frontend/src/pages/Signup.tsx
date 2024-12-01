@@ -84,7 +84,7 @@ const Signup: React.FC<SignupProps> = ({ onClose }) => {
         if (!validatePassword(formData.password)) {
             return;
         }
-
+        
         try {
             const { isSuccess, message } = await signup(formData);
             if (isSuccess) {

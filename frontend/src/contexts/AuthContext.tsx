@@ -121,9 +121,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const signup = async (userData: User): AuthFunctionStatus => {
         try {
+            if(userData.password === undefined)
+            {
+                return {
+                    isSuccess: false,
+                    message: "Password is undefined"
+                }
+            }
             const response = await axios.post('/users/signup', userData);
             const user = response.data?.user;
-
+            
             // these two lines aren't redundant. localStorage remembers the user for future visits to the website.
             // dispatch ensures the user is available for the entire application.
             localStorage.setItem('user', JSON.stringify(user));

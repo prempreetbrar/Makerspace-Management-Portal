@@ -10,6 +10,7 @@ import {
   UserRoles,
 } from '../contexts/AuthContext.tsx';
 import { useNavigate } from 'react-router-dom';
+import crypto from 'node:crypto'
 import axios from '../axios'; // the
 import Axios from 'axios'; // the module
 
@@ -32,10 +33,13 @@ const textFieldSX = {
 
 
 const Profile = () => {
-  const { user } = useContext(AuthContext)!;
-  const [userDetails, setUserDetails] = useState(user);
-  const [isEditing, setIsEditing] = useState(false);
-  const navigate = useNavigate();
+
+    
+    const { user } = useContext(AuthContext)!;
+    const profileData = React.useRef(user!);
+    const [userDetails, setUserDetails] = useState(user);
+    const [isEditing, setIsEditing] = useState(false);
+    const navigate = useNavigate();
 
   // Navigate to home page if user is not authenticated
   useEffect(() => {

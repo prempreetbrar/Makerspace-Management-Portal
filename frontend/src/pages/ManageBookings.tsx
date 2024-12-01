@@ -1,4 +1,5 @@
 /// THIS FILE IS DEPRECATED. 
+
 import '../styles/requests/local.css';
 import * as React from 'react';
 import AccordionSummary from '@mui/material/AccordionSummary';
