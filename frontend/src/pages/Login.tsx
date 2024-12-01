@@ -10,6 +10,7 @@ import {
 import '../styles/authentication/login/Login-mobile.css';
 import { AuthContext } from '../contexts/AuthContext';
 import { ErrorWithStatusCode } from '../axios';
+import { useNavigate } from 'react-router-dom';
 
 interface LoginProps {
     onClose?: () => void;
@@ -21,6 +22,7 @@ const Login: React.FC<LoginProps> = ({ onClose }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState<string | null>(null);
+    const navigate = useNavigate();
 
     const handleLogin = async () => {
         if (!email || !password) {
@@ -32,6 +34,7 @@ const Login: React.FC<LoginProps> = ({ onClose }) => {
             const { isSuccess, message } = await login(email, password);
             if (isSuccess && onClose) {
                 onClose();
+                navigate('/reserve');
             } else {
                 setError(message);
             }

@@ -5,6 +5,7 @@ import '../styles/authentication/login/local.css';
 import CreateAccountPopover from './CreateAccountPopover.tsx';
 import { AuthContext } from '../contexts/AuthContext';
 import { ErrorWithStatusCode } from '../axios.ts';
+import { useNavigate } from 'react-router-dom';
 
 interface LoginPopoverProps {
     anchorEl: HTMLElement | null;
@@ -24,6 +25,7 @@ const LoginPopover: React.FC<LoginPopoverProps> = ({
     const [error, setError] = useState<string | null>(null);
 
     const [openCreateAccount, setOpenCreateAccount] = useState(false);
+    const navigate = useNavigate();
 
     const handleOpenCreateAccount = () => {
         setOpenCreateAccount(true);
@@ -42,6 +44,7 @@ const LoginPopover: React.FC<LoginPopoverProps> = ({
             const { isSuccess, message } = await login(email, password);
             if (isSuccess) {
                 handleCloseLogin();
+                navigate('/reserve');
             } else {
                 setError(message);
             }
