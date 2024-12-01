@@ -18,48 +18,17 @@ import ModalBase from "./ModalBase";
 import customParseFormat from "dayjs/plugin/customParseFormat"
 
 dayjs.extend(customParseFormat);
+
 const BASIC_MIN_TIME = '11:00:00';
 const BASIC_MAX_TIME = '14:00:00';
-
-const allTimeSlots = [
-    '08:00:00',
-    '09:00:00',
-    '10:00:00',
-    '11:00:00',
-    '12:00:00',
-    '13:00:00',
-    '14:00:00',
-    '15:00:00',
-    '16:00:00',
-    '17:00:00',
-    '18:00:00',
-    '19:00:00',
-];
-
-type TimeSlot =
-{
-    displayTime: string,
-    time: string,
-    isAvailable: boolean,
-}
 
 type BookingData = 
 {
     [key: string]: string[]
 }
 
-
 const theme = createTheme();
-type TimeEntry = {
-    displayTime: string,
-    premiumOnly: boolean,
-}
 
-type DateEntry = 
-{
-    date: string,
-    times: string[],
-}
 interface Booking
 {
     id: number, 
@@ -113,24 +82,22 @@ function createSlots()
     let slots:TimeSlots = {};
     for(let i = 8; i <= 19; ++i)
     {
-        if(i < 10)
-        {
-            slots[`0${i}:00:00`] = {displayTime: '8:00 AM', isAvailable: false};
-        }
-        else
-        {
-            slots[`${i}:00:00`] = {displayTime: '8:00 AM', isAvailable: false};
-        }
+        if(i > 12) 
+            slots[`${i}:00:00`] = {displayTime: `${i % 12}:00 PM`, isAvailable: false} 
+        else if(i == 12) 
+            slots[`${i}:00:00`] = {displayTime: `${i}:00 PM`, isAvailable: false} 
+        else if(i == 10 || i == 11) 
+            slots[`${i}:00:00`] = {displayTime: `${i}:00 AM`, isAvailable: false};
+        else 
+            slots[`0${i}:00:00`] = {displayTime: `${i}:00 AM`, isAvailable: false}
     }
     return slots;
 }
 const timeButtonStyle = { width: 100, margin: '2px', fontSize: 11 };
 
 // Need to link clicking off the modal to the close event. For now, linked to the close button only.
-const BookingModal = ({open, onClose, onSubmit, equipmentID}:BookingModalProps) => {
-    //@ts-ignore
-    const firstTimeSlot = React.useRef("");
-    const secondTimeSlot = React.useRef("");
+const BookingModal = ({open,  equipmentID, onClose, onSubmit}:BookingModalProps) => {
+
     const baseOpenings= React.useRef<BookingData>({}); // this never changes.
     const [openings, setOpenings] = useState<BookingData>({});
     const {user} = useContext(AuthContext)!;
@@ -146,9 +113,8 @@ const BookingModal = ({open, onClose, onSubmit, equipmentID}:BookingModalProps) 
     const [maxDate, setMaxDate] = useState(dayjs().add(7, 'day'));
     const [firstSelectedTime, setFirstSelectedTime] = useState("");
     const [secondSelectedTime, setSecondSelectedTime] = useState(""); // NOT IMPLEMENTED
-    const [selectedTimeButton, setSelectedTimeButton] = useState(-1); // must be -1 because the first value is 0.
     const [disabled, setDisabled] = useState(false);
-
+    
     React.useEffect(()=>
     {
         if(user && user.userRole! === UserRoles.PREMIUM)
@@ -171,7 +137,6 @@ const BookingModal = ({open, onClose, onSubmit, equipmentID}:BookingModalProps) 
 
     const updateTimeSlots = ()=>
     {
-
         const formattedDate = selectedDate.format("YYYY-MM-DD");
         const times: string[] = baseOpenings.current[formattedDate];
         // We're assuming the times array isn't undefined
@@ -186,6 +151,7 @@ const BookingModal = ({open, onClose, onSubmit, equipmentID}:BookingModalProps) 
                     if(time.isBefore(maxTime) && time.isAfter(minTime))
                     {
                         slots[key].isAvailable = times ? times.includes(key) : false
+                        console.log(`${key} is available? ${slots[key].isAvailable}`);
                     }
                     else
                     {
@@ -196,10 +162,12 @@ const BookingModal = ({open, onClose, onSubmit, equipmentID}:BookingModalProps) 
                 {
                     // if the key exists in the times array, the slot is available for premium users and basic.
                     slots[key].isAvailable = times ? times.includes(key) : false;
+                    console.log(`${key} is available? ${slots[key].isAvailable}`);
                 }
             });
         setSlots(slots);
     }
+
     useEffect(() => {
         setInputText("");
         async function getBookingsForEquipment(equipmentID:number)
@@ -244,12 +212,19 @@ const BookingModal = ({open, onClose, onSubmit, equipmentID}:BookingModalProps) 
     const handleDateSelection = (newDate: Dayjs) => {
         setSelectedTime("");
         setSelectedDate(newDate);
-        setSelectedTimeButton(-1);
     }
-    const handleTimeSelect = (buttonIndex: number, listingTime: string) =>
+    
+    const handleTimeSelect = (listingTime: string) =>
     {
+        console.log(listingTime);
+        setSelectedTime(listingTime);
         // I didn't have time to implement the second time slot.
     }
+    const restyleIfSelected = React.useCallback(
+        function (thisListingTime: string, selectedListingTime: string)
+        {
+            return dayjs(selectedListingTime, "HH:MM:SS").isSame(dayjs(thisListingTime, "HH:MM:SS"));
+        },[])
     const handleCloseModal = (submitted=false) =>
     {
         if(submitted)
@@ -316,9 +291,8 @@ const BookingModal = ({open, onClose, onSubmit, equipmentID}:BookingModalProps) 
                 </IconButton>
                 <Box sx={{overflowX: 'hidden', overflowY: 'scroll'}} display="flex" flexDirection={"column"} alignContent={'center'}>
                     <Box display="flex" flexDirection="row" justifyContent={'space-between'} position={"sticky"} top={0} bgcolor={"white"}> 
-                            <Button variant='contained' onClick={()=>forceSync}>Force Sync</Button>
-                            <Typography variant='h4'>
-                                Reserve a time
+                            <Typography variant='h4' pl={2} fontWeight={1000}>
+                                Reserve a Time
                             </Typography>
                     </Box>
                     <Box display={"flex"} sx={{
@@ -340,18 +314,25 @@ const BookingModal = ({open, onClose, onSubmit, equipmentID}:BookingModalProps) 
                             <Box id="time-display" display={"flex"} flexDirection={"column"} alignItems={'center'}>
                                 <Grid2 container rowSpacing={0.25} alignItems ="left" flexGrow={1} justifyContent={"left"}> 
                                     {
-
-                                        /* allTimeSlots.map((listing, index)=>(
-                                                <Button key={index} variant={ selectedTimeButton !== index? 'outlined' : 'contained'}  sx={timeButtonStyle} onClick={() => handleTimeSelect(index, listing.time)} 
-                                                disabled={user!.userRole !== UserRoles.PREMIUM && listing.premiumOnly}>
-                                                    {listing.time}
-                                                </Button>
-                                            ))
-                                        */}
+                                        Object.entries(slots).map(([time, slot], index) =>
+                                        (
+                                            <Button key={index} variant={restyleIfSelected(time, selectedTime) ? 'outlined' : 'contained'} sx={timeButtonStyle} onClick={()=>{handleTimeSelect(time)}}
+                                             disabled = {!slot.isAvailable}>
+                                                {slot.displayTime}
+                                            </Button>
+                                        ))
+                                    }
                                 </Grid2>
                             </Box>
                             <Box component="form" sx={{paddingTop: 3}}>
-                                <TextField id="DescriptionField" label="Request Details" placeholder="Description"sx={{fontSize: 10}} maxRows={2}  variant="filled" onChange={handleTextUpdate} multiline fullWidth required>
+                                <TextField id="DescriptionField" label="Request Details" minRows={2} placeholder="Description"sx={
+                                    {fontSize: 10,
+                                        '&.MuiInputBase-root':
+                                        {
+                                            fontSize: 10,
+                                        }
+                                    }
+                                    } maxRows={2}  variant="filled" onChange={handleTextUpdate} multiline fullWidth required>
                                 </TextField>
                             </Box>                            
                             <Button variant="contained" sx={{marginTop: 3, backgroundColor: '#65558F', color:"#FFFFFF", width:'120px'}} onClick={onSubmit} disabled={(inputText === "" || selectedTime === "")}>

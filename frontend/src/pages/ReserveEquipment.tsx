@@ -134,10 +134,11 @@ interface SpinningButtonProps
 const SpinningButton = ({spinning, onClick}:SpinningButtonProps) =>
 {
     return(
-            <Fab onClick={onClick} color='primary' 
+            <Fab onClick={onClick} color='primary' variant='extended'
                 sx={{ position: 'fixed', bottom: '3%', right: '5%'}}>
+                    <Typography fontWeight={500} pr={1} > Update </Typography>
                 <SyncIcon sx={{color:'white', 
-                    animation: spinning ? 'spin 0.75s linear infinite' : 'none',
+                    animation: spinning ? 'spin 1s linear infinite' : 'none',
                     transform: 'rotate(-90deg)',
                     '@keyframes spin': 
                     {
@@ -147,7 +148,7 @@ const SpinningButton = ({spinning, onClick}:SpinningButtonProps) =>
                         '75%': { transform: 'rotate(-360 deg)' },
                         '100%': { transform: 'rotate(-450deg)' }
                     },
-                    transition: 'transform 1s ease-in-out'
+                    transition: 'transform 8s ease'
                 }} />
         </Fab>)
 }
@@ -157,7 +158,6 @@ function timeout(delay: number)
 }
 
 const ReserveEquipment = () => {
-    const {equipmentData, success, setEquipmentData, setSuccessState} = useContext(EquipmentContext)!; // context can't be null.
     const { user } = useContext(AuthContext)!;
 
     // BLOCKED: Cannot deal with "possibly undefined" and "possibly null" -> when does this happen?
@@ -171,10 +171,9 @@ const ReserveEquipment = () => {
     const equipmentModel = React.useRef<Equipment[]>([]); // the base model, persists throughout runtime
     const [selectedEquipmentID, setSelectedEquipmentID] = useState(-1); // Using -1 will prevent any "undefined" errors.
     const [spinning, setSpinning] = useState(false);
-
-    /*const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setSearchText(event.target.value);
-        if (event.target.value === '') {
+    const [sync, setSync] = useState(false); // the state of this variable doesn't matter
+    const handleSearch = () => {
+        if (searchText === '') {
             setDisplayModel(equipmentModel.current);
         } else {
             const searchExpr = (input: Equipment, searchTerm: string) => {
@@ -182,24 +181,51 @@ const ReserveEquipment = () => {
                 const normalizedSearchTerm = searchTerm.toLowerCase();
                 return normalizedName.includes(normalizedSearchTerm);
             };
-            const filteredResults = displayModel.filter((elem) =>
-                searchExpr(elem, event.target.value)
+            const filteredResults = equipmentModel.current.filter((elem) =>
+                searchExpr(elem, searchText)
             );
             setDisplayModel(filteredResults);
         }
-    };*/
+    };
     const updateSearchBar = (event: React.ChangeEvent<HTMLInputElement>)=>
     {
+        if(event.target.value != searchText)
+        {
+            setDisplayModel(equipmentModel.current);
+        }
         setSearchText(event.target.value);
     }
     const performSearch = (value: string)=>
     {
         console.log(value);
     }
+    async function syncData()
+    {
+        if(!spinning)
+        {
+            try {
+                setSpinning(true);
+                const response = await axiosInstance.get('/equipment');
+                console.log(`Fetched ${response.data.equipment.length} equipment entries`);
+                equipmentModel.current = response.data.equipment; //
+                setDisplayModel(equipmentModel.current);
+            } catch (error: any) {
+                console.log('Failed to fetch equipment');
+                console.error(error.response.data);
+            }
+            finally
+            {
+                await timeout(1500); // remove artificial delay later
+                setLoading(false);
+                setSpinning(false);
+                console.log(spinning);
+            }
+        }
+    }
 
     React.useEffect(() => {
-        setLoading(true);
         const fetchEquipment = async () => {
+            setLoading(true);
             try {
                 const response = await axiosInstance.get('/equipment');
                 console.log(`Fetched ${response.data.equipment.length} equipment entries`);
@@ -213,19 +239,17 @@ const ReserveEquipment = () => {
             }
             finally
             {
-                await timeout(300); // remove artificial delay later
                 setLoading(false);
             }
         }
         fetchEquipment();
     }, []);
-    
 
     const handleOpen = (equipment: Equipment) => 
     {
         console.log(`Equipment name: ${equipment.name}`);
         console.log(`Equipment ID: ${equipment.id}`);
-        setEquipmentData({id: equipment.id, name: equipment.name, isPremium: equipment.isPremium}); // pass the context to the child. 
+        //setEquipmentData({id: equipment.id, name: equipment.name, isPremium: equipment.isPremium}); // pass the context to the child. 
         setSelectedEquipmentID(equipment.id);
         setOpen(true);
     }
@@ -253,6 +277,7 @@ const ReserveEquipment = () => {
         <>
             <MainContainer>
                 <ThemeProvider theme={theme}>
+                <BookingModal open={open} equipmentID={selectedEquipmentID} onClose={handleClose} onSubmit={handleSubmit}/>
                     <Box
                         id="contentBox"
                         sx={{
@@ -265,20 +290,22 @@ const ReserveEquipment = () => {
                             padding: 0,
                             scroll: 'none',
                             overflow: 'hidden',
-                        }}
-                    >
+                        }}>
                         <NavBar id="reserve" />
                         <Box
                             sx={{
-                                padding: 3,
+                                padding: 
+                                {
+                                    xs: 1.5,
+                                    md: 3,
+                                },
                                 justifyContent: 'center',
                                 width: '100%',
-                            }}
-                        >
+                            }} >
                             <Typography color={theme.palette.primary.contrastText} sx={{pl: 2}}>Find Equipment for YOUR job</Typography>
-                            <SearchBar value={searchText} onChange={updateSearchBar} onSubmit={(t: string)=>{performSearch(t)}}/>
+                            <SearchBar value={searchText} onChange={updateSearchBar} onSubmit={handleSearch}/>
                         </Box>
-                        <BookingModal open={open} equipmentID={selectedEquipmentID} onClose={handleClose} onSubmit={handleSubmit}/>
+                        
                         <Box sx={{
                             backgroundColor: '#cac5d4', 
                             padding: 0.1,
@@ -361,11 +388,11 @@ const ReserveEquipment = () => {
                                             </Box>
                                         </CardContent>
                                     </Card>
-                                ))) : ( <Typography> Failed to find results</Typography>)}
+                                ))) : ( <Typography> No results found</Typography>)}
                             </Grid2>
                         </Box>
                     </Box>
-                    <SpinningButton spinning={spinning} onClick={()=>{setSpinning(!spinning)}}/>
+                    <SpinningButton spinning={spinning} onClick={syncData}/>
                 </ThemeProvider>
             </MainContainer>
         </>
