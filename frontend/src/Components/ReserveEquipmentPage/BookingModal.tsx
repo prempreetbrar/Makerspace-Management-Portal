@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 
 
-import { Fab, Tab, Tabs, Stack, Typography, Button, Card, CardContent, CardActionArea, CardActions, Accordion, ButtonGroup, CircularProgress, Grid2, IconButton, TextField, FormGroup, Tooltip } from '@mui/material';
+import { Fab, Tab, Tabs, Stack, Typography, Button, Card, CardContent, CardActionArea, CardActions, Accordion, ButtonGroup, CircularProgress, Grid2, IconButton, TextField, FormGroup, Tooltip, Modal } from '@mui/material';
 import { createTheme, styled, ThemeProvider, useTheme } from '@mui/material/styles'
 import Box from '@mui/material/Box';
 import axios from 'axios';
@@ -14,6 +14,11 @@ import { TimePicker } from "@mui/x-date-pickers";
 import { CancelRounded, TheaterComedyOutlined } from "@mui/icons-material";
 import WindowDimensions from "../WindowDimensions";
 import { AuthContext, UserRoles } from "../../contexts/AuthContext";
+import { daDK } from "@mui/x-date-pickers/locales";
+import { get } from "http";
+import axiosInstance from "../../axios";
+import ModalBase from "./ModalBase";
+
 const theme = createTheme();
 type TimeEntry = {
     time: string,
@@ -25,30 +30,25 @@ type DateEntry =
     date: string,
     times: string[],
 }
-
-const timesArray: TimeEntry[] = [
-    { time: "8:00 AM", premiumOnly: true},
-    { time: "9:00 AM", premiumOnly: true },
-    { time: "10:00 AM", premiumOnly: false },
-    { time: "11:00 AM", premiumOnly: false },
-    { time: "12:00 PM", premiumOnly: false },
-    { time: "1:00 PM", premiumOnly: false },
-    { time: "2:00 PM", premiumOnly: false },
-    { time: "3:00 PM", premiumOnly: false },
-    { time: "4:00 PM", premiumOnly: false },
-    { time: "5:00 PM", premiumOnly: false },
-    { time: "6:00 PM", premiumOnly: false },
-    { time: "7:00 PM", premiumOnly: true },
-    { time: "8:00 PM", premiumOnly: true }];
-
-interface BookingCalendarProps 
+interface Booking
 {
-    userRole: string,
+    id: number, 
+    date: string,
+    timeSlot1: string,
+    timeSlot2: string,
+}
+
+interface BookingModalProps 
+{
+    open: boolean,
     onClose: ()=> void,
     onSubmit: ()=>void,
     equipmentID: number,
     externalProps?: any,
 }
+
+
+
 const customTheme = createTheme({
     palette: {
         primary: {
@@ -69,19 +69,26 @@ const customTheme = createTheme({
         fontFamily: "Arial, sans-serif", 
     },
 });
+
+
 const timeButtonStyle = { width: 100, margin: '2px', fontSize: 11 };
 // Need to link clicking off the modal to the close event. For now, linked to the close button only.
-const BookingCalendar = ({userRole, onClose, onSubmit, equipmentID, externalProps}:BookingCalendarProps) => {
+const BookingModal = ({open, onClose, onSubmit, equipmentID, externalProps}:BookingModalProps) => {
+    
     //@ts-ignore
-    const bookings, setBookings = useState
+    const [bookings, setBookings] = useState<any[]>(null);
+    const [defaultDay, setDefaultDay] = useState<Dayjs>(dayjs(dayjs()));
     const passedInProps = externalProps;
     const {user} = useContext(AuthContext)!;
     const {height, width} = WindowDimensions();
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<any>();
     // all event listeners would need to be exposed at some point via Props. 
     //@ts-ignore
     const [jsSelectedDate, setJSSelectedDate] = useState() // this would eventually convert dayJS into a string format
     const [selectedTime, setSelectedTime] = useState("");
     const [selectedDay, setSelectedDay] = useState(dayjs());
+    const [availableTimes, setAvailableTimes] = useState();
     //@ts-ignore
     const handleDateSelection = (newDate: React.SetStateAction<dayjs.Dayjs>) => {
         setSelectedDay(newDate);
@@ -108,92 +115,141 @@ const BookingCalendar = ({userRole, onClose, onSubmit, equipmentID, externalProp
         setSelectedTime("");
         onClose();
     }
+
+    const forceSync = async (equipmentID:number) =>
+    {
+        setLoading(true);
+        console.log("Syncing with backend...");
+        try
+        {
+            const response = await axiosInstance.get<Booking[]>(`/bookings/days/slots?equipmentID=${equipmentID}`);
+            console.log(response.data);
+            console.log
+        }
+        catch(error: any)
+        {
+            console.log("Failed to fetch bookings for Equipment");
+            console.log(error.data)
+        }
+        finally
+        {
+            setLoading(false);
+        }
+    }
+
+    useEffect(() => {
+        async function getBookingsForEquipment(equipmentID:number)
+        {
+            if(equipmentID === -1)
+            {
+                return // don't bother fetching data.
+            }
+            setLoading(true);
+            console.log("Syncing with backend...");
+            try
+            {
+                const response = await axiosInstance.get<Booking[]>(`/bookings/days/slots?equipmentID=${equipmentID}`);
+                console.log(response.data);
+            }
+            catch(error: any)
+            {
+                console.log("Failed to fetch bookings for Equipment");
+                console.log(error.data)
+            }
+        }
+        getBookingsForEquipment(equipmentID);
+    },[equipmentID, loading]);
+
     useEffect(()=>{
+
+
         // Get bookings for equipment by day
         // Add a new booking entry
         // format ? 
         // 
         
-        axios.post("url", {
+        /* axios.post("url", {
             equipmentID: equipmentID,
             timeSlot1: "string",
-        });
+        });*/
 
-    }, [user, equipmentID])
-    useEffect(() =>
-    {
-    }, []);
-    const today = dayjs();
-    const nMonthsFromNow = today.add(2, "month");
+    }, [user, equipmentID]);
+
+   
+    
+    const nMonthsFromNow = defaultDay.add(2, "month");
     return (
         <ThemeProvider theme={customTheme}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <Box
-                        sx={{
-                            height: 
-                            {
-                                xs: height,
-                            },
-                            overflowY: 'scroll',
-                            borderRadius: 5, 
-                            padding: 2,
-                            backgroundColor: "white",
-                            boxShadow: 3,
-                        }}
-                        display="flex"
-                        flexDirection="column"
-                        alignItems="center"
-                        justifyContent='center'>
-                    <IconButton sx={{marginLeft: 'auto', color: theme.palette.error.main}} size="small" onClick={onClose}> { /* confirmation dialog would be nice */}
-                                    <CancelRounded fontSize="large">Cancel</CancelRounded>
-                    </IconButton>
-                    <Box sx={{overflowX: 'hidden', overflowY: 'scroll'}} display="flex" flexDirection={"column"} alignContent={'center'}>
-                        <Box display="flex" flexDirection="row" justifyContent={'space-between'} position={"sticky"} top={0} bgcolor={"white"}> 
-                                <Typography variant='h4'>
-                                    Reserve a time
-                                </Typography>
+            <ModalBase open={open} onClose={handleCloseModal}>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <Box
+                    sx={{
+                        height: 
+                        {
+                            xs: height,
+                        },
+                        overflowY: 'scroll',
+                        borderRadius: 5, 
+                        padding: 2,
+                        backgroundColor: "white",
+                        boxShadow: 3,
+                    }}
+                    display="flex"
+                    flexDirection="column"
+                    alignItems="center"
+                    justifyContent='center'>
+                <IconButton sx={{marginLeft: 'auto', color: theme.palette.error.main}} size="small" onClick={onClose}> { /* confirmation dialog would be nice */}
+                    <CancelRounded fontSize="large">Cancel</CancelRounded>
+                </IconButton>
+                <Box sx={{overflowX: 'hidden', overflowY: 'scroll'}} display="flex" flexDirection={"column"} alignContent={'center'}>
+                    <Box display="flex" flexDirection="row" justifyContent={'space-between'} position={"sticky"} top={0} bgcolor={"white"}> 
+                            <Button variant='contained' onClick={()=>forceSync}>Force Sync</Button>
+                            <Typography variant='h4'>
+                                Reserve a time
+                            </Typography>
+                    </Box>
+                    <Box display={"flex"} sx={{
+                        alignSelf: 'center',
+                        justifyContent: 'space-between',
+                        flexDirection: {
+                            xs: 'column',
+                            md: 'row',
+                        },
+                        margin: '10px',
+                    }}>
+                        <Box id="calendarBox" display="flex" flexDirection="column" columnGap={5} mr={{xs: 0, md: 5}}>
+                            <DateCalendar disablePast={true} sx={{minWidth: 300, backgroundColor: '#ECE6F0', borderRadius: 4}} defaultValue={defaultDay} minDate={defaultDay} maxDate={nMonthsFromNow} />
                         </Box>
-                        <Box display={"flex"} sx={{
-                            alignSelf: 'center',
-                            justifyContent: 'space-between',
-                            flexDirection: {
-                                xs: 'column',
-                                md: 'row',
-                            },
-                            margin: '10px',
-                        }}>
-                            <Box id="calendarBox" display="flex" flexDirection="column" columnGap={5} mr={{xs: 0, md: 5}}>
-                                <DateCalendar disablePast={true} sx={{minWidth: 300, backgroundColor: '#ECE6F0', borderRadius: 4}} defaultValue={dayjs(today)} minDate={today} maxDate={nMonthsFromNow} />
+                        <Box display="flex" flexDirection="column"  alignContent={"center"}>
+                                <Typography variant='h6' sx={{marginTop: 1}}>
+                                Available Times:
+                                </Typography>
+                            <Box id="time-display" display={"flex"} flexDirection={"column"} alignItems={'center'}>
+                                <Grid2 container rowSpacing={0.25} alignItems ="left" flexGrow={1} justifyContent={"left"}> 
+                                    {
+                                       /* timesArray.map((listing, index)=>(
+                                                <Button key={index} variant={ selectedTimeButton !== index? 'outlined' : 'contained'}  sx={timeButtonStyle} onClick={() => handleTimeSelect(index, listing.time)} 
+                                                disabled={user!.userRole !== UserRoles.PREMIUM && listing.premiumOnly}>
+                                                    {listing.time}
+                                                </Button>
+                                            ))
+                                        */}
+                                </Grid2>
                             </Box>
-                            <Box display="flex" flexDirection="column"  alignContent={"center"}>
-                                    <Typography variant='h6' sx={{marginTop: 1}}>
-                                    Available Times:
-                                    </Typography>
-                                <Box id="time-display" display={"flex"} flexDirection={"column"} alignItems={'center'}>
-                                    <Grid2 container rowSpacing={0.25} alignItems ="left" flexGrow={1} justifyContent={"left"}> 
-                                        {
-                                            timesArray.map((listing, index)=>(
-                                                    <Button key={index} variant={ selectedTimeButton !== index? 'outlined' : 'contained'}  sx={timeButtonStyle} onClick={() => handleTimeSelect(index, listing.time)} 
-                                                    disabled={user!.userRole !== UserRoles.PREMIUM && listing.premiumOnly}>
-                                                        {listing.time}
-                                                    </Button>
-                                                ))
-                                            }
-                                    </Grid2>
-                                </Box>
-                                <Box component="form" sx={{paddingTop: 3}}>
-                                    <TextField id="DescriptionField" label="Request Details" placeholder="Description"sx={{fontSize: 10}} maxRows={2}  variant="filled" onChange={handleTextUpdate} multiline fullWidth required>
-                                    </TextField>
-                                </Box>                            
-                                <Button variant="contained" sx={{marginTop: 3, backgroundColor: '#65558F', color:"#FFFFFF", width:'120px'}} onClick={onSubmit} disabled={(inputText === "" || selectedTime === "")}>
-                                    Submit
-                                </Button>
-                            </Box>
+                            <Box component="form" sx={{paddingTop: 3}}>
+                                <TextField id="DescriptionField" label="Request Details" placeholder="Description"sx={{fontSize: 10}} maxRows={2}  variant="filled" onChange={handleTextUpdate} multiline fullWidth required>
+                                </TextField>
+                            </Box>                            
+                            <Button variant="contained" sx={{marginTop: 3, backgroundColor: '#65558F', color:"#FFFFFF", width:'120px'}} onClick={onSubmit} disabled={(inputText === "" || selectedTime === "")}>
+                                Submit
+                            </Button>
                         </Box>
                     </Box>
                 </Box>
+                </Box>
             </LocalizationProvider>
+         </ModalBase>
         </ThemeProvider>
     )
 }
-export default BookingCalendar
+export default BookingModal

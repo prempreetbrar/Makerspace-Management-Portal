@@ -1,3 +1,4 @@
+/// THIS FILE IS DEPRECATED. 
 import '../styles/requests/local.css';
 import * as React from 'react';
 import AccordionSummary from '@mui/material/AccordionSummary';
@@ -14,7 +15,6 @@ import TabPanel from '@mui/lab/TabPanel';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import { UserProvider, useUser } from '../hooks/UserProvider.tsx';
-import { RequestsProvider } from '../hooks/RequestsProvider.tsx';
 import { request } from 'http';
 import { describe } from 'node:test';
 import RequestCard from '../Components/Requests/RequestCard.tsx';
@@ -53,14 +53,12 @@ const templateRequests = [requestTemplate1, requestTemplate1, requestTemplate2, 
 const theme = createTheme();
 const ManageBookings = () => {
 
-    const { user, setUserByIndex } = useUser();
+
+    const { user, setUser} = useUser();
     const [currentUserIndex, setCurrentUserIndex] = React.useState(0);
     const [currentUserRole, setCurrentUserRole] = React.useState(user.userRole);
     const handleChangeUser = () => {
-        const nextIndex = currentUserIndex + 1 % 3;
-        setCurrentUserIndex(nextIndex);
-        setUserByIndex(nextIndex);
-        setCurrentUserRole(user.userRole);
+        setUser();
     }
 
     const [value, setValue] = React.useState('Approved'); // this is the default state I assume
