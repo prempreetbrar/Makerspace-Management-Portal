@@ -84,9 +84,8 @@ const Landing = () => {
                         </>
                     ) : (
                         <>
-                          <LoginButton button_type='button' onClick={handleOpenLoginMobile}></LoginButton>
-                          <br /><br />
-                          <CreateAccountButton button_type='button' onClick={handleOpenCreateAccountMobile}></CreateAccountButton>
+                          <LoginButton id="landing-login" button_type='button' onClick={handleOpenLoginMobile}></LoginButton>
+                          <CreateAccountButton id="landing-create-account" button_type='button' onClick={handleOpenCreateAccountMobile}></CreateAccountButton>
                         </>
                     )}
               </div>

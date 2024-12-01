@@ -33,13 +33,10 @@ const textFieldSX = {
 
 
 const Profile = () => {
-
-    
-    const { user } = useContext(AuthContext)!;
-    const profileData = React.useRef(user!);
-    const [userDetails, setUserDetails] = useState(user);
-    const [isEditing, setIsEditing] = useState(false);
-    const navigate = useNavigate();
+  const { user } = useContext(AuthContext)!;
+  const [userDetails, setUserDetails] = useState({email: user?.email, firstName: user?.firstName, lastName: user?.lastName, confirmPassword: user?.confirmPassword, password: user?.password});
+  const [isEditing, setIsEditing] = useState(false);
+  const navigate = useNavigate();
 
   // Navigate to home page if user is not authenticated
   useEffect(() => {
@@ -60,6 +57,12 @@ const Profile = () => {
     try {
       const response = await axios.put('/users/profile', updatedDetails);
       const updatedUser = response.data?.user;
+      if (user) {
+        user.firstName = updatedUser.firstName;
+        user.lastName = updatedUser.lastName;
+        user.confirmPassword = updatedUser.confirmPassword;
+        user.password = updatedUser.password;
+      }
   
       return { isSuccess: true, message: 'Profile updated successfully!' };
     } catch (error: unknown) {
@@ -125,8 +128,8 @@ const Profile = () => {
               fullWidth
               value={userDetails.email}
               onChange={handleChange("email")}
-              disabled={!isEditing}
-              variant={isEditing ? "outlined" : "filled"}
+              disabled={true}
+              variant={"filled"}
               sx={textFieldSX}
             />
           </Grid>
@@ -171,7 +174,7 @@ const Profile = () => {
                 fullWidth
                 type="password"
                 placeholder="Confirm new password"
-                onChange={handleChange("password")}
+                onChange={handleChange("confirmPassword")}
                 variant="outlined"
                 sx={textFieldSX}
               />

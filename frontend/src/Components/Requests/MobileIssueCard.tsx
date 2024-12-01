@@ -29,7 +29,6 @@ const MobileIssueCard: React.FC<MobileIssueCardProps> = ({
     description,
     date,
     icon,
-    isResolved,
     status,
 }) => {
     const [isSwiped, setIsSwiped] = useState(false);

@@ -87,7 +87,7 @@ const ManageBookings = () => {
                             }}>
                                 <Stack spacing={3} sx={{ alignSelf: 'center' }}>
                                     {
-                                        templateRequests.filter(item => item.status === "approved").map((item, index) =>
+                                        templateRequests.filter(item => item.status === "approved").map((_item, _index) =>
                                             <RequestCard status={''} title={''} description={''} date={''} file={''} icon={undefined} user={''}/>
                                         )
                                     }
@@ -102,7 +102,7 @@ const ManageBookings = () => {
                             }}>
                                 <Stack spacing={3} sx={{ alignSelf: 'center' }}>
                                     {
-                                        templateRequests.filter(item => item.status === "pending").map((item, index) =>
+                                        templateRequests.filter(item => item.status === "pending").map((_item, _index) =>
                                             <RequestCard user={user.userRole}/>
                                         )
                                     }
@@ -117,7 +117,7 @@ const ManageBookings = () => {
                             }}>
                                 <Stack spacing={3} sx={{ alignSelf: 'center' }}>
                                     {
-                                        templateRequests.filter(item => item.status === "denied").map((item, index) =>
+                                        templateRequests.filter(item => item.status === "denied").map((_item, index) =>
                                             <RequestCard key={index} user={user.userRole} />
                                         )
                                     }
