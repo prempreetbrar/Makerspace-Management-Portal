@@ -43,12 +43,14 @@ const generatePremiumBookings = (
 ) => {
     const bookings = [];
     const startDay = new Date();
+    startDay.setUTCHours(0, 0, 0, 0); // Guarantee that the timestamp is in precise intervals
+    console.log(startDay.toDateString());
     startDay.setDate(startDay.getDate() + dayOffset);
     const initalBookingHour = startTime;
     equipmentIDs.forEach((id) => {
+        let baseDay = new Date(startDay);
         for (i = 0; i < noDays; ++i) {
-            startDay.setDate(startDay.getDate());
-            console.log('Start date: %s', startDay.toLocaleString());
+            console.log('Start date: %s', baseDay.toLocaleString());
             let bookingHour = initalBookingHour;
             premiumUsers.forEach((email) => {
                 console.log(
@@ -61,12 +63,13 @@ const generatePremiumBookings = (
                     equipmentID: id,
                     title: `Booking for ${email} for ${id}`,
                     description: `email: ${email}, equipmentID ${id}`,
-                    bookingDate: new Date(startDay),
+                    bookingDate: new Date(baseDay),
                     timeSlot1: `${bookingHour++}:00:00`,
                     timeSlot2: `${bookingHour++}:00:00`,
                     status: Booking.STATUS_APPROVED,
                 });
             });
+            baseDay.setDate(baseDay.getDate() + 1);
         }
     });
     console.log(
