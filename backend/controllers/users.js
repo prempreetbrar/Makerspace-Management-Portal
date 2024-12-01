@@ -100,7 +100,6 @@ const login = errorsController.catchAsync(async (request, response) => {
         );
     }
 
-
     // we don't need to send the password back (the token is all the user needs). Since it's sensitive, hide it.
     user.password = undefined;
     const token = _getAuthenticatedToken(user);
@@ -250,35 +249,37 @@ const setUserPremium = errorsController.catchAsync(
     }
 );
 
-const updateUserProfile = errorsController.catchAsync(async (request, response) => {
-  const updatedUser = await User.findByPk(request.body.email);
+const updateUserProfile = errorsController.catchAsync(
+    async (request, response) => {
+        const updatedUser = await User.findByPk(request.body.email);
 
-  if (!updatedUser) {
-    throw new errorsController.ErrorWithStatusCode(
-      'User not found.',
-      404
-    );
-  }
+        if (!updatedUser) {
+            throw new errorsController.ErrorWithStatusCode(
+                'User not found.',
+                404
+            );
+        }
 
-  updatedUser.set({
-    firstName: request.body.firstName || updatedUser.firstName,
-    lastName: request.body.lastName || updatedUser.lastName,
-    confirmPassword: request.body.confirmPassword || updatedUser.confirmPassword,
-    password: request.body.password || updatedUser.password,
-  });
+        updatedUser.set({
+            firstName: request.body.firstName || updatedUser.firstName,
+            lastName: request.body.lastName || updatedUser.lastName,
+            confirmPassword:
+                request.body.confirmPassword || updatedUser.confirmPassword,
+            password: request.body.password || updatedUser.password,
+        });
 
-  await updatedUser.save();
+        await updatedUser.save();
 
-  const token = _getAuthenticatedToken(updatedUser);
-  const cookie = _getAuthenticatedCookie();
-  response.cookie('jwt', token, cookie);
-  response.status(201).json({
-    status: 'success',
-    token,
-    user: updatedUser,
-  });
-});
-
+        const token = _getAuthenticatedToken(updatedUser);
+        const cookie = _getAuthenticatedCookie();
+        response.cookie('jwt', token, cookie);
+        response.status(201).json({
+            status: 'success',
+            token,
+            user: updatedUser,
+        });
+    }
+);
 
 module.exports = {
     signup,

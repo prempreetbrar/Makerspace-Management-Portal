@@ -95,8 +95,7 @@ User.prototype.isPasswordCorrect = async function (
     givenPassword,
     actualPassword
 ) {
-    return givenPassword.localeCompare(actualPassword);
-    //return await bcrypt.compare(givenPassword, actualPassword);
+    return await bcrypt.compare(givenPassword, actualPassword);
 };
 
 /*

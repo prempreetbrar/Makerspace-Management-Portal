@@ -1,5 +1,4 @@
 import React, { useState, useContext } from 'react';
-import crypto from 'node:crypto';
 import {
     Button,
     TextField,
@@ -14,10 +13,6 @@ import { ErrorWithStatusCode } from '../axios';
 
 interface LoginProps {
     onClose?: () => void;
-}
-function performHash(password: string)
-{
-    return crypto.createHash('sha256').update(password).digest('hex');
 }
 
 const Login: React.FC<LoginProps> = ({ onClose }) => {
@@ -76,12 +71,7 @@ const Login: React.FC<LoginProps> = ({ onClose }) => {
                     margin="normal"
                     className="text-field"
                     value={password}
-                    onChange={(e) => 
-                        {
-                            passwordRef.current = performHash(e.target.value);
-                            setPassword(e.target.value)
-                        }
-                    }
+                    onChange={(e) => setPassword(e.target.value)}
                 />
             </DialogContent>
             <DialogActions className="button-container">

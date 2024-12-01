@@ -14,7 +14,6 @@ const Equipment = require('./models/Equipment');
 const Booking = require('./models/Booking');
 const Request = require('./models/Request');
 const Attachment = require('./models/Attachment');
-const crypto = require('node:crypto');
 const Models = { User, Issue, Equipment, Booking, Request, Attachment };
 
 // create relationships
@@ -34,9 +33,6 @@ function printBookingRecord(booking) {
     console.log(`timeSlot2: ${booking.timeSlot2}`);
     console.log(`status: ${booking.status}`);
     console.log('----------------------------------------');
-}
-function hashPassword(password) {
-    return crypto.createHash('sha256').update(password).digest('hex');
 }
 
 const generatePremiumBookings = (
@@ -106,24 +102,15 @@ const seedDatabase = async (clear = false) => {
                         firstName: 'Sean',
                         lastName: 'Monaghan',
                         userRole: User.PREMIUM,
-                        password: crypto
-                            .createHash('sha256')
-                            .update('monaghan')
-                            .digest('hex'),
-                        confirmPassword: crypto
-                            .createHash('sha256')
-                            .update('monaghan')
-                            .digest('hex'),
+                        password: 'monaghan',
+                        confirmPassword: 'monaghan',
                     },
                     {
                         email: 'connor@gmail.com',
                         firstName: 'Connor',
                         lastName: 'McDavid',
                         userRole: User.PREMIUM,
-                        password: crypto
-                            .createHash('sha256')
-                            .update('connor')
-                            .digest('hex'),
+                        password: 'connor',
                         // exposing the password defeats the purpose of hashing, but this is only
                         // done for seeding
                         confirmPassword: 'connor',
@@ -133,28 +120,17 @@ const seedDatabase = async (clear = false) => {
                         firstName: 'Sidney',
                         lastName: 'Crosby',
                         userRole: User.BASIC,
-                        password: crypto
-                            .createHash('sha256')
-                            .update('sidney')
-                            .digest('hex'),
-                        confirmPassword: crypto
-                            .createHash('sha256')
-                            .update('sidney')
-                            .digest('hex'), // only null because Sequelize does not validate passwords match on bulk create (intentional, just how the ORM is implemented)
+                        password: 'sidney',
+                        confirmPassword: 'sidney',
+                        // only null because Sequelize does not validate passwords match on bulk create (intentional, just how the ORM is implemented)
                     },
                     {
                         email: 'admin@gmail.com',
                         firstName: 'admin',
                         lastName: 'admin',
                         userRole: User.ADMIN,
-                        password: crypto
-                            .createHash('sha256')
-                            .update('admin')
-                            .digest('hex'),
-                        confirmPassword: crypto
-                            .createHash('sha256')
-                            .update('admin')
-                            .digest('hex'), // only null because Sequelize does not validate passwords match on bulk create (intentional, just how the ORM is implemented)
+                        password: 'admin',
+                        confirmPassword: 'admin', // only null because Sequelize does not validate passwords match on bulk create (intentional, just how the ORM is implemented)
                     },
                     {
                         // DO NOT LOG IN AS THIS USER.
@@ -163,8 +139,8 @@ const seedDatabase = async (clear = false) => {
                         firstName: 'Ghost',
                         lastName: 'User1',
                         userRole: User.PREMIUM,
-                        password: hashPassword('xiukaJ!@&$hjcUiph55U'),
-                        confirmPassword: hashPassword('xiukaJ!@&$hjcUiph55U'), // only null because Sequelize does not validate passwords match on bulk create (intentional, just how the ORM is implemented)
+                        password: 'xiukaJ!@&$hjcUiph55U',
+                        confirmPassword: 'xiukaJ!@&$hjcUiph55U', // only null because Sequelize does not validate passwords match on bulk create (intentional, just how the ORM is implemented)
                     },
                     {
                         // DO NOT LOG IN AS THIS USER.
@@ -173,8 +149,8 @@ const seedDatabase = async (clear = false) => {
                         firstName: 'Ghost',
                         lastName: 'User2',
                         userRole: User.PREMIUM,
-                        password: hashPassword('uAd8f90&2_90345jDoau7'),
-                        confirmPassword: hashPassword('uAd8f90&2_90345jDoau7'), // only null because Sequelize does not validate passwords match on bulk create (intentional, just how the ORM is implemented)
+                        password: 'uAd8f90&2_90345jDoau7',
+                        confirmPassword: 'uAd8f90&2_90345jDoau7', // only null because Sequelize does not validate passwords match on bulk create (intentional, just how the ORM is implemented)
                     },
                     {
                         // DO NOT LOG IN AS THIS USER.
@@ -183,8 +159,8 @@ const seedDatabase = async (clear = false) => {
                         firstName: 'Ghost',
                         lastName: 'User3',
                         userRole: User.PREMIUM,
-                        password: hashPassword('ghostuser'),
-                        confirmPassword: hashPassword('ghostuser'), // only null because Sequelize does not validate passwords match on bulk create (intentional, just how the ORM is implemented)
+                        password: 'ghostuser',
+                        confirmPassword: 'ghostuser', // only null because Sequelize does not validate passwords match on bulk create (intentional, just how the ORM is implemented)
                     },
                     {
                         // DO NOT LOG IN AS THIS USER.
@@ -193,8 +169,8 @@ const seedDatabase = async (clear = false) => {
                         firstName: 'Ghost',
                         lastName: 'User4',
                         userRole: User.PREMIUM,
-                        password: hashPassword('ghostuser'),
-                        confirmPassword: hashPassword('ghostuser'), // only null because Sequelize does not validate passwords match on bulk create (intentional, just how the ORM is implemented)
+                        password: 'ghostuser',
+                        confirmPassword: 'ghostuser', // only null because Sequelize does not validate passwords match on bulk create (intentional, just how the ORM is implemented)
                     },
                     {
                         // DO NOT LOG IN AS THIS USER.
@@ -203,8 +179,8 @@ const seedDatabase = async (clear = false) => {
                         firstName: 'Ghost',
                         lastName: 'User5',
                         userRole: User.PREMIUM,
-                        password: hashPassword('ghostuser'),
-                        confirmPassword: hashPassword('ghostuser'), // only null because Sequelize does not validate passwords match on bulk create (intentional, just how the ORM is implemented)
+                        password: 'ghostuser',
+                        confirmPassword: 'ghostuser', // only null because Sequelize does not validate passwords match on bulk create (intentional, just how the ORM is implemented)
                     },
                 ],
                 { individualHooks: true }
