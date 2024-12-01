@@ -35,6 +35,7 @@ const Profile = () => {
   const { user } = useContext(AuthContext)!;
   const [userDetails, setUserDetails] = useState({email: user?.email, firstName: user?.firstName, lastName: user?.lastName, confirmPassword: user?.confirmPassword, password: user?.password});
   const [isEditing, setIsEditing] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const navigate = useNavigate();
 
   // Navigate to home page if user is not authenticated
@@ -46,10 +47,14 @@ const Profile = () => {
 
   const handleChange = (field: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
     setUserDetails({ ...userDetails, [field]: event.target.value });
+    if (field === "password" || field === "confirmPassword") {
+      setErrorMessage(null);
+    }
   };
 
   const handleEditToggle = () => {
     setIsEditing(!isEditing);
+    setErrorMessage(null);
   };
 
   const saveUserDetails = async (updatedDetails: Partial<User>) => {
@@ -82,16 +87,20 @@ const Profile = () => {
   };
   
   const handleSave = async () => {
-    if (userDetails) {
-      const result = await saveUserDetails(userDetails);
-  
-      if (result.isSuccess) {
-        console.log("In handleSave: " + result.message);
-        setIsEditing(false); // Exit editing mode
-      } else {
-        console.error("Error in handleSave: " + result.message);
-      }
+    console.log(userDetails.password + ", " + userDetails.confirmPassword);
+
+    if ((userDetails.password || userDetails.confirmPassword) && (userDetails.password != userDetails.confirmPassword)) {
+      setErrorMessage("Passwords do not match.");
+      return;
     }
+    const result = await saveUserDetails(userDetails);
+    if (result.isSuccess) {
+      setIsEditing(false);
+    } else {
+      console.error("Error in handleSave:", result.message);
+    }
+    userDetails.password = "";
+    userDetails.confirmPassword = "";
   };
 
   if (!user) {
@@ -155,29 +164,36 @@ const Profile = () => {
             />
           </Grid>
           {isEditing && (
-            <Grid size={{ xs: 12 }}>
-              <TextField
-                label="Password"
-                fullWidth
-                type="password"
-                placeholder="Enter new password"
-                onChange={handleChange("password")}
-                variant="outlined"
-                sx={textFieldSX}
-              />
-            </Grid>)}
-            {isEditing && (
-            <Grid size={{ xs: 12 }}>
-              <TextField
-                label="Confirm Password"
-                fullWidth
-                type="password"
-                placeholder="Confirm new password"
-                onChange={handleChange("confirmPassword")}
-                variant="outlined"
-                sx={textFieldSX}
-              />
-            </Grid>)}
+            <>
+              <Grid size={{ xs: 12 }}>
+                <TextField
+                  label="Password"
+                  fullWidth
+                  type="password"
+                  placeholder="Enter new password"
+                  onChange={handleChange("password")}
+                  variant="outlined"
+                  sx={textFieldSX}
+                />
+              </Grid>
+              <Grid size={{ xs: 12 }}>
+                <TextField
+                  label="Confirm Password"
+                  fullWidth
+                  type="password"
+                  placeholder="Confirm new password"
+                  onChange={handleChange("confirmPassword")}
+                  variant="outlined"
+                  sx={textFieldSX}
+                />
+              </Grid>
+              {errorMessage && (
+                <Typography color="error" sx={{ mt: 2 }}>
+                  {errorMessage}
+                </Typography>
+              )}
+            </>
+          )}
         </Grid>
         <Box sx={{ mt: 4, display: "flex", justifyContent: "space-between" }}>
           {isEditing ? (
