@@ -12,6 +12,7 @@ import ThreeDPrinterIcon from '../assets/3D_printer.svg';
 import LaserCutterIcon from '../assets/laser_cutter.svg';
 import CNCMillIcon from '../assets/laser_cutter.svg';
 import MakerbotReplicatorImg from '../assets/mb_replicator.jpeg';
+import { useNavigate } from 'react-router-dom';
 
 import { User, Booking, Request, Issue } from '../models.ts';
 
@@ -27,6 +28,13 @@ const Requests = () => {
 
     const [status, setStatus] = useState(0);
     const [userState, setUserState] = useState(user?.userRole);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+      if (!user) {
+        navigate('/'); // Navigate to the home page
+      }
+    }, [user, navigate]);
 
     // fetch
     const [bookings, setBookings] = useState<Booking[]>([]);
