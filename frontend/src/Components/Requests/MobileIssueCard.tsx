@@ -16,7 +16,7 @@ import InfoIcon from '@mui/icons-material/Info';
 import { Check, Info } from '@mui/icons-material';
 
 interface MobileIssueCardProps {
-    title: string;
+    title: string | undefined;
     description: string;
     date: string;
     icon: any;

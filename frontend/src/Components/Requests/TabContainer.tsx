@@ -3,7 +3,7 @@ import { Tabs, Tab, Box, ThemeProvider } from '@mui/material'; // Combine MUI im
 import theme from '../../theme'; // Correct relative import for your theme
 
 interface TabContainerProps {
-    user: string;
+    user: string | undefined;
     value: number;
     onChange: (value: number) => void;
     children: React.ReactNode;

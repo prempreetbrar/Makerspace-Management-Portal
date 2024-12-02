@@ -14,7 +14,7 @@ import EventIcon from '@mui/icons-material/Event';
 import EditIcon from '@mui/icons-material/Edit';
 
 interface IssueCardProps {
-    title: string;
+    title: string | undefined;
     description: string;
     date: string;
     icon: any;

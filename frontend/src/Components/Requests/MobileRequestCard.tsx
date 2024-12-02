@@ -20,9 +20,8 @@ interface MobileRequestCardProps {
     title: string;
     description: string;
     date: string;
-    file: string;
     icon: any;
-    user: string;
+    user: string | undefined;
 }
 
 const MobileRequestCard: React.FC<MobileRequestCardProps> = ({

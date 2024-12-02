@@ -18,9 +18,8 @@ interface RequestCardProps {
     title?: string;
     description?: string;
     date?: string;
-    file?: string;
     icon?: any;
-    user?: string;
+    user?: string | undefined;
 }
 
 const RequestCard: React.FC<RequestCardProps> = ({
@@ -28,7 +27,6 @@ const RequestCard: React.FC<RequestCardProps> = ({
     title,
     description,
     date,
-    file,
     icon,
     user,
 }) => {
@@ -98,23 +96,6 @@ const RequestCard: React.FC<RequestCardProps> = ({
                                     }}
                                 />{' '}
                                 {date}
-                            </Typography>
-                            <Typography
-                                variant="body2"
-                                className="card-date"
-                                sx={{
-                                    flex: '1',
-                                    color: '#757575',
-                                }}
-                            >
-                                <DownloadIcon
-                                    className="icon"
-                                    sx={{
-                                        verticalAlign: 'middle',
-                                        color: '#757575',
-                                    }}
-                                />{' '}
-                                {file}
                             </Typography>
                         </Box>
                     </Grid2>
