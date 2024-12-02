@@ -9,6 +9,7 @@ dotenv.config({ path: `${__dirname}/config.env` });
 const express = require('express');
 const app = express();
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 
 const seedDatabase = require('./seed');
@@ -23,28 +24,30 @@ const listenPort = 8080; // Must be the same as the LEFT part of the docker back
 
 // localhost:{backend port} -> must match left half of line 8 in dockerfile;
 const corsOptions = {
-  origin: [
-    'http://localhost:5173',
-    'http://localhost:8800',
-    'http://frontend:80',
-    'http://localhost:80',
-    'http://frontend:8800',
-    'http://backend:8080',
-    'http://backend:5001',
-    'http://localhost:8080',
-    'http://localhost:5001',
-  ],
+    origin: [
+        'http://localhost:5173',
+        'http://localhost:8800',
+        'http://frontend:80',
+        'http://localhost:80',
+        'http://frontend:8800',
+        'http://backend:8080',
+        'http://backend:5001',
+        'http://localhost:8080',
+        'http://localhost:5001',
+    ],
+    credentials: true,
 };
 // colorizes HTTP requests in logs
 if (process.env.NODE_ENV === 'development') {
-  app.use(morgan('dev'));
+    app.use(morgan('dev'));
 }
 // force usage of https in production
 if (process.env.NODE_ENV === 'production') {
-  app.use(utilsController.redirectUsingHTTPS);
+    app.use(utilsController.redirectUsingHTTPS);
 }
 app.use(cors(corsOptions));
 app.use(express.json()); // lets us have JSON bodies in our requests
+app.use(cookieParser()); // lets us parse cookies from our requests
 
 seedDatabase();
 app.use('/users', userRoutes);
@@ -55,5 +58,5 @@ app.use('/requests', requestRoutes);
 app.use(errorsController.handleError); // handles errors in any of the routes that come before it
 
 app.listen(listenPort, () => {
-  console.log(`Server started on port ${listenPort}`);
+    console.log(`Server started on port ${listenPort}`);
 });

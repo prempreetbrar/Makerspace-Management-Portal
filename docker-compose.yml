@@ -5,7 +5,7 @@ services:
     build:
       context: ./frontend
     ports:
-      - '8800:80' #localport:docker port
+      - '8800:80' # Host-Port:Container-Port
     depends_on:
       - backend
 
@@ -13,6 +13,6 @@ services:
     build:
       context: ./backend
     ports:
-      - '5001:8080' #database port : localport
+      - '5001:8080' # Host-Port:Container-Port
     volumes:
       - ./backend/database.db:/app/database.db

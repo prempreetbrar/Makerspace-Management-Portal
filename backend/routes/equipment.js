@@ -15,15 +15,15 @@ const equipmentController = require('../controllers/equipment');
 // routes
 router.use(usersController.isUserLoggedIn);
 router
-  .route('/')
-  .get(
-    equipmentController.extractEquipmentFilters,
-    equipmentController.getAllEquipment
-  )
-  .patch(
-    usersController.isUserAuthorized(User.ADMIN),
-    equipmentController.extractEquipmentFilters,
-    equipmentController.updateEquipment
-  );
+    .route('/')
+    .get(
+        equipmentController.extractEquipmentFilters,
+        equipmentController.getAllEquipment
+    )
+    .patch(
+        ///usersController.isUserAuthorized(User.ADMIN),
+        equipmentController.extractEquipmentFilters,
+        equipmentController.updateEquipment
+    );
 
 module.exports = router;

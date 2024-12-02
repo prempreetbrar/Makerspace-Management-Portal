@@ -21,7 +21,7 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({ value, onChange }) => {
             <ToggleButtonGroup
                 value={value}
                 exclusive
-                onChange={(event, newValue) => onChange(newValue)}
+                onChange={(_event, newValue) => onChange(newValue)}
                 className="button-group"
                 style={{
                     display: 'flex',

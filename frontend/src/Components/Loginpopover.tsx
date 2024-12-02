@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Popover, TextField, Button, Link } from '@mui/material';
-import '../styles/authentication/login/local.css'
+import '../styles/authentication/login/local.css';
 
 import CreateAccountPopover from './CreateAccountPopover.tsx';
+import { AuthContext } from '../contexts/AuthContext';
+import { ErrorWithStatusCode } from '../axios.ts';
+import { useNavigate } from 'react-router-dom';
 
 interface LoginPopoverProps {
     anchorEl: HTMLElement | null;
@@ -10,9 +13,19 @@ interface LoginPopoverProps {
     handleCloseLogin: () => void;
 }
 
-const LoginPopover: React.FC<LoginPopoverProps> = ({ anchorEl, openLogin, handleCloseLogin }) => {
-    const [openCreateAccount, setOpenCreateAccount] = useState(false);
+const LoginPopover: React.FC<LoginPopoverProps> = ({
+    anchorEl,
+    openLogin,
+    handleCloseLogin,
+}) => {
+    const { login } = useContext(AuthContext)!;
 
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState<string | null>(null);
+
+    const [openCreateAccount, setOpenCreateAccount] = useState(false);
+    const navigate = useNavigate();
 
     const handleOpenCreateAccount = () => {
         setOpenCreateAccount(true);
@@ -22,10 +35,26 @@ const LoginPopover: React.FC<LoginPopoverProps> = ({ anchorEl, openLogin, handle
         setOpenCreateAccount(false);
     };
 
-
     const handleOpenLogin = () => {
         setOpenCreateAccount(false);
     };
+
+    const handleLogin = async () => {
+        try {
+            const { isSuccess, message } = await login(email, password);
+            if (isSuccess) {
+                handleCloseLogin();
+                navigate('/reserve');
+            } else {
+                setError(message);
+            }
+        } catch (err: unknown) {
+            if (err instanceof ErrorWithStatusCode) {
+                setError(err.message);
+            }
+        }
+    };
+
     return (
         <>
             <Popover
@@ -41,13 +70,23 @@ const LoginPopover: React.FC<LoginPopoverProps> = ({ anchorEl, openLogin, handle
                     horizontal: 'right',
                 }}
             >
-                <div className="popover-form-container login-container" style={{ padding: '20px', maxWidth: '300px' }}>
+                <div
+                    className="popover-form-container login-container"
+                    style={{ padding: '20px', maxWidth: '300px' }}
+                >
+                    {error && (
+                        <p style={{ color: 'red', marginBottom: '1rem' }}>
+                            {error}
+                        </p>
+                    )}
                     <TextField
                         margin="dense"
                         label="Email Address"
                         type="email"
                         fullWidth
                         variant="outlined"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                     />
                     <TextField
                         margin="dense"
@@ -55,17 +94,29 @@ const LoginPopover: React.FC<LoginPopoverProps> = ({ anchorEl, openLogin, handle
                         type="password"
                         fullWidth
                         variant="outlined"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                     />
-                    <Button onClick={handleCloseLogin} variant="contained" color="primary" fullWidth style={{ marginTop: '20px' }}>
+                    <Button
+                        onClick={handleLogin}
+                        variant="contained"
+                        color="primary"
+                        fullWidth
+                        style={{ marginTop: '20px' }}
+                    >
                         Log In
                     </Button>
                     <div style={{ marginTop: '10px', textAlign: 'center' }}>
-                        <Link href="#" onClick={(e) => { e.preventDefault(); handleOpenCreateAccount(); }}>
+                        <Link
+                            href="#"
+                            onClick={(e) => {
+                                e.preventDefault();
+                                handleOpenCreateAccount();
+                            }}
+                        >
                             Create Account
                         </Link>
                     </div>
-
-                    
                 </div>
             </Popover>
 
@@ -73,11 +124,8 @@ const LoginPopover: React.FC<LoginPopoverProps> = ({ anchorEl, openLogin, handle
                 anchorEl={anchorEl}
                 openCreateAccount={openCreateAccount}
                 handleCloseCreateAccount={handleCloseCreateAccount}
-                handleOpenLogin={handleOpenLogin}  
+                handleOpenLogin={handleOpenLogin}
             />
-
-
-   
         </>
     );
 };

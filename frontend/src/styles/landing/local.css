@@ -100,6 +100,76 @@
     color: #555;
 }
 
+.equipment-button {
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.auth-buttons2 .equipment-button {
+  width: 350px;
+}
+
+.equipment-button {
+  background-color: #5f5084;
+  color: #fff;
+  border: none;
+}
+
+.equipment-button:hover {
+  background-color: #5a54d1;
+}
+
+.reserve-button {
+  background-color: #fff;
+  color: #333;
+  border: 1px solid #333;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.reserve-button:hover {
+  background-color: #f0f0f0;
+}
+
+.auth-buttons2 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.auth-buttons2 .reserve-button {
+  width: 350px;
+}
+
+.account-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  border-radius: 5px;
+  width: 350px;
+  gap: 15px;
+}
+
+.profile:hover, .logout:hover {
+  background-color: #ffffff;
+  border: 1px solid #333;
+}
+
+.profile, .logout {
+  font-size: 1rem;
+  border-radius: 5px;
+  width: 100%;
+  padding: 10px 20px;
+  background-color: #d4d4d4;
+  color: #333;
+  border: 1px solid #ffffff;
+}
+
 /* Responsive adjustments */
 @media (max-width: 1100px) {
   .text-container {
@@ -205,4 +275,32 @@
     .illustration {
         max-width: 250px;
     }
+
+    .equipment-button, .reserve-button, .account-buttons , #landing-login, #landing-create-account{
+      max-width: 300px;
+    }
+}
+
+@media (max-width: 380px) {
+
+  /* Extra small devices */
+  .heading {
+      font-size: 1.25rem;
+  }
+
+  .equipment-button, .reserve-button, .account-buttons, #landing-login, #landing-create-account {
+    max-width: 300px;
+  }
+}
+
+@media (max-width: 320px) {
+
+  /* Extra small devices */
+  .heading {
+      font-size: 1.1rem;
+  }
+
+  .equipment-button, .reserve-button, .account-buttons, #landing-login, #landing-create-account {
+    max-width: 280px;
+  }
 }

@@ -12,25 +12,24 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import EventIcon from '@mui/icons-material/Event';
 import CheckIcon from '@mui/icons-material/Check';
-import ClearIcon from '@mui/icons-material/Clear';
-import { Check } from '@mui/icons-material';
+import InfoIcon from '@mui/icons-material/Info';
+import { Check, Info } from '@mui/icons-material';
 
-interface MobileRequestCardProps {
-    status: 'approved' | 'pending' | 'rejected' | string;
-    title: string;
+interface MobileIssueCardProps {
+    title: string | undefined;
     description: string;
     date: string;
     icon: any;
-    user: string | undefined;
+    isResolved: boolean;
+    status: number;
 }
 
-const MobileRequestCard: React.FC<MobileRequestCardProps> = ({
-    status,
+const MobileIssueCard: React.FC<MobileIssueCardProps> = ({
     title,
     description,
     date,
     icon,
-    user,
+    status,
 }) => {
     const [isSwiped, setIsSwiped] = useState(false);
 
@@ -44,8 +43,6 @@ const MobileRequestCard: React.FC<MobileRequestCardProps> = ({
         onSwipedRight: () => setIsSwiped(false),
         preventScrollOnSwipe: true,
     });
-
-    console.log('User Prop in MobileRequestCard:', user);
 
     return (
         <div
@@ -81,26 +78,19 @@ const MobileRequestCard: React.FC<MobileRequestCardProps> = ({
                             alignItems: 'center',
                         }}
                     >
-                        {status === 'pending' && (
+                        {status === 1 && (
                             <Box
                                 sx={{
                                     display: 'flex',
                                     justifyContent: 'center',
                                     alignItems: 'center',
-                                    backgroundColor:
-                                        user === 'admin'
-                                            ? '#14AE5C'
-                                            : '#E8B931',
+                                    backgroundColor: '#14AE5C',
                                     width: '50%',
                                     height: '100%',
                                 }}
                             >
                                 <IconButton>
-                                    {user === 'admin' ? (
-                                        <CheckIcon sx={{ color: 'white' }} />
-                                    ) : (
-                                        <EditIcon sx={{ color: '#FFF1C2' }} />
-                                    )}
+                                    <CheckIcon sx={{ color: 'white' }} />
                                 </IconButton>
                             </Box>
                         )}
@@ -109,14 +99,15 @@ const MobileRequestCard: React.FC<MobileRequestCardProps> = ({
                                 display: 'flex',
                                 justifyContent: 'center',
                                 alignItems: 'center',
-                                backgroundColor: '#B3261E',
-                                width: status === 'pending' ? '50%' : '100%',
+                                backgroundColor:
+                                    status === 1 ? '#E8B931' : '#B3261E',
+                                width: status === 1 ? '50%' : '100%',
                                 height: '100%',
                             }}
                         >
                             <IconButton>
-                                {user === 'admin' ? (
-                                    <ClearIcon sx={{ color: 'white' }} />
+                                {status === 1 ? (
+                                    <InfoIcon sx={{ color: 'white' }} />
                                 ) : (
                                     <DeleteIcon sx={{ color: 'white' }} />
                                 )}
@@ -199,4 +190,4 @@ const MobileRequestCard: React.FC<MobileRequestCardProps> = ({
     );
 };
 
-export default MobileRequestCard;
+export default MobileIssueCard;

@@ -14,7 +14,9 @@
     color: #333;
     background-color: #e6e6fa;
     font-family: Arial, sans-serif;
-    overflow: hidden;
+    height: calc(100vh - 91px);
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 /* Responsive adjustments */

@@ -7,12 +7,20 @@ import CreateAccountButton from '../Components/CreateAccountButton.tsx';
 import GetStartedButton from '../Components/GetStartedButton.tsx';
 import { useNavigate } from 'react-router-dom';
 import '../styles/landing/local.css';
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import Login from './Login.tsx';
 import Signup from './Signup.tsx';
 import MobileLogo from "../assets/logo_purple.svg";
+import {
+  AuthContext,
+  AuthProvider,
+  User,
+  UserRoles,
+} from '../contexts/AuthContext.tsx';
 
 const Landing = () => {
+  const { user } = useContext(AuthContext)!;
+  const { logout } = useContext(AuthContext)!;
   const [isMobileLoginOpen, setIsMobileLoginOpen] = useState(false); 
   const handleOpenLoginMobile = () => setIsMobileLoginOpen(true);  
   const handleCloseLoginMobile = () => setIsMobileLoginOpen(false);  
@@ -23,15 +31,31 @@ const Landing = () => {
   const handleCloseCreateAccountMobile = () => setIsMobileCreateAccountOpen(false); 
 
   const navigate = useNavigate();
+  const goToReservePage = ()=>{
+    // if not logged in, redirect to login.
+    navigate('/reserve');
+  }
 
-  const goToLogin = () => {
-    navigate('/login');
+  const goToReserve = () => {
+    navigate('/reserve');
   };
 
-  const goToSignUp = () => {
-    navigate('/signup');
+  const goToRequests = () => {
+    navigate('/requests');
   };
 
+  const goToProfile = () => {
+    navigate('/profile');
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
+
+  var isLoggedIn = !(user === null || user === undefined);
+  var isAdmin = user?.userRole === 'admin';
+  
   return (
     <>
       <NavBar id='landing'></NavBar>
@@ -47,11 +71,23 @@ const Landing = () => {
                 <span className="word opacity-4">INSIDE THE MAKERSPACE</span> <br />
               </h1>
               <p className="subheading">Bring your ideas to life by reserving tools, equipment, and workspace today.</p>
-              <GetStartedButton></GetStartedButton>
+              <GetStartedButton onClick={goToReservePage}></GetStartedButton>
               <div className="auth-buttons2">
-                <LoginButton button_type='button' onClick={handleOpenLoginMobile}></LoginButton>
-                <br /><br />
-                <CreateAccountButton button_type='button' onClick={handleOpenCreateAccountMobile}></CreateAccountButton>
+                    {isLoggedIn ? (
+                        <>
+                          <button type='button' className="equipment-button" onClick={goToReserve}>{isAdmin? 'Manage Equipment' : 'Reserve Equipment'}</button>
+                          <button type='button' className="reserve-button" onClick={goToRequests}>{isAdmin? 'Manage Reservations' : 'My Reservations'}</button>
+                          <div className='account-buttons'>
+                            <button type='button' className="profile" onClick={goToProfile}>{'Profile'}</button>
+                            <button type='button' className="logout" onClick={handleLogout}>{'Logout'}</button>
+                          </div>
+                        </>
+                    ) : (
+                        <>
+                          <LoginButton id="landing-login" button_type='button' onClick={handleOpenLoginMobile}></LoginButton>
+                          <CreateAccountButton id="landing-create-account" button_type='button' onClick={handleOpenCreateAccountMobile}></CreateAccountButton>
+                        </>
+                    )}
               </div>
             </div>
           </div>

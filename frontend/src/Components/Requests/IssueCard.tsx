@@ -13,22 +13,21 @@ import DownloadIcon from '@mui/icons-material/CloudDownload';
 import EventIcon from '@mui/icons-material/Event';
 import EditIcon from '@mui/icons-material/Edit';
 
-interface RequestCardProps {
-    status?: 'approved' | 'pending' | 'rejected' | string;
-    title?: string;
-    description?: string;
-    date?: string;
-    icon?: any;
-    user?: string | undefined;
+interface IssueCardProps {
+    title: string | undefined;
+    description: string;
+    date: string;
+    icon: any;
+    isResolved: boolean;
+    status: number;
 }
 
-const RequestCard: React.FC<RequestCardProps> = ({
-    status,
+const IssueCard: React.FC<IssueCardProps> = ({
     title,
     description,
     date,
     icon,
-    user,
+    isResolved,
 }) => {
     const IconStyle: React.CSSProperties = {
         width: '100px',
@@ -97,32 +96,18 @@ const RequestCard: React.FC<RequestCardProps> = ({
                                 />{' '}
                                 {date}
                             </Typography>
-                        </Box>
-                    </Grid2>
-                    <Grid2 size="auto">
-                        {user !== 'admin' && (
                             <Box
-                                className="icon-box"
+                                className="download-link"
                                 sx={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
+                                    flex: '1',
                                 }}
-                            >
-                                <IconButton className="card-delete">
-                                    <DeleteIcon />
-                                </IconButton>
-                                {status === 'pending' && (
-                                    <IconButton className="card-edit">
-                                        <EditIcon />
-                                    </IconButton>
-                                )}
-                            </Box>
-                        )}
+                            ></Box>
+                        </Box>
                     </Grid2>
                 </Grid2>
 
-                {user === 'admin' && (
-                    <Grid2 container spacing={2}>
+                {isResolved == false ? (
+                    <Grid2 container>
                         <Grid2 size="grow"></Grid2>
                         <Grid2>
                             <Button
@@ -137,7 +122,7 @@ const RequestCard: React.FC<RequestCardProps> = ({
                                     fontWeight: 'bold',
                                 }}
                             >
-                                Reject
+                                Set Out-Of-Order
                             </Button>
                             <Button
                                 sx={{
@@ -147,13 +132,20 @@ const RequestCard: React.FC<RequestCardProps> = ({
                                     borderRadius: 2,
                                     boxShadow: '0px 1px 8px rgba(0, 0, 0, 0.7)',
                                     marginLeft: '15px',
-                                    paddingLeft: '30px',
-                                    paddingRight: '30px',
+                                    paddingLeft: '50px',
+                                    paddingRight: '50px',
                                     fontWeight: 'bold',
                                 }}
                             >
-                                Approve
+                                Resolve
                             </Button>
+                        </Grid2>
+                    </Grid2>
+                ) : (
+                    <Grid2 container spacing={2}>
+                        <Grid2 size="grow"></Grid2>
+                        <Grid2>
+                            <Button>Remove</Button>
                         </Grid2>
                     </Grid2>
                 )}
@@ -162,4 +154,4 @@ const RequestCard: React.FC<RequestCardProps> = ({
     );
 };
 
-export default RequestCard;
+export default IssueCard;
