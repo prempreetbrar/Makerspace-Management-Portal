@@ -98,7 +98,7 @@ Booking.beforeCreate((booking, options) => {
 Booking.addHook('beforeValidate', async (booking) => {
     const User = sequelize.models.User;
     const Equipment = sequelize.models.Equipment;
-
+    console.log(booking.equipmentID);
     const user = await User.findByPk(booking.userEmail);
     const equipment = await Equipment.findByPk(booking.equipmentID);
 

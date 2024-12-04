@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext, useRef} from "react";
 import { Fab, Tab, Tabs, Stack, Typography, Button, Card, CardContent, CardActionArea, CardActions, Accordion, ButtonGroup, CircularProgress, Grid2, IconButton, TextField, FormGroup, Tooltip, Modal } from '@mui/material';
 import { createTheme, styled, ThemeProvider, useTheme } from '@mui/material/styles'
 import Box from '@mui/material/Box';
-import axios from 'axios';
+import axios, { isAxiosError } from 'axios';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
@@ -16,6 +16,7 @@ import { get } from "http";
 import axiosInstance from "../../axios";
 import ModalBase from "./ModalBase";
 import customParseFormat from "dayjs/plugin/customParseFormat"
+import TimeButton from "./TimeButton";
 
 dayjs.extend(customParseFormat);
 
@@ -28,14 +29,6 @@ type BookingData =
 }
 
 const theme = createTheme();
-
-interface Booking
-{
-    id: number, 
-    date: string,
-    timeSlot1: string,
-    timeSlot2: string,
-}
 
 interface BookingModalProps 
 {
@@ -93,11 +86,22 @@ function createSlots()
     }
     return slots;
 }
-const timeButtonStyle = { width: 100, margin: '2px', fontSize: 11 };
+
+interface BookingRequest
+{
+    equipmentID: number,
+    title: string,
+    description: string,
+    bookingDate: string,
+    timeSlot1: string,
+    timeSlot2?: string,
+}
 
 // Need to link clicking off the modal to the close event. For now, linked to the close button only.
 const BookingModal = ({open,  equipmentID, onClose, onSubmit}:BookingModalProps) => {
 
+    const [inputText, setDetailsText] = useState("");
+    const [titleText, setTitleText] = useState("");
     const baseOpenings= React.useRef<BookingData>({}); // this never changes.
     const [openings, setOpenings] = useState<BookingData>({});
     const {user} = useContext(AuthContext)!;
@@ -107,6 +111,7 @@ const BookingModal = ({open,  equipmentID, onClose, onSubmit}:BookingModalProps)
     // all event listeners would need to be exposed at some point via Props. 
     //@ts-ignore
     const defaultDate = dayjs();
+    const [equipmentIDString, setEquipmentID] = useState(equipmentID);
     const [selectedTime, setSelectedTime] = useState("");
     const [selectedDate, setSelectedDate] = useState(dayjs()); // the default selected date. 
     const [slots, setSlots] = useState<TimeSlots>(createSlots());
@@ -114,7 +119,84 @@ const BookingModal = ({open,  equipmentID, onClose, onSubmit}:BookingModalProps)
     const [firstSelectedTime, setFirstSelectedTime] = useState("");
     const [secondSelectedTime, setSecondSelectedTime] = useState(""); // NOT IMPLEMENTED
     const [disabled, setDisabled] = useState(false);
+
+    const handleDetailsUpdate = (event:React.ChangeEvent<HTMLInputElement>) =>
+    {
+        setDetailsText(event.target.value);
+    }
+    const handleTitleUpdate = (event:React.ChangeEvent<HTMLInputElement>) =>
+    {
+        setTitleText(event.target.value);
+    }
+    //@ts-ignore
+
+    const handleDateSelection = (newDate: Dayjs) => {
+        setSelectedTime("");
+        setSelectedDate(newDate);
+    }
     
+    const handleTimeSelect = (listingTime: string) =>
+    {
+        console.log(listingTime);
+        setSelectedTime(listingTime);
+        // I didn't have time to implement the second time slot.
+    }
+    const handleCloseModal = (submitted=false) =>
+    {
+        setTitleText("");
+        setDetailsText("");
+        setSelectedTime("");
+        if(submitted)
+        {
+            onSubmit();
+        }
+        else
+        { 
+            onClose();
+        }
+    }
+    
+    const shouldDisableDate = React.useCallback((date: Dayjs)=>
+    {
+        const dateString = date.format("YYYY-MM-DD");
+        const pred = !(openings[dateString] && openings[dateString].length > 0);
+        return pred;
+    }, [openings]);
+
+    
+    async function submitBooking(_event: React.MouseEvent)
+    {
+        setDisabled(true); // disable the form
+        setLoading(true);
+        try
+        {
+            const newBooking = 
+            {
+                equipmentID: equipmentID,
+                title: titleText,
+                bookingDate: selectedDate.format("YYYY-MM-DD"),
+                timeSlot1: selectedTime,
+                description: inputText,
+            }
+            const response = await axiosInstance.post('/bookings', newBooking);
+            console.log(response.data);
+            if(response.data.status == 'success')
+            {
+                handleCloseModal();
+                onSubmit();
+            }
+        }
+        catch(error: any)
+        {
+            if(isAxiosError(error))
+            {
+                setError(error.message);
+            }
+            console.log(error.response.data);
+        }
+        setDisabled(false);
+    }
+
     React.useEffect(()=>
     {
         if(user && user.userRole! === UserRoles.PREMIUM)
@@ -126,14 +208,6 @@ const BookingModal = ({open,  equipmentID, onClose, onSubmit}:BookingModalProps)
             setMaxDate(dayjs().add(14, 'day'));
         }
     }, [user]);
-
-
-    const shouldDisableDate = (date: Dayjs)=>
-    {
-        const dateString = date.format("YYYY-MM-DD");
-        const pred = !(openings[dateString] && openings[dateString].length > 0);
-        return pred;
-    }
 
     const updateTimeSlots = ()=>
     {
@@ -169,7 +243,6 @@ const BookingModal = ({open,  equipmentID, onClose, onSubmit}:BookingModalProps)
     }
 
     useEffect(() => {
-        setInputText("");
         async function getBookingsForEquipment(equipmentID:number)
         {
             if(equipmentID === -1)
@@ -202,59 +275,9 @@ const BookingModal = ({open,  equipmentID, onClose, onSubmit}:BookingModalProps)
     },[equipmentID]);
     
     // for the form element.
-    const [inputText, setInputText] = useState("");
-    const handleTextUpdate = (event:React.ChangeEvent<HTMLInputElement>) =>
-    {
-        setInputText(event.target.value);
-    }
-    //@ts-ignore
 
-    const handleDateSelection = (newDate: Dayjs) => {
-        setSelectedTime("");
-        setSelectedDate(newDate);
-    }
     
-    const handleTimeSelect = (listingTime: string) =>
-    {
-        console.log(listingTime);
-        setSelectedTime(listingTime);
-        // I didn't have time to implement the second time slot.
-    }
-    const restyleIfSelected = React.useCallback(
-        function (thisListingTime: string, selectedListingTime: string)
-        {
-            return dayjs(selectedListingTime, "HH:MM:SS").isSame(dayjs(thisListingTime, "HH:MM:SS"));
-        },[])
-    const handleCloseModal = (submitted=false) =>
-    {
-        if(submitted)
-        {
-            // save submitted data.
-        }
-        setInputText("");
-        setSelectedTime("");
-        onClose();
-    }
-
-    const forceSync = async (equipmentID:number) =>
-    {
-        setLoading(true);
-        console.log("Syncing with backend...");
-        try
-        {
-            const response = await axiosInstance.get<Booking[]>(`/bookings/days/slots?equipmentID=${equipmentID}`);
-            console.log(response.data);
-        }
-        catch(error: any)
-        {
-            console.log("Failed to fetch bookings for Equipment");
-            console.log(error.data)
-        }
-        finally
-        {
-            setLoading(false);
-        }
-    }
+    
    
     // Get bookings for equipment by day
     // Add a new booking entry
@@ -270,8 +293,10 @@ const BookingModal = ({open,  equipmentID, onClose, onSubmit}:BookingModalProps)
         <ThemeProvider theme={customTheme}>
             <ModalBase open={open} onClose={handleCloseModal}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <Box
+                <Box key='ModalBaseBox' className={'ModalBaseBox'}
                     sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
                         height: 
                         {
                             xs: height,
@@ -286,16 +311,17 @@ const BookingModal = ({open,  equipmentID, onClose, onSubmit}:BookingModalProps)
                     flexDirection="column"
                     alignItems="center"
                     justifyContent='center'>
-                <IconButton sx={{marginLeft: 'auto', color: theme.palette.error.main}} size="small" onClick={onClose}> { /* confirmation dialog would be nice */}
-                    <CancelRounded fontSize="large">Cancel</CancelRounded>
-                </IconButton>
-                <Box sx={{overflowX: 'hidden', overflowY: 'scroll'}} display="flex" flexDirection={"column"} alignContent={'center'}>
-                    <Box display="flex" flexDirection="row" justifyContent={'space-between'} position={"sticky"} top={0} bgcolor={"white"}> 
+                    <Box key='ModalContentBox' sx={{overflowX: 'hidden', overflowY: 'scroll'}} display="flex" flexDirection={"column"} alignContent={'center'}>
+                    <Box key="HeaderBox" className="headerbox" display="flex" flexDirection="row" justifyContent={'space-between'} position={"sticky"} top={0} bgcolor={"white"}> 
                             <Typography variant='h4' pl={2} fontWeight={1000}>
                                 Reserve a Time
                             </Typography>
+                            <IconButton sx={{marginLeft: 'auto', color: theme.palette.error.main}} size="small" onClick={onClose}> { /* confirmation dialog would be nice */}
+                                <CancelRounded fontSize="large">Cancel</CancelRounded>
+                            </IconButton>
                     </Box>
-                    <Box display={"flex"} sx={{
+                    <Box sx={{
+                        display: 'flex',
                         alignSelf: 'center',
                         justifyContent: 'space-between',
                         flexDirection: {
@@ -304,38 +330,65 @@ const BookingModal = ({open,  equipmentID, onClose, onSubmit}:BookingModalProps)
                         },
                         margin: '10px',
                     }}>
-                        <Box id="calendarBox" display="flex" flexDirection="column" columnGap={5} mr={{xs: 0, md: 5}}>
-                            <DateCalendar value={selectedDate} shouldDisableDate={shouldDisableDate} disablePast={true} timezone="system" onChange={handleDateSelection}sx={{minWidth: 300, backgroundColor: '#ECE6F0', borderRadius: 4}} defaultValue={defaultDate} minDate={defaultDate} maxDate={maxDate} disabled={disabled}/>
+                        <Box id="calendarBox" columnGap={5} sx={
+                                {
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    justifyContent: "space-around",
+                                    mr: {xs: 0, md: 5}
+                                }}>
+                            <DateCalendar value={selectedDate} shouldDisableDate={shouldDisableDate} disablePast={true} timezone="system" onChange={handleDateSelection} defaultValue={defaultDate} minDate={defaultDate} maxDate={maxDate} disabled={disabled}
+                            sx={{
+                                backgroundColor: '#ECE6F0', 
+                                borderRadius: 4,
+                                }}/>
                         </Box>
                         <Box display="flex" flexDirection="column"  alignContent={"center"}>
                                 <Typography variant='h6' sx={{marginTop: 1}}>
                                 Available Times:
                                 </Typography>
                             <Box id="time-display" display={"flex"} flexDirection={"column"} alignItems={'center'}>
-                                <Grid2 container rowSpacing={0.25} alignItems ="left" flexGrow={1} justifyContent={"left"}> 
+                                <Grid2 container rowSpacing={0.5} alignItems ="left" flexGrow={1} justifyContent={
                                     {
-                                        Object.entries(slots).map(([time, slot], index) =>
+                                       xs: "space-evenly",
+                                       sm: "left",
+                                       md: "left",
+                                       lg: "space-evenly"
+                                    }}> 
+                                    {
+                                        Object.entries(slots).map(([time, slot]) =>
                                         (
-                                            <Button key={index} variant={restyleIfSelected(time, selectedTime) ? 'outlined' : 'contained'} sx={timeButtonStyle} onClick={()=>{handleTimeSelect(time)}}
-                                             disabled = {!slot.isAvailable}>
-                                                {slot.displayTime}
-                                            </Button>
+                                            <TimeButton key={time} internalTime={time} disabled={disabled || !slot.isAvailable} selected={dayjs(time, "HH:MM:SS").isSame(dayjs(selectedTime, "HH:MM:SS"))}
+                                                displayedTime={slot.displayTime} onClick={handleTimeSelect} />
                                         ))
                                     }
                                 </Grid2>
                             </Box>
                             <Box component="form" sx={{paddingTop: 3}}>
-                                <TextField id="DescriptionField" label="Request Details" minRows={2} placeholder="Description"sx={
-                                    {fontSize: 10,
-                                        '&.MuiInputBase-root':
+                                <TextField key={"TitleForm"} label="Request Title" minRows={2}
+                                sx={
+                                    {
+                                        fontSize: 14,
+                                        '& .MuiInputBase-root':
                                         {
-                                            fontSize: 10,
+                                            fontSize: 14,
+                                        }
+                                    }} slotProps={{input:{inputProps:{maxLength: 50}}}}
+                                    maxRows={1} variant="filled" onChange={handleTitleUpdate} multiline fullWidth required>
+                                </TextField>
+                            </Box>
+                            <Box component="form" sx={{paddingTop: 3}}>
+                                <TextField id="DescriptionField" label="Details" minRows={2} sx={
+                                    {fontSize: 10,
+                                        '& .MuiInputBase-root':
+                                        {
+                                            fontSize: 14,
                                         }
                                     }
-                                    } maxRows={2}  variant="filled" onChange={handleTextUpdate} multiline fullWidth required>
+                                    } maxRows={2}  variant="filled" onChange={handleDetailsUpdate} multiline fullWidth required>
                                 </TextField>
                             </Box>                            
-                            <Button variant="contained" sx={{marginTop: 3, backgroundColor: '#65558F', color:"#FFFFFF", width:'120px'}} onClick={onSubmit} disabled={(inputText === "" || selectedTime === "")}>
+                            <Button variant="contained" sx={{marginTop: 3, backgroundColor: '#65558F', color:"#FFFFFF", width:'120px'}} onClick={submitBooking} disabled={(inputText === "" || selectedTime === "")}>
                                 Submit
                             </Button>
                         </Box>

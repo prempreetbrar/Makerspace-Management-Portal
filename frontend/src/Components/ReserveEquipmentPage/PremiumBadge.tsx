@@ -1,8 +1,9 @@
 import React from 'react'
-import StarsIcon from '@mui/icons-material/Stars'
+import {motion} from 'framer-motion'
+import StarsRoundedIcon from '@mui/icons-material/StarsRounded';
 const PremiumBadge = ()=>
 (
-    <StarsIcon sx={ {
+    <StarsRoundedIcon sx={ {
         position: 'absolute',
         top: '10px',
         right: '10px',

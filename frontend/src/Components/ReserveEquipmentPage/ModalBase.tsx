@@ -30,7 +30,7 @@ const ModalBase = ({open, onClose, children}:ModalBaseProps) =>
     };
 
     return(
-    <Modal open={open} onClose={onClose}>
+    <Modal open={open} onClose={onClose} sx={{display: open ? undefined : 'none'}}>
         <Box sx={ModalStyle}>
             {children}
         </Box>

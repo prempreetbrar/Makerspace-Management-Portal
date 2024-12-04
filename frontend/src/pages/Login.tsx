@@ -17,7 +17,6 @@ interface LoginProps {
 
 const Login: React.FC<LoginProps> = ({ onClose }) => {
     const { login } = useContext(AuthContext)!;
-    const passwordRef = React.useRef('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState<string | null>(null);
@@ -29,7 +28,7 @@ const Login: React.FC<LoginProps> = ({ onClose }) => {
         }
 
         try {
-            const { isSuccess, message } = await login(email, passwordRef.current);
+            const { isSuccess, message } = await login(email, password);
             if (isSuccess && onClose) {
                 onClose();
             } else {

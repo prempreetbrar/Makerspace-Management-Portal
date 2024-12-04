@@ -50,21 +50,14 @@ const theme = createTheme({
 });
 
 type Equipment = {
-    id: number;
-    name: string;
-    description: string;
-    isUnderMaintenance: boolean;
-    isPremium: boolean;
-    icon?: any;
-    setUnderMaintenece?: (value: boolean) => void;
-};
-
-type Booking = {
-    id: number;
-    userEmail: string;
-    equipmentID: number;
-    bookingDateTime: Date;
-    bookingDuration: number;
+    id: number,
+    name: string,
+    description: string,
+    isUnderMaintenance: boolean,
+    isPremium: boolean,
+    isBookable: boolean,
+    icon?: any,
+    setUnderMaintenance?: (value: boolean) => void;
 };
 
 const IconStyle: React.CSSProperties = {
@@ -73,7 +66,6 @@ const IconStyle: React.CSSProperties = {
     top: '30px',
     left: '135px',
 };
-
 
 const equipmentCardWidth = {
     xs: '350px',
@@ -103,7 +95,6 @@ const hoverBoxStyle = {
 };
 
 
-
 const errorChipStyle = {
     position: 'absolute',
     top: '10px',
@@ -114,16 +105,18 @@ const errorChipStyle = {
 
 
 function userCanBookItem(item: Equipment, userRole: string | undefined) {
+    const baseCheck = !item.isUnderMaintenance && item.isBookable;
+    console.log(`${item.name} is bookable:  ${item.isBookable}`);
+    console.log(`${item.name} is bookable:  ${baseCheck}`);
     if (userRole === undefined) {
         console.log('role is undefined');
         return false;
     } else if (item.isPremium) {
-        return userRole === UserRoles.PREMIUM;
+        return (userRole === UserRoles.PREMIUM && baseCheck);
     } else {
-        return !item.isUnderMaintenance;
+        return baseCheck;
     }
 }
-
 
 interface SpinningButtonProps
 {
@@ -159,19 +152,18 @@ function timeout(delay: number)
 
 const ReserveEquipment = () => {
     const { user } = useContext(AuthContext)!;
-
-    // BLOCKED: Cannot deal with "possibly undefined" and "possibly null" -> when does this happen?
     const userProviderContext = useUser(); // dummy context
     const { height, width } = WindowDimensions();
     const [resultsFound, setResultsFound] = useState(true);
     const [searchText, setSearchText] = useState<string>('');
     const [open, setOpen] = useState(false);
-    const [displayModel, setDisplayModel] = useState<Equipment[]>([]); // I don't know what the equipment model is  
+    const [displayModel, setDisplayModel] = useState<Equipment[]>([]);
     const [loading, setLoading] = useState(false);
-    const equipmentModel = React.useRef<Equipment[]>([]); // the base model, persists throughout runtime
+    const equipmentModel = React.useRef<Equipment[]>([]); // this is the entire equipment model. It doesn't change unless updated, and 
     const [selectedEquipmentID, setSelectedEquipmentID] = useState(-1); // Using -1 will prevent any "undefined" errors.
     const [spinning, setSpinning] = useState(false);
     const [sync, setSync] = useState(false); // the state of this variable doesn't matter
+    const [maintenanceDialogOpen, setMaintenanceDialogOpen] = useState(false);
     const handleSearch = () => {
         if (searchText === '') {
             setDisplayModel(equipmentModel.current);
@@ -187,6 +179,7 @@ const ReserveEquipment = () => {
             setDisplayModel(filteredResults);
         }
     };
+
     const updateSearchBar = (event: React.ChangeEvent<HTMLInputElement>)=>
     {
         if(event.target.value != searchText)
@@ -195,10 +188,7 @@ const ReserveEquipment = () => {
         }
         setSearchText(event.target.value);
     }
-    const performSearch = (value: string)=>
-    {
-        console.log(value);
-    }
+
     async function syncData()
     {
         if(!spinning)
@@ -207,7 +197,8 @@ const ReserveEquipment = () => {
                 setSpinning(true);
                 const response = await axiosInstance.get('/equipment');
                 console.log(`Fetched ${response.data.equipment.length} equipment entries`);
-                equipmentModel.current = response.data.equipment; //
+                equipmentModel.current = response.data.equipment;
+                console.log(response.data.equipment);
                 setDisplayModel(equipmentModel.current);
             } catch (error: any) {
                 console.log('Failed to fetch equipment');
@@ -230,6 +221,7 @@ const ReserveEquipment = () => {
                 const response = await axiosInstance.get('/equipment');
                 console.log(`Fetched ${response.data.equipment.length} equipment entries`);
                 equipmentModel.current = response.data.equipment; //
+                console.log(response.data.equipment);
                 setDisplayModel(equipmentModel.current);
              
 
@@ -261,17 +253,19 @@ const ReserveEquipment = () => {
         setSelectedEquipmentID(-1);
     }
 
-    const handleSubmit = (shouldStayOpen? :boolean) =>
+    const handleSubmit = () =>
     {
-        if(shouldStayOpen)
-        {
-            //
-        }
-        else
-        {
-            setOpen(false);
-            setSelectedEquipmentID(-1);
-        }
+        setOpen(false);
+        setSelectedEquipmentID(-1);
+    }
+    function openMaintenanceDialog()
+    {
+        setMaintenanceDialogOpen(true);
+    }
+
+    function handleChangeMaintenanceStatus(equipment: Equipment)
+    {
+        
     }
     return (
         <>
@@ -374,8 +368,8 @@ const ReserveEquipment = () => {
                                                     </Typography>
                                                 </Box>
                                                 <Box display="flex" flexDirection="column" alignContent={'center'}>
-                                                    <ConditionalWrapper displayCondition={user?.userRole ===UserRoles.ADMIN}>
-                                                        <Button sx={{opacity: 100, zIndex: 30 }} variant="contained">
+                                                    <ConditionalWrapper displayCondition={user?.userRole ===UserRoles.ADMIN && item.isBookable}>
+                                                        <Button sx={{opacity: 100, zIndex: 30 }} variant="contained" onClick={()=>handleChangeMaintenanceStatus(item)}>
                                                             {item.isUnderMaintenance ? (<>Enable Booking </>) : (<>Disable Booking</>)}
                                                         </Button>
                                                     </ConditionalWrapper>

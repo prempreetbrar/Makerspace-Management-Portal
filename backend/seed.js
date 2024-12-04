@@ -125,6 +125,14 @@ const seedDatabase = async (clear = false) => {
                         // only null because Sequelize does not validate passwords match on bulk create (intentional, just how the ORM is implemented)
                     },
                     {
+                        email: 'carter.marcelo@ucalgary.ca',
+                        firstName: 'Carter',
+                        lastName: 'Marcelo',
+                        userRole: User.ADMIN,
+                        password: '<MyStr)ng_P@ssW()R!D>',
+                        confirmPassword: '<MyStr)ng_P@ssW()R!D>', // only null because Sequelize does not validate passwords match on bulk create (intentional, just how the ORM is implemented)
+                    },
+                    {
                         email: 'admin@gmail.com',
                         firstName: 'admin',
                         lastName: 'admin',
@@ -285,7 +293,11 @@ const seedDatabase = async (clear = false) => {
                         description:
                             'A mini computer with 2GB of RAM and 2 USB Ports. Data will be wiped between users.',
                         icon: fs.readFileSync(
-                            path.join(__dirname, '/assets/icons/', 'hammer.png')
+                            path.join(
+                                __dirname,
+                                '/assets/icons/',
+                                'raspberry_pi.png'
+                            )
                         ),
                         isUnderMaintenance: false,
                         isBookable: false,
@@ -317,6 +329,22 @@ const seedDatabase = async (clear = false) => {
                                 __dirname,
                                 '/assets/icons/',
                                 'toolbox.png'
+                            )
+                        ),
+                        isUnderMaintenance: false,
+                        isBookable: true,
+                        isPremium: true,
+                    },
+                    {
+                        id: 9,
+                        name: 'Laser Cutter',
+                        description:
+                            'Uses a powerful laser to precisely cut shapes or intricate designs',
+                        icon: fs.readFileSync(
+                            path.join(
+                                __dirname,
+                                '/assets/icons/',
+                                'laser_cutter.png'
                             )
                         ),
                         isUnderMaintenance: false,

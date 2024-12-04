@@ -49,7 +49,7 @@ app.use(cors(corsOptions));
 app.use(express.json()); // lets us have JSON bodies in our requests
 app.use(cookieParser()); // lets us parse cookies from our requests
 
-seedDatabase(true);
+seedDatabase();
 app.use('/users', userRoutes);
 app.use('/issues', issueRoutes);
 app.use('/equipment', equipmentRoutes);
