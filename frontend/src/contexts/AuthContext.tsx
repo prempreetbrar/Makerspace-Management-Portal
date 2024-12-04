@@ -123,7 +123,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         try {
             const response = await axios.post('/users/signup', userData);
             const user = response.data?.user;
-
+            
             // these two lines aren't redundant. localStorage remembers the user for future visits to the website.
             // dispatch ensures the user is available for the entire application.
             localStorage.setItem('user', JSON.stringify(user));

@@ -33,11 +33,11 @@ const textFieldSX = {
 
 const Profile = () => {
   const { user } = useContext(AuthContext)!;
+  const userDetailsRef = React.useRef(user!);
   const [userDetails, setUserDetails] = useState({email: user?.email, firstName: user?.firstName, lastName: user?.lastName, confirmPassword: user?.confirmPassword, password: user?.password});
   const [isEditing, setIsEditing] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const navigate = useNavigate();
-
   // Navigate to home page if user is not authenticated
   useEffect(() => {
     if (!user) {
@@ -58,24 +58,26 @@ const Profile = () => {
   };
 
   const saveUserDetails = async (updatedDetails: Partial<User>) => {
+
     try {
-      const response = await axios.put('/users/profile', updatedDetails);
-      const updatedUser = response.data?.user;
-      if (user) {
+        const response = await axios.put('/users/profile', updatedDetails);
+        const updatedUser = response.data?.user;
+        if (user) {
         user.firstName = updatedUser.firstName;
         user.lastName = updatedUser.lastName;
-        user.confirmPassword = updatedUser.confirmPassword;
-        user.password = updatedUser.password;
+        user.confirmPassword = ''; // the frontend shouldn't know the user's password after it is submitted.
+        user.password = '';
       }
   
       return { isSuccess: true, message: 'Profile updated successfully!' };
     } catch (error: unknown) {
+        console.error(error);
       if (Axios.isAxiosError(error)) {
         console.error('Profile update failed:', error.response?.data || error.message);
-  
+        
         return {
           isSuccess: false,
-          message: error.response?.data?.message || 'Failed to update profile.',
+          message: error.response?.data?.message || error ||'Failed to update profile.',
         };
       }
     }

@@ -18,7 +18,6 @@ interface LoginProps {
 
 const Login: React.FC<LoginProps> = ({ onClose }) => {
     const { login } = useContext(AuthContext)!;
-
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState<string | null>(null);

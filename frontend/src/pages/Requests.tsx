@@ -11,6 +11,25 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import ThreeDPrinterIcon from '../assets/3D_printer.svg';
 import LaserCutterIcon from '../assets/laser_cutter.svg';
 import CNCMillIcon from '../assets/laser_cutter.svg';
+
+interface RequestCardInfo {
+    key: number;
+    title: string;
+    description: string;
+    date: string;
+    file: string;
+    icon: string;
+    status: string;
+}
+
+interface IssueCardInfo {
+    key: number;
+    title: string;
+    description: string;
+    date: string;
+    icon: string;
+    isResolved: boolean;
+}
 import MakerbotReplicatorImg from '../assets/mb_replicator.jpeg';
 import { useNavigate } from 'react-router-dom';
 

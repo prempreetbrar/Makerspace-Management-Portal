@@ -61,7 +61,7 @@ const Landing = () => {
       <NavBar id='landing'></NavBar>
       <MainContainer>
         <div className="content">
-          <div className="logo-container2">   <img src={MobileLogo} alt="React Logo" className="logo" /></div>
+          <div className="logo-container2">  <img src={MobileLogo} alt="React Logo" className="logo" /></div>
           <div className='text-container'>
             <div className="text-content">
               <h1 className="heading">  

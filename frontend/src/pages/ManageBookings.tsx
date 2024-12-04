@@ -1,3 +1,5 @@
+/// THIS FILE IS DEPRECATED. 
+
 import '../styles/requests/local.css';
 import * as React from 'react';
 import AccordionSummary from '@mui/material/AccordionSummary';
@@ -52,13 +54,12 @@ const templateRequests = [requestTemplate1, requestTemplate1, requestTemplate2, 
 const theme = createTheme();
 const ManageBookings = () => {
 
-    const { user } = useUser();
+
+    const { user, setUser} = useUser();
     const [currentUserIndex, setCurrentUserIndex] = React.useState(0);
     const [currentUserRole, setCurrentUserRole] = React.useState(user.userRole);
     const handleChangeUser = () => {
-        const nextIndex = currentUserIndex + 1 % 3;
-        setCurrentUserIndex(nextIndex);
-        setCurrentUserRole(user.userRole);
+        setUser();
     }
 
     const [value, setValue] = React.useState('Approved'); // this is the default state I assume
