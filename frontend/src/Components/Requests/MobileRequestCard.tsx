@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSwipeable } from 'react-swipeable';
 import {
     Box,
@@ -9,28 +9,26 @@ import {
     Grid2,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
 import EventIcon from '@mui/icons-material/Event';
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
-import { Check } from '@mui/icons-material';
+
+import { Booking } from '../../models.ts';
 
 interface MobileRequestCardProps {
-    status: 'approved' | 'pending' | 'rejected' | string;
-    title: string;
-    description: string;
-    date: string;
-    icon: any;
-    user: string | undefined;
+    booking: Booking;
+    userRole: string | undefined;
+    handleDelete?: () => void;
+    handleReject?: () => void;
+    handleAccept?: () => void;
 }
 
 const MobileRequestCard: React.FC<MobileRequestCardProps> = ({
-    status,
-    title,
-    description,
-    date,
-    icon,
-    user,
+    booking,
+    userRole,
+    handleDelete,
+    handleReject,
+    handleAccept,
 }) => {
     const [isSwiped, setIsSwiped] = useState(false);
 
@@ -45,7 +43,11 @@ const MobileRequestCard: React.FC<MobileRequestCardProps> = ({
         preventScrollOnSwipe: true,
     });
 
-    console.log('User Prop in MobileRequestCard:', user);
+    useEffect(() => {
+        setIsSwiped(false);
+    }, [booking]);
+
+    //console.log('User Prop in MobileRequestCard:', user);
 
     return (
         <div
@@ -81,41 +83,70 @@ const MobileRequestCard: React.FC<MobileRequestCardProps> = ({
                             alignItems: 'center',
                         }}
                     >
-                        {status === 'pending' && (
-                            <Box
-                                sx={{
-                                    display: 'flex',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    backgroundColor:
-                                        user === 'admin'
-                                            ? '#14AE5C'
-                                            : '#E8B931',
-                                    width: '50%',
-                                    height: '100%',
-                                }}
-                            >
-                                <IconButton>
-                                    {user === 'admin' ? (
+                        {booking.status === 'pending' &&
+                            userRole === 'admin' && (
+                                <Box
+                                    sx={{
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        backgroundColor:
+                                            userRole === 'admin'
+                                                ? '#14AE5C'
+                                                : '#E8B931',
+                                        width: '50%',
+                                        height: '100%',
+                                    }}
+                                    onClick={() => {
+                                        handleAccept?.();
+                                        setIsSwiped(false);
+                                    }}
+                                >
+                                    <IconButton
+                                        onClick={() => {
+                                            handleAccept?.();
+                                            setIsSwiped(false);
+                                        }}
+                                    >
                                         <CheckIcon sx={{ color: 'white' }} />
-                                    ) : (
-                                        <EditIcon sx={{ color: '#FFF1C2' }} />
-                                    )}
-                                </IconButton>
-                            </Box>
-                        )}
+                                    </IconButton>
+                                </Box>
+                            )}
                         <Box
                             sx={{
                                 display: 'flex',
                                 justifyContent: 'center',
                                 alignItems: 'center',
                                 backgroundColor: '#B3261E',
-                                width: status === 'pending' ? '50%' : '100%',
+                                width:
+                                    booking.status === 'pending' &&
+                                    userRole === 'admin'
+                                        ? '50%'
+                                        : '100%',
                                 height: '100%',
                             }}
+                            onClick={() => {
+                                if (userRole === 'admin') {
+                                    console.log('hi');
+                                    handleReject?.();
+                                } else {
+                                    handleDelete?.();
+                                }
+                                setIsSwiped(false);
+                            }}
                         >
-                            <IconButton>
-                                {user === 'admin' ? (
+                            <IconButton
+                                onClick={() => {
+                                    if (userRole === 'admin') {
+                                        console.log('hi');
+                                        handleReject?.();
+                                    } else {
+                                        handleDelete?.();
+                                    }
+                                    setIsSwiped(false);
+                                }}
+                            >
+                                {userRole === 'admin' ? (
                                     <ClearIcon sx={{ color: 'white' }} />
                                 ) : (
                                     <DeleteIcon sx={{ color: 'white' }} />
@@ -142,9 +173,9 @@ const MobileRequestCard: React.FC<MobileRequestCardProps> = ({
                         <Grid2 container spacing={4}>
                             <Grid2 size="auto">
                                 <img
-                                    src={icon}
+                                    src={booking.equipment?.icon}
                                     style={IconStyle}
-                                    alt={icon}
+                                    alt={booking.equipment?.icon}
                                 ></img>
                             </Grid2>
                             <Grid2 size="grow">
@@ -155,7 +186,7 @@ const MobileRequestCard: React.FC<MobileRequestCardProps> = ({
                                         marginBottom: '8px',
                                     }}
                                 >
-                                    {title}
+                                    {booking.title}
                                 </Typography>
                                 <Typography
                                     variant="body2"
@@ -166,7 +197,7 @@ const MobileRequestCard: React.FC<MobileRequestCardProps> = ({
                                         color: '#616161',
                                     }}
                                 >
-                                    {description}
+                                    {booking.description}
                                 </Typography>
                                 <Box
                                     display="flex"
@@ -182,12 +213,12 @@ const MobileRequestCard: React.FC<MobileRequestCardProps> = ({
                                         }}
                                     >
                                         <EventIcon
-                                            className="icon"
+                                            className="booking.equipment?.icon"
                                             style={{
                                                 verticalAlign: 'middle',
                                             }}
                                         />
-                                        {date}
+                                        {booking.bookingDate}
                                     </Typography>
                                 </Box>
                             </Grid2>

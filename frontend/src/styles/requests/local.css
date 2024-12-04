@@ -6,11 +6,15 @@
   background-color: #483E5C ;
   min-height: 100vh; 
   padding-bottom: 40px;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
 @media (max-width: 768px) {
   .requestContainer{
     background-color: white;
+    padding-left: 0px;
+  padding-right: 0px;
   }
   
   #request {

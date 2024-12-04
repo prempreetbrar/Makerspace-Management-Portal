@@ -8,29 +8,35 @@ import MobileIssueCard from '../Components/Requests/MobileIssueCard';
 import IssueCard from '../Components/Requests/IssueCard';
 import { Box, Button, useMediaQuery } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import ThreeDPrinterIcon from '../assets/3D_printer.svg';
-import LaserCutterIcon from '../assets/laser_cutter.svg';
-import CNCMillIcon from '../assets/laser_cutter.svg';
-import MakerbotReplicatorImg from '../assets/mb_replicator.jpeg';
-
-import { User, Booking, Request, Issue } from '../models.ts';
-
+import { Booking, Issue } from '../models.ts';
 import { AuthContext } from '../contexts/AuthContext';
-
 import Axios from 'axios';
 import axios from '../axios';
+import CancelReservationModal from '../Components/Requests/CancelReservationModal.tsx';
+import RejectReservationModal from '../Components/Requests/RejectReservationModal.tsx';
+import ApproveReservationModal from '../Components/Requests/ApproveReservationModal.tsx';
 
 const Requests = () => {
-    const { user } = useContext(AuthContext)!;
-
+    //media query
     const isMobile = useMediaQuery('(max-width:768px)');
 
-    const [status, setStatus] = useState(0);
+    //user context
+    const { user } = useContext(AuthContext)!;
     const [userState, setUserState] = useState(user?.userRole);
+
+    //status for tab container
+    const [status, setStatus] = useState(0);
+
+    const numberToStringMap: { [key: number]: string } = {
+        0: 'approved',
+        1: 'pending',
+        2: 'denied',
+    };
 
     // fetch
     const [bookings, setBookings] = useState<Booking[]>([]);
     const [issues, setIssues] = useState<Issue[]>([]);
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -54,6 +60,7 @@ const Requests = () => {
         fetchData();
     }, []);
 
+    // for debugging
     const ChangeUserButton = () => (
         <Button
             id="debugButton"
@@ -64,10 +71,86 @@ const Requests = () => {
         </Button>
     );
 
-    const numberToStringMap: { [key: number]: string } = {
-        0: 'approved',
-        1: 'pending',
-        2: 'rejected',
+    // modals
+    const [modalState, setModalState] = useState<{
+        name: string | null;
+        data?: Booking | Issue | null;
+    }>({
+        name: null,
+        data: null,
+    });
+
+    const handleOpenModal = <T extends Booking | Issue>(
+        modalName: string,
+        modalData?: T | null
+    ) => {
+        setModalState({ name: modalName, data: modalData });
+    };
+
+    const handleCloseModal = () => {
+        setModalState({ name: null, data: null });
+    };
+
+    // button functions and api requests
+    const handleDeleteBooking = async (id?: number) => {
+        console.log(`Deleting booking with ID: ${id}`);
+        try {
+            await axios.delete(`/bookings?id=${id}`);
+            setBookings((prev) => prev.filter((booking) => booking.id !== id));
+        } catch (error) {
+            console.log('Error deleting booking:', error);
+        }
+        handleCloseModal();
+    };
+
+    const handleRejectBooking = async (textValue: string, idValue?: number) => {
+        console.log(`Rejecting booking with ID: ${idValue}`);
+        try {
+            await axios.patch(`/bookings`, {
+                id: idValue,
+                status: 'denied',
+                adminComments: textValue,
+            });
+            setBookings((prevBookings) =>
+                prevBookings.map((booking) =>
+                    booking.id === idValue
+                        ? {
+                              ...booking,
+                              status: 'denied',
+                              adminComments: textValue,
+                          }
+                        : booking
+                )
+            );
+        } catch (error) {
+            console.log('Error deleting booking:', error);
+        }
+
+        handleCloseModal();
+    };
+
+    const handleApproveBooking = async (idValue?: number) => {
+        console.log(`Approving booking with ID: ${idValue}`);
+        try {
+            await axios.patch(`/bookings`, {
+                id: idValue,
+                status: 'approved',
+            });
+            setBookings((prevBookings) =>
+                prevBookings.map((booking) =>
+                    booking.id === idValue
+                        ? {
+                              ...booking,
+                              status: 'approved',
+                          }
+                        : booking
+                )
+            );
+        } catch (error) {
+            console.log('Error approving booking:', error);
+        }
+
+        handleCloseModal();
     };
 
     const theme = createTheme({
@@ -92,9 +175,9 @@ const Requests = () => {
     });
 
     return (
-        <div className="requestContainer">
-            <ThemeProvider theme={theme}>
-                <NavBar id="request" />
+        <ThemeProvider theme={theme}>
+            <NavBar id="request" />
+            <div className="requestContainer">
                 <Box
                     sx={{
                         paddingTop: 3,
@@ -121,21 +204,40 @@ const Requests = () => {
                                   .map((bookings) =>
                                       isMobile ? (
                                           <MobileRequestCard
-                                              status={bookings.status}
-                                              title={bookings.title}
-                                              description={bookings.description}
-                                              date={bookings.bookingDate}
-                                              icon={bookings.equipment?.icon}
-                                              user={userState}
+                                              key={bookings.id}
+                                              booking={bookings}
+                                              userRole={userState}
                                           />
                                       ) : (
                                           <RequestCard
-                                              status={bookings.status}
-                                              title={bookings.title}
-                                              description={bookings.description}
-                                              date={bookings.bookingDate}
-                                              icon={bookings.equipment?.icon}
-                                              user={userState}
+                                              booking={bookings}
+                                              handleDelete={() =>
+                                                  handleOpenModal(
+                                                      'cancelReservation',
+                                                      bookings
+                                                  )
+                                              }
+                                              handleReject={() =>
+                                                  handleOpenModal(
+                                                      'rejectReservation',
+                                                      bookings
+                                                  )
+                                              }
+                                              handleAccept={
+                                                  localStorage.getItem(
+                                                      'dontShowModal'
+                                                  ) === 'true'
+                                                      ? () =>
+                                                            handleApproveBooking(
+                                                                bookings?.id
+                                                            )
+                                                      : () =>
+                                                            handleOpenModal(
+                                                                'approveReservation',
+                                                                bookings
+                                                            )
+                                              }
+                                              userRole={userState}
                                           />
                                       )
                                   )
@@ -148,22 +250,11 @@ const Requests = () => {
                                     .map((issues) =>
                                         isMobile ? (
                                             <MobileIssueCard
-                                                isResolved={issues.isResolved}
-                                                title={issues.equipment?.name}
-                                                description={issues.description}
-                                                date={issues.createdAt}
-                                                icon={issues.equipment?.icon}
-                                                status={status}
+                                                key={issues.id}
+                                                issue={issues}
                                             />
                                         ) : (
-                                            <IssueCard
-                                                isResolved={issues.isResolved}
-                                                title={issues.equipment?.name}
-                                                description={issues.description}
-                                                date={issues.createdAt}
-                                                icon={issues.equipment?.icon}
-                                                status={status}
-                                            />
+                                            <IssueCard issue={issues} />
                                         )
                                     )
                               : // Admin view: Default case
@@ -174,22 +265,11 @@ const Requests = () => {
                                     .map((issues) =>
                                         isMobile ? (
                                             <MobileIssueCard
-                                                isResolved={issues.isResolved}
-                                                title={issues.equipment?.name}
-                                                description={issues.description}
-                                                date={issues.createdAt}
-                                                icon={issues.equipment?.icon}
-                                                status={status}
+                                                key={issues.id}
+                                                issue={issues}
                                             />
                                         ) : (
-                                            <IssueCard
-                                                isResolved={issues.isResolved}
-                                                title={issues.equipment?.name}
-                                                description={issues.description}
-                                                date={issues.createdAt}
-                                                icon={issues.equipment?.icon}
-                                                status={status}
-                                            />
+                                            <IssueCard issue={issues} />
                                         )
                                     )
                         : // General user view: Filter requests based on status
@@ -202,27 +282,57 @@ const Requests = () => {
                               .map((bookings) =>
                                   isMobile ? (
                                       <MobileRequestCard
-                                          status={bookings.status}
-                                          title={bookings.title}
-                                          description={bookings.description}
-                                          date={bookings.bookingDate}
-                                          icon={bookings.equipment?.icon}
-                                          user={userState}
+                                          key={bookings.id}
+                                          booking={bookings}
+                                          userRole={userState}
+                                          handleDelete={() =>
+                                              handleOpenModal(
+                                                  'cancelReservation',
+                                                  bookings
+                                              )
+                                          }
                                       />
                                   ) : (
                                       <RequestCard
-                                          status={bookings.status}
-                                          title={bookings.title}
-                                          description={bookings.description}
-                                          date={bookings.bookingDate}
-                                          icon={bookings.equipment?.icon}
-                                          user={userState}
+                                          booking={bookings}
+                                          handleDelete={() =>
+                                              handleOpenModal(
+                                                  'cancelReservation',
+                                                  bookings
+                                              )
+                                          }
+                                          userRole={userState}
                                       />
                                   )
                               )}
                 </TabContainer>
-            </ThemeProvider>
-        </div>
+
+                <CancelReservationModal
+                    open={modalState.name === 'cancelReservation'}
+                    onClose={handleCloseModal}
+                    data={modalState.data as Booking}
+                    onConfirm={() => {
+                        handleDeleteBooking(modalState.data?.id);
+                    }}
+                />
+
+                <RejectReservationModal
+                    open={modalState.name === 'rejectReservation'}
+                    onClose={handleCloseModal}
+                    data={modalState.data as Booking}
+                    onReject={handleRejectBooking}
+                />
+
+                <ApproveReservationModal
+                    open={modalState.name === 'approveReservation'}
+                    onClose={handleCloseModal}
+                    data={modalState.data as Booking}
+                    onConfirm={() => {
+                        handleApproveBooking(modalState.data?.id);
+                    }}
+                />
+            </div>
+        </ThemeProvider>
     );
 };
 

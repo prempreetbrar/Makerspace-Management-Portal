@@ -4,31 +4,17 @@ import {
     Card,
     CardContent,
     Typography,
-    IconButton,
     Box,
     Grid2,
 } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
-import DownloadIcon from '@mui/icons-material/CloudDownload';
 import EventIcon from '@mui/icons-material/Event';
-import EditIcon from '@mui/icons-material/Edit';
+import { Issue } from '../../models.ts';
 
 interface IssueCardProps {
-    title: string | undefined;
-    description: string;
-    date: string;
-    icon: any;
-    isResolved: boolean;
-    status: number;
+    issue: Issue;
 }
 
-const IssueCard: React.FC<IssueCardProps> = ({
-    title,
-    description,
-    date,
-    icon,
-    isResolved,
-}) => {
+const IssueCard: React.FC<IssueCardProps> = ({ issue }) => {
     const IconStyle: React.CSSProperties = {
         width: '100px',
         height: '100px',
@@ -49,7 +35,11 @@ const IssueCard: React.FC<IssueCardProps> = ({
             <CardContent>
                 <Grid2 container spacing={4}>
                     <Grid2 size="auto">
-                        <img src={icon} style={IconStyle} alt={icon}></img>
+                        <img
+                            src={issue.equipment?.icon}
+                            style={IconStyle}
+                            alt={issue.equipment?.icon}
+                        ></img>
                     </Grid2>
                     <Grid2 size="grow">
                         <Typography
@@ -59,7 +49,7 @@ const IssueCard: React.FC<IssueCardProps> = ({
                                 fontWeight: 'bolder',
                             }}
                         >
-                            {title}
+                            {issue.equipment?.name}
                         </Typography>
                         <Typography
                             variant="body2"
@@ -69,7 +59,7 @@ const IssueCard: React.FC<IssueCardProps> = ({
                                 color: '#757575',
                             }}
                         >
-                            {description}
+                            {issue.description}
                         </Typography>
                         <Box
                             className="card-footer"
@@ -88,13 +78,13 @@ const IssueCard: React.FC<IssueCardProps> = ({
                                 }}
                             >
                                 <EventIcon
-                                    className="icon"
+                                    className="issue.equipment?.icon"
                                     sx={{
                                         verticalAlign: 'middle',
                                         color: '#757575',
                                     }}
                                 />{' '}
-                                {date}
+                                {issue.createdAt}
                             </Typography>
                             <Box
                                 className="download-link"
@@ -106,7 +96,7 @@ const IssueCard: React.FC<IssueCardProps> = ({
                     </Grid2>
                 </Grid2>
 
-                {isResolved == false ? (
+                {issue.isResolved == false ? (
                     <Grid2 container>
                         <Grid2 size="grow"></Grid2>
                         <Grid2>
