@@ -5,26 +5,14 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Button,
+  Button, Box,
 } from "@mui/material";
 
 interface ConfirmationDialogProps {
   open: boolean;
-  onClose: () => void;
-  onConfirm: () => void;
-  title?: string;
-  description?: string;
-  details?: { label: string; value: string }[];
-}
+  onClose: (confirmed: boolean) => void; }
 
-const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
-  open,
-  onClose,
-  onConfirm,
-  title = "Confirm Submission",
-  description = "Are you sure you want to proceed with this action?",
-  details = [],
-}) => {
+const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({ open, onClose }) => {
   return (
     <Dialog
       open={open}
@@ -32,24 +20,29 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
       aria-labelledby="confirmation-dialog-title"
       aria-describedby="confirmation-dialog-description"
     >
-      <DialogTitle id="confirmation-dialog-title">{title}</DialogTitle>
+      <DialogTitle id="confirmation-dialog-title">Your Booking Has Been Submitted</DialogTitle>
       <DialogContent>
         <DialogContentText id="confirmation-dialog-description">
-          {description}
+          Monitor the status of your request in the “View Requests Page.”
         </DialogContentText>
-        {details.map((detail, index) => (
-          <p key={index}>
-            <strong>{detail.label}:</strong> {detail.value || "Not provided"}
-          </p>
-        ))}
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} color="secondary">
-          Cancel
+          <Box sx={{ paddingRight: '10px',paddingBottom: '10px'
+        }}>
+        <Button onClick={onClose} sx={{
+                                backgroundColor: 'black',
+                                color: 'white',
+                                textTransform: 'none',
+                                borderRadius: 2,
+                                boxShadow: '0px 1px 8px rgba(0, 0, 0, 0.7)',
+                                marginLeft: '15px',
+                                paddingLeft: '30px',
+                                paddingRight: '30px',
+                                fontWeight: 'bold',
+                            }} autoFocus>
+          Close
         </Button>
-        <Button onClick={onConfirm} color="primary" autoFocus>
-          Confirm
-        </Button>
+        </Box>
       </DialogActions>
     </Dialog>
   );

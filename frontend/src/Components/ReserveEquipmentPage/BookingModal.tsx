@@ -11,6 +11,7 @@ import dayjs, { Dayjs } from "dayjs";
 import { CancelRounded } from "@mui/icons-material";
 import WindowDimensions from "../WindowDimensions";
 import ReportIssueDialog from "./ReportIssueDialog";
+import ConfirmationDialog from "./ConfirmationDialog";
 
 const customTheme = createTheme({
     palette: {
@@ -62,13 +63,14 @@ type BookingCalendarProps = {
     onSubmit: () => void;
     externalProps?: any;
 };
-
 const BookingCalendar = ({ userRole, onClose, externalProps }: BookingCalendarProps) => {
     const { height, width } = WindowDimensions();
     const [inputText, setInputText] = useState("");
     const [selectedTimeButton, setSelectedTimeButton] = useState(-1);
     const [selectedTime, setSelectedTime] = useState("");
     const [reportDialogOpen, setReportDialogOpen] = useState(false);
+ 
+    const [dialogOpen, setDialogOpen] = useState(false);
 
     const today = dayjs();
     const nMonthsFromNow = today.add(2, "month");
@@ -82,6 +84,8 @@ const BookingCalendar = ({ userRole, onClose, externalProps }: BookingCalendarPr
         setInputText(event.target.value);
     };
 
+
+    //issues
     const handleOpenReportDialog = () => {
         setReportDialogOpen(true);
     };
@@ -89,20 +93,40 @@ const BookingCalendar = ({ userRole, onClose, externalProps }: BookingCalendarPr
     const handleCloseReportDialog = () => {
         setReportDialogOpen(false);
     };
+
     const handleSubmitReport = (issueDescription: string) => {
         console.log("Reported Issue:", issueDescription);
-            //backenc
-        setReportDialogOpen(false); 
+        setReportDialogOpen(false);
+    };
+
+
+
+    const handleSubmitRequest = () => {
+        console.log("Submission successful:", { inputText, selectedTime });
+         //backend
+        setInputText("");
+        setSelectedTime("");
+        setDialogOpen(true); 
     };
 
     const handleCloseModal = (submitted = false) => {
         if (submitted) {
-            // Save submitted data logic here
         }
         setInputText("");
         setSelectedTime("");
         onClose();
     };
+
+   
+    const handleCloseDialog = (confirmed: boolean) => {
+        setDialogOpen(false); 
+        if (confirmed) {
+          console.log("Submission confirmed");
+          handleCloseModal(true); 
+        } else {
+          console.log("Submission canceled");
+        }
+      };
 
     return (
         <ThemeProvider theme={customTheme}>
@@ -200,15 +224,13 @@ const BookingCalendar = ({ userRole, onClose, externalProps }: BookingCalendarPr
                                 >
                                     <Button
                                         sx={{
-                                            backgroundColor: 'white',
-                                            color: 'black',
-                                            textTransform: 'none',
+                                            backgroundColor: "white",
+                                            color: "black",
+                                            textTransform: "none",
                                             borderRadius: 2,
-                                            boxShadow: '0px 1px 8px rgba(0, 0, 0, 0.7)',
-                                            paddingLeft: '30px',
-                                            paddingRight: '30px',
-                                    
-                                         
+                                            boxShadow: "0px 1px 8px rgba(0, 0, 0, 0.7)",
+                                            paddingLeft: "30px",
+                                            paddingRight: "30px",
                                         }}
                                         onClick={handleOpenReportDialog}
                                     >
@@ -216,18 +238,18 @@ const BookingCalendar = ({ userRole, onClose, externalProps }: BookingCalendarPr
                                     </Button>
                                     <Button
                                         sx={{
-                                            backgroundColor: '#65558F',
-                                            color: 'white',
-                                            textTransform: 'none',
+                                            backgroundColor: "#65558F",
+                                            color: "white",
+                                            textTransform: "none",
                                             borderRadius: 2,
-                                            boxShadow: '0px 1px 8px rgba(0, 0, 0, 0.7)',
-                                            marginLeft: '15px',
-                                            paddingLeft: '30px',
-                                            paddingRight: '30px',
-                                            fontWeight: 'bold',
+                                            boxShadow: "0px 1px 8px rgba(0, 0, 0, 0.7)",
+                                            marginLeft: "15px",
+                                            paddingLeft: "30px",
+                                            paddingRight: "30px",
+                                            fontWeight: "bold",
                                         }}
                                         disabled={!inputText || !selectedTime}
-                                        onClick={() => handleCloseModal(true)}
+                                        onClick={handleSubmitRequest}
                                     >
                                         Submit Request
                                     </Button>
@@ -235,12 +257,19 @@ const BookingCalendar = ({ userRole, onClose, externalProps }: BookingCalendarPr
                             </Box>
                         </Box>
                     </Box>
- 
-            <ReportIssueDialog
+
+                    {/* Use ConfirmationDialog */}
+                    <ConfirmationDialog 
+                        open={dialogOpen} 
+                        onClose={handleCloseDialog}
+                    />
+
+                    {/* Report Issue Dialog */}
+                    <ReportIssueDialog
                         open={reportDialogOpen}
                         onClose={handleCloseReportDialog}
-                        onSubmit={handleSubmitReport}            
-                        />
+                        onSubmit={handleSubmitReport}
+                    />
                 </Box>
             </LocalizationProvider>
         </ThemeProvider>

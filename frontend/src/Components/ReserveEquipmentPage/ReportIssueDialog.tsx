@@ -32,21 +32,21 @@ const customTheme = createTheme({
 
 const ReportIssueDialog: React.FC<ReportIssueDialogProps> = ({ open, onClose, onSubmit }) => {
     const [issueDescription, setIssueDescription] = useState("");
-    const [isConfirmationOpen, setConfirmationOpen] = useState(false); // To control the confirmation dialog
+    const [isConfirmationOpen, setConfirmationOpen] = useState(false); 
 
     const handleSubmit = () => {
-        setConfirmationOpen(true); // Open the confirmation dialog on submit
-        onClose(); // Close the report issue dialog immediately after submit
+        setConfirmationOpen(true); 
+        onClose(); 
     };
 
     const handleConfirm = () => {
-        onSubmit(issueDescription); // Submit the issue
-        setIssueDescription(""); // Reset input field
-        setConfirmationOpen(false); // Close the confirmation dialog
+        onSubmit(issueDescription); 
+        setIssueDescription(""); 
+        setConfirmationOpen(false); 
     };
 
     const handleCancel = () => {
-        setConfirmationOpen(false); // Close the confirmation dialog without submitting
+        setConfirmationOpen(false);
     };
 
     return (
