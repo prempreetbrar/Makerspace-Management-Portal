@@ -14,12 +14,16 @@ const usersController = require('../controllers/users');
 // routes
 router.post('/signup', usersController.signup);
 router.post('/login', usersController.login);
-router.put('/profile', usersController.updateUserProfile);
+router.put(
+    '/profile',
+    usersController.isUserLoggedIn,
+    usersController.updateUserProfile
+);
 
 // all routes from this point onwards are only available to logged in, basic users
 router.use(
-  usersController.isUserLoggedIn,
-  usersController.isUserAuthorized(User.BASIC)
+    usersController.isUserLoggedIn,
+    usersController.isUserAuthorized(User.BASIC)
 );
 
 router.get('/checkout', usersController.checkout);

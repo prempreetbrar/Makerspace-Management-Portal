@@ -10,65 +10,68 @@ const PREMIUM = 'premium';
 const BASIC = 'basic';
 
 const User = sequelize.define(
-  'User',
-  {
-    email: {
-      type: DataTypes.STRING(320),
-      primaryKey: true,
-      allowNull: false,
-      validator: {
-        isEmail: true,
-      },
-    },
-    firstName: {
-      type: DataTypes.STRING(30),
-      defaultValue: '',
-      allowNull: false,
-    },
-    lastName: {
-      type: DataTypes.STRING(50),
-      defaultValue: '',
-      allowNull: false,
-    },
-    userRole: {
-      //, Premium, Basic
-      type: DataTypes.STRING(15),
-      defaultValue: BASIC,
-      allowNull: false,
-      validator: {
-        isIn: [ADMIN, PREMIUM, BASIC], // Making this an enum field
-      },
-    },
-    password: {
-      // fixed-length 64-byte or 256-bit hash, using SHA256 algo
-      // could add salts later, but probably overkill for a demo project
-      type: DataTypes.CHAR(64), // 256-bit binary string
-      allowNull: false,
-    },
-    confirmPassword: {
-      type: DataTypes.CHAR(64),
-      validate: {
-        matchesPassword(value) {
-          if (value !== this.password) {
-            throw new Error('Please make sure your passwords match', 401);
-          }
+    'User',
+    {
+        email: {
+            type: DataTypes.STRING(320),
+            primaryKey: true,
+            allowNull: false,
+            validator: {
+                isEmail: true,
+            },
         },
-      },
+        firstName: {
+            type: DataTypes.STRING(30),
+            defaultValue: '',
+            allowNull: false,
+        },
+        lastName: {
+            type: DataTypes.STRING(50),
+            defaultValue: '',
+            allowNull: false,
+        },
+        userRole: {
+            //, Premium, Basic
+            type: DataTypes.STRING(15),
+            defaultValue: BASIC,
+            allowNull: false,
+            validator: {
+                isIn: [ADMIN, PREMIUM, BASIC], // Making this an enum field
+            },
+        },
+        password: {
+            // fixed-length 64-byte or 256-bit hash, using SHA256 algo
+            // could add salts later, but probably overkill for a demo project
+            type: DataTypes.CHAR(64), // 256-bit binary string
+            allowNull: false,
+        },
+        confirmPassword: {
+            type: DataTypes.CHAR(64),
+            validate: {
+                matchesPassword(value) {
+                    if (value !== this.password) {
+                        throw new Error(
+                            'Please make sure your passwords match',
+                            401
+                        );
+                    }
+                },
+            },
+        },
     },
-  },
-  {
-    tableName: 'User',
-    timestamps: false,
+    {
+        tableName: 'User',
+        timestamps: false,
 
-    /*
+        /*
       We don't want to be returning the password through queries unless needed in specific
       cases (like checking login or authentication). In those cases, we'll manually override this.
       Why? Returning passwords from a query (even hashed) is a security risk.
     */
-    defaultScope: {
-      attributes: { exclude: ['password'] },
-    },
-  }
+        defaultScope: {
+            attributes: { exclude: ['password'] },
+        },
+    }
 );
 
 User.ADMIN = ADMIN;
@@ -81,18 +84,18 @@ User.BASIC = BASIC;
     ahead and hashing it.
   */
 User.beforeSave(async (user, options) => {
-  if (user.password && user.confirmPassword) {
-    user.password = await bcrypt.hash(user.password, 12);
-    // we don't want this returned back to the user in the HTTP response
-    user.confirmPassword = undefined;
-  }
+    if (user.password && user.confirmPassword) {
+        user.password = await bcrypt.hash(user.password, 12);
+        // we don't want this returned back to the user in the HTTP response
+        user.confirmPassword = undefined;
+    }
 });
 
 User.prototype.isPasswordCorrect = async function (
-  givenPassword,
-  actualPassword
+    givenPassword,
+    actualPassword
 ) {
-  return await bcrypt.compare(givenPassword, actualPassword);
+    return await bcrypt.compare(givenPassword, actualPassword);
 };
 
 /*
@@ -109,20 +112,20 @@ User.prototype.isPasswordCorrect = async function (
     The name .associate is random, it could be anything. It's just a method we call. 
   */
 User.associate = (models) => {
-  User.hasMany(models.Request, {
-    foreignKey: 'userEmail',
-    as: 'requests',
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-  });
+    User.hasMany(models.Request, {
+        foreignKey: 'userEmail',
+        as: 'requests',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+    });
 
-  User.hasMany(models.Booking, {
-    foreignKey: 'userEmail', // foreign key in booking
-    sourceKey: 'email', // primary key in user
-    as: 'bookings',
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-  });
+    User.hasMany(models.Booking, {
+        foreignKey: 'userEmail', // foreign key in booking
+        sourceKey: 'email', // primary key in user
+        as: 'bookings',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+    });
 };
 
 module.exports = User;
