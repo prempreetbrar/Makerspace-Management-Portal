@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
     Button,
     Card,
@@ -8,6 +8,7 @@ import {
     Grid2,
 } from '@mui/material';
 import EventIcon from '@mui/icons-material/Event';
+import MaintenanceDialog from './MaintenanceDialog';
 import { Issue } from '../../models.ts';
 
 interface IssueCardProps {
@@ -19,6 +20,16 @@ const IssueCard: React.FC<IssueCardProps> = ({ issue }) => {
         width: '100px',
         height: '100px',
     };
+
+const [openDialog, setOpenDialog] = useState(false);
+
+const handleSetOutOfOrder = () => {
+    setOpenDialog(true);
+};
+
+const handleCloseDialog = () => {
+    setOpenDialog(false);
+};
 
     return (
         <Card
@@ -111,6 +122,7 @@ const IssueCard: React.FC<IssueCardProps> = ({ issue }) => {
                                     paddingRight: '30px',
                                     fontWeight: 'bold',
                                 }}
+                                onClick={handleSetOutOfOrder}
                             >
                                 Set Out-Of-Order
                             </Button>
@@ -140,6 +152,12 @@ const IssueCard: React.FC<IssueCardProps> = ({ issue }) => {
                     </Grid2>
                 )}
             </CardContent>
+
+            <MaintenanceDialog
+                open={openDialog}
+                onClose={handleCloseDialog}
+                title={issue.equipment?.name}
+            />
         </Card>
     );
 };
