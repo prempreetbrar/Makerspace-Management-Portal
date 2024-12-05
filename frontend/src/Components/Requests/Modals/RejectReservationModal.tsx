@@ -130,7 +130,7 @@ const RejectReservationModal: React.FC<RejectReservationModalProps> = ({
     open,
     onClose,
     data,
-    title = 'Reject Request?',
+    title = 'Reject Reservation?',
     description = 'This action cannot be undone.',
     onReject,
 }) => {

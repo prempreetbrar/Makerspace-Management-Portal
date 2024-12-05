@@ -10,6 +10,7 @@ import {
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EventIcon from '@mui/icons-material/Event';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 import { Booking } from '../../models.ts';
 
@@ -86,7 +87,6 @@ const RequestCard: React.FC<RequestCardProps> = ({
                                 variant="body2"
                                 className="card-date"
                                 sx={{
-                                    flex: '1',
                                     color: '#757575',
                                 }}
                             >
@@ -97,8 +97,27 @@ const RequestCard: React.FC<RequestCardProps> = ({
                                         color: '#757575',
                                     }}
                                 />{' '}
-                                {booking.bookingDate}
+                                {booking.bookingDate}, {booking.timeSlot1}
                             </Typography>
+                            {userRole === 'admin' && (
+                                <Typography
+                                    variant="body2"
+                                    className="card-date"
+                                    sx={{
+                                        color: '#757575',
+                                        marginLeft: 4,
+                                    }}
+                                >
+                                    <AccountCircleIcon
+                                        className="booking.equipment?.icon"
+                                        sx={{
+                                            verticalAlign: 'middle',
+                                            color: '#757575',
+                                        }}
+                                    />{' '}
+                                    {booking.userEmail}
+                                </Typography>
+                            )}
                         </Box>
                     </Grid2>
                     <Grid2 size="auto">

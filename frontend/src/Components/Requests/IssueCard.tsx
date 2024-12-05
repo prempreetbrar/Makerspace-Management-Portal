@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import {
     Button,
     Card,
@@ -8,7 +7,6 @@ import {
     Grid2,
 } from '@mui/material';
 import EventIcon from '@mui/icons-material/Event';
-import MaintenanceDialog from './MaintenanceDialog';
 import { Issue } from '../../models.ts';
 
 interface IssueCardProps {
@@ -91,7 +89,7 @@ const IssueCard: React.FC<IssueCardProps> = ({
                                         color: '#757575',
                                     }}
                                 />{' '}
-                                {issue.createdAt}
+                                {issue.createdAt.substring(0, 10)}
                             </Typography>
                         </Box>
                     </Grid2>

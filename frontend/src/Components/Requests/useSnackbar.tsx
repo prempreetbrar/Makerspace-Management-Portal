@@ -36,7 +36,7 @@ const useSnackbar = () => {
                         ? theme.palette.primary.main
                         : '#121212',
                     color: 'white',
-                    borderRadius: '8px',
+                    borderRadius: 3,
                     padding: '8px 16px',
                 },
             }}
