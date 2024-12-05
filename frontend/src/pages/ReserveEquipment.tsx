@@ -304,11 +304,6 @@ const ReserveEquipment = () => {
                     await syncData();
 
                     // fetch from the database again.
-<<<<<<< HEAD
-
-                
-=======
->>>>>>> b9d945bb655a3aed49883150cd8f8caaad3b07d2
                 }
             }
             catch(error)

@@ -27,16 +27,6 @@ const IssueCard: React.FC<IssueCardProps> = ({
         height: '100px',
     };
 
-    const [openDialog, setOpenDialog] = useState(false);
-
-    const handleSetOutOfOrder = () => {
-        setOpenDialog(true);
-    };
-
-    const handleCloseDialog = () => {
-        setOpenDialog(false);
-    };
-
     return (
         <Card
             className="request-card"
@@ -146,12 +136,6 @@ const IssueCard: React.FC<IssueCardProps> = ({
                     </Grid2>
                 </Grid2>
             </CardContent>
-
-            <MaintenanceDialog
-                open={openDialog}
-                onClose={handleCloseDialog}
-                title={issue.equipment?.name}
-            />
         </Card>
     );
 };

@@ -13,8 +13,8 @@ import { Booking, Issue } from '../models.ts';
 import { AuthContext } from '../contexts/AuthContext';
 import Axios from 'axios';
 import axios from '../axios';
-import CancelReservationModal from '../Components/Requests/Modals/CancelReservationModal.tsx';
-import RejectReservationModal from '../Components/Requests/RejectReservationModal.tsx';
+import CancelReservationModal from '../Components//Requests/Modals/CancelReservationModal.tsx';
+import RejectReservationModal from '../Components/Requests/Modals/RejectReservationModal.tsx';
 import ApproveReservationModal from '../Components/Requests/Modals/ApproveReservationModal.tsx';
 import ResolveModal from '../Components/Requests/Modals/ResolveModal.tsx';
 import SetOODModal from '../Components/Requests/Modals/SetOODModal.tsx';
@@ -272,6 +272,32 @@ const Requests = () => {
                                               key={bookings.id}
                                               booking={bookings}
                                               userRole={userState}
+                                              handleDelete={() =>
+                                                  handleOpenModal(
+                                                      'cancelReservation',
+                                                      bookings
+                                                  )
+                                              }
+                                              handleReject={() =>
+                                                  handleOpenModal(
+                                                      'rejectReservation',
+                                                      bookings
+                                                  )
+                                              }
+                                              handleAccept={
+                                                  localStorage.getItem(
+                                                      'dontShowModal'
+                                                  ) === 'true'
+                                                      ? () =>
+                                                            handleApproveBooking(
+                                                                bookings?.id
+                                                            )
+                                                      : () =>
+                                                            handleOpenModal(
+                                                                'approveReservation',
+                                                                bookings
+                                                            )
+                                              }
                                           />
                                       ) : (
                                           <RequestCard
@@ -320,6 +346,18 @@ const Requests = () => {
                                             <MobileIssueCard
                                                 key={issues.id}
                                                 issue={issues}
+                                                handleResolve={() => {
+                                                    handleOpenModal(
+                                                        'resolveIssue',
+                                                        issues
+                                                    );
+                                                }}
+                                                handleOOD={() =>
+                                                    handleOpenModal(
+                                                        'setOOD',
+                                                        issues
+                                                    )
+                                                }
                                             />
                                         ) : (
                                             <IssueCard
@@ -352,6 +390,18 @@ const Requests = () => {
                                             <MobileIssueCard
                                                 key={issues.id}
                                                 issue={issues}
+                                                handleResolve={() => {
+                                                    handleOpenModal(
+                                                        'resolveIssue',
+                                                        issues
+                                                    );
+                                                }}
+                                                handleOOD={() =>
+                                                    handleOpenModal(
+                                                        'setOOD',
+                                                        issues
+                                                    )
+                                                }
                                             />
                                         ) : (
                                             <IssueCard

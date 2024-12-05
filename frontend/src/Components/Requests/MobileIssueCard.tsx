@@ -15,9 +15,15 @@ import { Issue } from '../../models.ts';
 
 interface MobileIssueCardProps {
     issue: Issue;
+    handleOOD?: () => void;
+    handleResolve?: () => void;
 }
 
-const MobileIssueCard: React.FC<MobileIssueCardProps> = ({ issue }) => {
+const MobileIssueCard: React.FC<MobileIssueCardProps> = ({
+    issue,
+    handleOOD,
+    handleResolve,
+}) => {
     const [isSwiped, setIsSwiped] = useState(false);
 
     const IconStyle: React.CSSProperties = {
@@ -78,8 +84,17 @@ const MobileIssueCard: React.FC<MobileIssueCardProps> = ({ issue }) => {
                                         : '100%',
                                 height: '100%',
                             }}
+                            onClick={() => {
+                                handleResolve?.();
+                                setIsSwiped(false);
+                            }}
                         >
-                            <IconButton>
+                            <IconButton
+                                onClick={() => {
+                                    handleResolve?.();
+                                    setIsSwiped(false);
+                                }}
+                            >
                                 <CheckIcon sx={{ color: 'white' }} />
                             </IconButton>
                         </Box>
@@ -93,8 +108,17 @@ const MobileIssueCard: React.FC<MobileIssueCardProps> = ({ issue }) => {
                                     width: '50%',
                                     height: '100%',
                                 }}
+                                onClick={() => {
+                                    handleOOD?.();
+                                    setIsSwiped(false);
+                                }}
                             >
-                                <IconButton>
+                                <IconButton
+                                    onClick={() => {
+                                        handleOOD?.();
+                                        setIsSwiped(false);
+                                    }}
+                                >
                                     <InfoIcon sx={{ color: 'white' }} />
                                 </IconButton>
                             </Box>

@@ -1,21 +1,24 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Modal,
     Box,
     Typography,
     Button,
+    TextField,
     IconButton,
     useMediaQuery,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import { Issue } from '../../../models';
+import { Booking } from '../../../models';
 import theme from '../../../theme';
 
-interface SetOODProps {
+interface RejectReservationModalProps {
     open: boolean;
-    data?: Issue | null;
+    data?: Booking | null;
     onClose: () => void;
-    onConfirm: () => void;
+    title?: string;
+    description?: string;
+    onReject: (textValue: string, idValue?: number) => void;
 }
 
 const style = {
@@ -27,11 +30,11 @@ const style = {
     boxShadow: 24,
     borderRadius: 4,
     p: 4,
-    width: 500,
+    width: 600,
     [theme.breakpoints.down('md')]: {
         width: 300,
         padding: '24px',
-        textAlign: 'center',
+        //textAlign: 'center',
         top: '40%',
     },
 };
@@ -51,6 +54,21 @@ const descriptionStyle = {
     marginBottom: '16px',
     [theme.breakpoints.down('md')]: {
         fontSize: '12px',
+    },
+};
+
+const textFieldStyle = {
+    mb: '20px',
+    '& .MuiOutlinedInput-root': {
+        backgroundColor: '#E5E5EA',
+    },
+    '& .MuiInputBase-input': {
+        fontSize: 16,
+    },
+    [theme.breakpoints.down('md')]: {
+        '& .MuiInputBase-input': {
+            fontSize: 12,
+        },
     },
 };
 
@@ -75,7 +93,7 @@ const buttonStyles = {
             backgroundColor: '#f1f1f1',
         },
     },
-    continue: {
+    reject: {
         backgroundColor: 'black',
         color: '#FFFFFF',
         textTransform: 'none',
@@ -93,7 +111,7 @@ const buttonStyles = {
             '&:hover': {
                 backgroundColor: theme.palette.primary.dark,
             },
-            width: '90%',
+            width: '100%',
         },
     },
 };
@@ -108,13 +126,24 @@ const closeIconStyle = {
     },
 };
 
-const SetOODModal: React.FC<SetOODProps> = ({
+const RejectReservationModal: React.FC<RejectReservationModalProps> = ({
     open,
     onClose,
     data,
-    onConfirm,
+    title = 'Reject Request?',
+    description = 'This action cannot be undone.',
+    onReject,
 }) => {
+    const [textValue, setTextValue] = useState<string>('');
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
+    useEffect(() => {
+        setTextValue(''); // Clear the text field whenever the modal opens
+    }, [open]);
+
+    const handleClickReject = () => {
+        onReject(textValue, data?.id);
+    };
 
     return (
         <Modal open={open} onClose={onClose}>
@@ -125,19 +154,32 @@ const SetOODModal: React.FC<SetOODProps> = ({
                     </IconButton>
                 )}
                 <Typography variant="h6" sx={titleStyle}>
-                    Set Out-of-Order
+                    {title}
                 </Typography>
                 <Typography variant="body2" sx={descriptionStyle}>
-                    Set the "{data?.equipment?.name}" Out-of-Order?
+                    {description}
                 </Typography>
+                <TextField
+                    value={textValue}
+                    size="small"
+                    multiline
+                    rows={isMobile ? 6 : 4}
+                    placeholder="Please leave a comment to explain rejection"
+                    fullWidth
+                    onChange={(e) => setTextValue(e.target.value)}
+                    sx={textFieldStyle}
+                />
                 <Box sx={buttonContainerStyle}>
                     {!isMobile && (
                         <Button sx={buttonStyles.close} onClick={onClose}>
                             Close
                         </Button>
                     )}
-                    <Button sx={buttonStyles.continue} onClick={onConfirm}>
-                        Confirm
+                    <Button
+                        sx={buttonStyles.reject}
+                        onClick={handleClickReject}
+                    >
+                        Reject
                     </Button>
                 </Box>
             </Box>
@@ -145,4 +187,4 @@ const SetOODModal: React.FC<SetOODProps> = ({
     );
 };
 
-export default SetOODModal;
+export default RejectReservationModal;
