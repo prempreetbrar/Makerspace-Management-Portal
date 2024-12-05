@@ -104,6 +104,10 @@ const buttonStyles = {
         '&:hover': {
             backgroundColor: '#333',
         },
+        '&.Mui-disabled': {
+            backgroundColor: '#d3d3d3',
+            color: '#9e9e9e',
+        },
         [theme.breakpoints.down('md')]: {
             fontSize: '14px',
             marginInline: 'auto',
@@ -178,6 +182,7 @@ const RejectReservationModal: React.FC<RejectReservationModalProps> = ({
                     <Button
                         sx={buttonStyles.reject}
                         onClick={handleClickReject}
+                        disabled={!textValue.trim()}
                     >
                         Reject
                     </Button>

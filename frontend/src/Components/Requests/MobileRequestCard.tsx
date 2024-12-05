@@ -196,7 +196,10 @@ const MobileRequestCard: React.FC<MobileRequestCardProps> = ({
                         }}
                     >
                         <Grid2 container spacing={4}>
-                            <Grid2 size="auto">
+                            <Grid2
+                                size="auto"
+                                sx={{ display: 'flex', alignItems: 'center' }}
+                            >
                                 <img
                                     src={booking.equipment?.icon}
                                     style={IconStyle}
