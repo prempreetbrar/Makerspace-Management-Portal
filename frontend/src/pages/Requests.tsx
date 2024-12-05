@@ -253,8 +253,8 @@ const Requests = () => {
 
     return (
         <ThemeProvider theme={theme}>
+            <NavBar id="request" />
             <div className="requestContainer">
-                <NavBar id="request" />
                 <Box
                     sx={{
                         paddingTop: 3,

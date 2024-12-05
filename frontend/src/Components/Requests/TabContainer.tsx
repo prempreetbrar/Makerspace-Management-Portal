@@ -1,6 +1,7 @@
 import React from 'react';
 import { Tabs, Tab, Box, ThemeProvider, Typography } from '@mui/material';
 import theme from '../../theme';
+import SearchIcon from '@mui/icons-material/Search';
 
 interface TabContainerProps {
     user: string | undefined;
@@ -141,9 +142,45 @@ const TabContainer: React.FC<TabContainerProps> = ({
                     }}
                 >
                     {isChildrenEmpty ? (
-                        <Typography sx={{ color: 'black', mt: 2 }}>
-                            No content available.
-                        </Typography>
+                        <>
+                            <SearchIcon
+                                sx={{
+                                    marginTop: 10,
+                                    color: 'white',
+                                    width: 100,
+                                    height: 'auto',
+                                    [theme.breakpoints.down('md')]: {
+                                        color: '#49454F',
+                                    },
+                                }}
+                            />
+                            <Typography
+                                variant="h5"
+                                fontWeight={0}
+                                sx={{
+                                    color: 'white',
+                                    mt: 2,
+                                    [theme.breakpoints.down('md')]: {
+                                        color: '#49454F',
+                                    },
+                                }}
+                            >
+                                No content available
+                            </Typography>
+                            <Typography
+                                variant="body1"
+                                fontWeight={100}
+                                fontSize={14}
+                                sx={{
+                                    color: 'white',
+                                    [theme.breakpoints.down('md')]: {
+                                        color: '#49454F',
+                                    },
+                                }}
+                            >
+                                You have no results in this tab
+                            </Typography>
+                        </>
                     ) : (
                         children
                     )}

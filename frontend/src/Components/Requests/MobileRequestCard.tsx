@@ -232,6 +232,14 @@ const MobileRequestCard: React.FC<MobileRequestCardProps> = ({
                                     }}
                                 >
                                     {booking.description}
+                                    {booking.status === 'denied' && (
+                                        <>
+                                            <br />
+                                            <br />{' '}
+                                            <strong>Admin Comment</strong>:{' '}
+                                            {booking.adminComments}
+                                        </>
+                                    )}
                                     {showExpandButton && (
                                         <span
                                             style={{

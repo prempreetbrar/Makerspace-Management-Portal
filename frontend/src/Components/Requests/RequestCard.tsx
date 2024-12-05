@@ -77,7 +77,7 @@ const RequestCard: React.FC<RequestCardProps> = ({
                             {booking.status === 'denied' && (
                                 <>
                                     <br />
-                                    <br /> <strong>Admin Comment</strong>:
+                                    <br /> <strong>Admin Comment</strong>:{' '}
                                     {booking.adminComments}
                                 </>
                             )}
