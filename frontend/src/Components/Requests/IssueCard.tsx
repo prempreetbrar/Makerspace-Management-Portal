@@ -12,9 +12,15 @@ import { Issue } from '../../models.ts';
 
 interface IssueCardProps {
     issue: Issue;
+    handleOOD?: () => void;
+    handleResolve?: () => void;
 }
 
-const IssueCard: React.FC<IssueCardProps> = ({ issue }) => {
+const IssueCard: React.FC<IssueCardProps> = ({
+    issue,
+    handleOOD,
+    handleResolve,
+}) => {
     const IconStyle: React.CSSProperties = {
         width: '100px',
         height: '100px',
@@ -86,12 +92,6 @@ const IssueCard: React.FC<IssueCardProps> = ({ issue }) => {
                                 />{' '}
                                 {issue.createdAt}
                             </Typography>
-                            <Box
-                                className="download-link"
-                                sx={{
-                                    flex: '1',
-                                }}
-                            ></Box>
                         </Box>
                     </Grid2>
                 </Grid2>
@@ -110,6 +110,7 @@ const IssueCard: React.FC<IssueCardProps> = ({ issue }) => {
                                     paddingRight: '30px',
                                     fontWeight: 'bold',
                                 }}
+                                onClick={() => handleOOD?.()}
                             >
                                 Set Out-Of-Order
                             </Button>
@@ -127,6 +128,7 @@ const IssueCard: React.FC<IssueCardProps> = ({ issue }) => {
                                 paddingRight: '50px',
                                 fontWeight: 'bold',
                             }}
+                            onClick={() => handleResolve?.()}
                         >
                             Resolve
                         </Button>

@@ -14,6 +14,7 @@ interface ApproveReservationModalProps {
     data?: Booking | null;
     onClose: () => void;
     onConfirm: () => void;
+    storageKey: string;
 }
 
 const style = {
@@ -61,6 +62,7 @@ const ApproveReservationModal: React.FC<ApproveReservationModalProps> = ({
     onClose,
     data,
     onConfirm,
+    storageKey,
 }) => {
     const [dontShowAgain, setDontShowAgain] = useState(false);
     const [shouldShow, setShouldShow] = useState(true);
@@ -68,8 +70,7 @@ const ApproveReservationModal: React.FC<ApproveReservationModalProps> = ({
     // Check localStorage to determine if the modal should show
     useEffect(() => {
         setDontShowAgain(false);
-        const shouldShowModal =
-            localStorage.getItem('dontShowModal') !== 'true';
+        const shouldShowModal = localStorage.getItem(storageKey) !== 'true';
         setShouldShow(shouldShowModal);
     }, [onClose, localStorage]);
 
@@ -80,9 +81,9 @@ const ApproveReservationModal: React.FC<ApproveReservationModalProps> = ({
         const isChecked = event.target.checked;
         setDontShowAgain(isChecked);
         if (isChecked) {
-            localStorage.setItem('dontShowModal', 'true');
+            localStorage.setItem(storageKey, 'true');
         } else {
-            localStorage.setItem('dontShowModal', 'false');
+            localStorage.setItem(storageKey, 'false');
         }
     };
 

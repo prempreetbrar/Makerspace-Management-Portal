@@ -16,6 +16,7 @@ import axios from '../axios';
 import CancelReservationModal from '../Components/Requests/CancelReservationModal.tsx';
 import RejectReservationModal from '../Components/Requests/RejectReservationModal.tsx';
 import ApproveReservationModal from '../Components/Requests/ApproveReservationModal.tsx';
+import ResolveModal from '../Components/Requests/ResolveModal.tsx';
 
 const Requests = () => {
     //media query
@@ -161,6 +162,8 @@ const Requests = () => {
         handleCloseModal();
     };
 
+    const handleResolveIssue = async () => {};
+
     const theme = createTheme({
         palette: {
             primary: {
@@ -265,7 +268,16 @@ const Requests = () => {
                                                 issue={issues}
                                             />
                                         ) : (
-                                            <IssueCard issue={issues} />
+                                            <IssueCard
+                                                issue={issues}
+                                                handleResolve={() => {
+                                                    handleOpenModal(
+                                                        'resolveIssue',
+                                                        issues
+                                                    );
+                                                    console.log('hi');
+                                                }}
+                                            />
                                         )
                                     )
                               : // Admin view: Default case
@@ -283,7 +295,16 @@ const Requests = () => {
                                                 issue={issues}
                                             />
                                         ) : (
-                                            <IssueCard issue={issues} />
+                                            <IssueCard
+                                                issue={issues}
+                                                handleResolve={() => {
+                                                    handleOpenModal(
+                                                        'resolveIssue',
+                                                        issues
+                                                    );
+                                                    console.log('hi');
+                                                }}
+                                            />
                                         )
                                     )
                         : // General user view: Filter requests based on status
@@ -344,6 +365,13 @@ const Requests = () => {
                     onConfirm={() => {
                         handleApproveBooking(modalState.data?.id);
                     }}
+                    storageKey="dontShowModal"
+                />
+                <ResolveModal
+                    open={modalState.name === 'resolveIssue'}
+                    onClose={handleCloseModal}
+                    data={modalState.data as Issue}
+                    onConfirm={() => {}}
                 />
             </div>
         </ThemeProvider>
