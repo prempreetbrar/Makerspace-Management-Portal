@@ -13,6 +13,5 @@
     "no-console": "warn", // warns on console usage, but doesn't error
     "eqeqeq": ["error", "always"], // enforce strict equality (===)
     "curly": ["error", "all"], // require curly braces for all control statements
-    "prettier/prettier": "error" // ensures Prettier rules are followed
   }
 }
