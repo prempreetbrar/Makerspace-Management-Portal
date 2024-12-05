@@ -74,6 +74,13 @@ const RequestCard: React.FC<RequestCardProps> = ({
                             }}
                         >
                             {booking.description}
+                            {booking.status === 'denied' && (
+                                <>
+                                    <br />
+                                    <br /> <strong>Admin Comment</strong>:
+                                    {booking.adminComments}
+                                </>
+                            )}
                         </Typography>
                         <Box
                             className="card-footer"
