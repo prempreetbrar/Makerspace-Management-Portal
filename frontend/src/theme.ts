@@ -6,7 +6,7 @@ const theme = createTheme({
             main: '#65558F',
         },
         secondary: {
-            main: '#ECE6F0',
+            main: '#D0BCFE',
         },
         text: {
             primary: '#000000',
@@ -30,6 +30,5 @@ const theme = createTheme({
         },
     },
 });
-
 
 export default theme;

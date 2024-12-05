@@ -1,3 +1,5 @@
+const { DataTypes, INTEGER, Op } = require('sequelize');
+
 // models
 const Booking = require('../models/Booking');
 const User = require('../models/User');
@@ -17,6 +19,7 @@ async function _getAvailableBookingSlots(equipmentID, bookingDate, userEmail) {
             equipmentID: parseInt(equipmentID, 10),
             bookingDate,
             userEmail,
+            status: { [Op.not]: Booking.STATUS_DENIED },
         },
     });
 
@@ -29,21 +32,30 @@ async function _getAvailableBookingSlots(equipmentID, bookingDate, userEmail) {
         where: {
             equipmentID: parseInt(equipmentID, 10),
             bookingDate,
+            status: { [Op.not]: Booking.STATUS_DENIED },
         },
     });
 
-    const unavailableBookingSlots = [];
-    bookings.forEach((booking) => {
-        unavailableBookingSlots.push(booking.timeSlot1);
-
-        if (booking.timeSlot2) {
-            unavailableBookingSlots.push(booking.timeSlot2);
-        }
-    });
-
-    const availableBookingSlots = Booking.allTimeSlots.filter(
-        (slot) => !unavailableBookingSlots.includes(slot)
+    const unavailableBookingSlots = bookings.map(
+        (booking) => booking.timeSlot1
     );
+
+    const today = new Date().toISOString().split('T')[0]; // get today's date in YYYY-MM-DD format
+    const now = new Date(); // get the current time
+
+    // Filter out past time slots if bookingDate is today
+    const availableBookingSlots = Booking.allTimeSlots.filter((slot) => {
+        if (bookingDate === today) {
+            const [slotHour, slotMinute] = slot.split(':').map(Number);
+            const slotTime = new Date(now);
+            slotTime.setHours(slotHour, slotMinute, 0, 0);
+
+            // only include slots that are greater than or equal to the current time
+            return !unavailableBookingSlots.includes(slot) && slotTime >= now;
+        }
+
+        return !unavailableBookingSlots.includes(slot);
+    });
 
     return availableBookingSlots;
 }
@@ -83,7 +95,7 @@ async function _getAvailableBookingDays(user, equipmentID) {
     const endDate = new Date(today);
     endDate.setDate(
         today.getDate() +
-            (user.userRole === User.PREMIUM
+            (user.userRole === Booking.PREMIUM
                 ? Booking.premiumUserMaxDaysInFuture
                 : Booking.basicUserMaxDaysInFuture)
     );
@@ -92,6 +104,32 @@ async function _getAvailableBookingDays(user, equipmentID) {
 
     for (let d = new Date(today); d <= endDate; d.setDate(d.getDate() + 1)) {
         const date = d.toISOString().split('T')[0]; // format date as YYYY-MM-DD
+
+        // Check for user bookings in the same week
+        const startOfWeek = new Date(d);
+        startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay()); // Sunday
+        const endOfWeek = new Date(startOfWeek);
+        endOfWeek.setDate(startOfWeek.getDate() + 6); // Saturday
+
+        const userBookingsThisWeek = await Booking.count({
+            where: {
+                equipmentID,
+                userEmail: user.email,
+                bookingDate: { [Op.between]: [startOfWeek, endOfWeek] },
+                status: { [Op.not]: Booking.STATUS_DENIED }, // ignore denied bookings
+            },
+        });
+
+        const maxBookingsPerWeek =
+            user.userRole === Booking.PREMIUM
+                ? Booking.premiumUserMaxPerWeek
+                : Booking.basicUserMaxPerWeek;
+
+        // skip the entire week if the user has max bookings
+        if (userBookingsThisWeek >= maxBookingsPerWeek) {
+            continue;
+        }
+
         const availableBookingSlots = await _getAvailableBookingSlots(
             equipmentID,
             date,

@@ -40,6 +40,7 @@ export interface AuthContext {
     login: (email: string, password: string) => AuthFunctionStatus;
     signup: (userData: User) => AuthFunctionStatus;
     logout: () => void;
+    refetch: () => AuthFunctionStatus;
 }
 
 export const AuthContext = React.createContext<AuthContext | null>(null);
@@ -155,8 +156,47 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         dispatch({ type: AuthActionsTypes.LOGOUT, payload: null });
     };
 
+    // this function is used when a major change happens to the user (such as becoming premium), and we need their updated
+    // info on the frontend.
+    const refetch = async (): AuthFunctionStatus => {
+        try {
+            const response = await axios.get('/users/profile');
+            const user = response.data?.user;
+
+            if (user) {
+                localStorage.setItem('user', JSON.stringify(user));
+                dispatch({ type: AuthActionsTypes.LOGIN, payload: user });
+                return {
+                    isSuccess: true,
+                    message: 'User refetched successfully.',
+                };
+            }
+
+            return { isSuccess: false, message: 'User not found.' };
+        } catch (error: unknown) {
+            if (Axios.isAxiosError(error)) {
+                console.error(
+                    'Failed to refetch user:',
+                    error.response?.data || error.message
+                );
+                return {
+                    isSuccess: false,
+                    message:
+                        error.response?.data?.message ||
+                        'Failed to refetch user.',
+                };
+            }
+        }
+        return {
+            isSuccess: false,
+            message: 'Something went wrong. Please try again later.',
+        };
+    };
+
     return (
-        <AuthContext.Provider value={{ ...state, login, signup, logout }}>
+        <AuthContext.Provider
+            value={{ ...state, login, signup, logout, refetch }}
+        >
             {children}
         </AuthContext.Provider>
     );
