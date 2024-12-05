@@ -61,15 +61,15 @@ const Requests = () => {
     }, []);
 
     // for debugging
-    const ChangeUserButton = () => (
-        <Button
-            id="debugButton"
-            sx={{ width: '250px', position: 'sticky', bottom: 2, zIndex: 1000 }}
-            variant="contained"
-        >
-            User Type: {userState}
-        </Button>
-    );
+    // const ChangeUserButton = () => (
+    //     <Button
+    //         id="debugButton"
+    //         sx={{ width: '250px', position: 'sticky', bottom: 2, zIndex: 1000 }}
+    //         variant="contained"
+    //     >
+    //         User Type: {userState}
+    //     </Button>
+    // );
 
     // modals
     const [modalState, setModalState] = useState<{
@@ -186,7 +186,7 @@ const Requests = () => {
                         width: '100%',
                     }}
                 >
-                    <ChangeUserButton />
+                    {/* <ChangeUserButton /> */}
                 </Box>
                 <TabContainer
                     value={status}

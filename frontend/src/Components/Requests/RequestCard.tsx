@@ -136,6 +136,7 @@ const RequestCard: React.FC<RequestCardProps> = ({
                                     paddingRight: '30px',
                                     fontWeight: 'bold',
                                 }}
+                                variant="contained"
                                 onClick={() => handleReject?.()}
                             >
                                 Reject
@@ -152,6 +153,7 @@ const RequestCard: React.FC<RequestCardProps> = ({
                                     paddingRight: '30px',
                                     fontWeight: 'bold',
                                 }}
+                                variant="contained"
                                 onClick={() => handleAccept?.()}
                             >
                                 Approve
