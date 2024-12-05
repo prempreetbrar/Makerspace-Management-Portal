@@ -95,11 +95,10 @@ const IssueCard: React.FC<IssueCardProps> = ({ issue }) => {
                         </Box>
                     </Grid2>
                 </Grid2>
-
-                {issue.isResolved == false ? (
-                    <Grid2 container>
-                        <Grid2 size="grow"></Grid2>
-                        <Grid2>
+                <Grid2 container>
+                    <Grid2 size="grow"></Grid2>
+                    <Grid2>
+                        {issue.equipment?.isUnderMaintenance === false && (
                             <Button
                                 sx={{
                                     backgroundColor: 'white',
@@ -114,31 +113,25 @@ const IssueCard: React.FC<IssueCardProps> = ({ issue }) => {
                             >
                                 Set Out-Of-Order
                             </Button>
-                            <Button
-                                sx={{
-                                    backgroundColor: 'black',
-                                    color: 'white',
-                                    textTransform: 'none',
-                                    borderRadius: 2,
-                                    boxShadow: '0px 1px 8px rgba(0, 0, 0, 0.7)',
-                                    marginLeft: '15px',
-                                    paddingLeft: '50px',
-                                    paddingRight: '50px',
-                                    fontWeight: 'bold',
-                                }}
-                            >
-                                Resolve
-                            </Button>
-                        </Grid2>
+                        )}
+
+                        <Button
+                            sx={{
+                                backgroundColor: 'black',
+                                color: 'white',
+                                textTransform: 'none',
+                                borderRadius: 2,
+                                boxShadow: '0px 1px 8px rgba(0, 0, 0, 0.7)',
+                                marginLeft: '15px',
+                                paddingLeft: '50px',
+                                paddingRight: '50px',
+                                fontWeight: 'bold',
+                            }}
+                        >
+                            Resolve
+                        </Button>
                     </Grid2>
-                ) : (
-                    <Grid2 container spacing={2}>
-                        <Grid2 size="grow"></Grid2>
-                        <Grid2>
-                            <Button>Remove</Button>
-                        </Grid2>
-                    </Grid2>
-                )}
+                </Grid2>
             </CardContent>
         </Card>
     );

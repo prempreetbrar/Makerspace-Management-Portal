@@ -253,7 +253,10 @@ const Requests = () => {
                               ? // Admin view: Show issues when status is 1
                                 issues
                                     .filter(
-                                        (issues) => issues.isResolved == false
+                                        (issues) =>
+                                            issues.isResolved == true &&
+                                            issues.equipment
+                                                ?.isUnderMaintenance == false
                                     )
                                     .map((issues) =>
                                         isMobile ? (
@@ -268,7 +271,10 @@ const Requests = () => {
                               : // Admin view: Default case
                                 issues
                                     .filter(
-                                        (issues) => issues.isResolved == true
+                                        (issues) =>
+                                            issues.isResolved == true &&
+                                            issues.equipment
+                                                ?.isUnderMaintenance == true
                                     )
                                     .map((issues) =>
                                         isMobile ? (

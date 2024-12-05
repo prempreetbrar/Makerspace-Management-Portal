@@ -8,7 +8,6 @@ import {
     IconButton,
     Grid2,
 } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
 import EventIcon from '@mui/icons-material/Event';
 import CheckIcon from '@mui/icons-material/Check';
 import InfoIcon from '@mui/icons-material/Info';
@@ -66,44 +65,40 @@ const MobileIssueCard: React.FC<MobileIssueCardProps> = ({ issue }) => {
                             alignItems: 'center',
                         }}
                     >
-                        {issue.isResolved === false && (
-                            <Box
-                                sx={{
-                                    display: 'flex',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    backgroundColor: '#14AE5C',
-                                    width: '50%',
-                                    height: '100%',
-                                }}
-                            >
-                                <IconButton>
-                                    <CheckIcon sx={{ color: 'white' }} />
-                                </IconButton>
-                            </Box>
-                        )}
                         <Box
                             sx={{
                                 display: 'flex',
                                 justifyContent: 'center',
                                 alignItems: 'center',
-                                backgroundColor:
-                                    issue.isResolved === false
-                                        ? '#E8B931'
-                                        : '#B3261E',
+                                backgroundColor: '#14AE5C',
                                 width:
-                                    issue.isResolved === false ? '50%' : '100%',
+                                    issue.equipment?.isUnderMaintenance ===
+                                    false
+                                        ? '50%'
+                                        : '100%',
                                 height: '100%',
                             }}
                         >
                             <IconButton>
-                                {issue.isResolved === false ? (
-                                    <InfoIcon sx={{ color: 'white' }} />
-                                ) : (
-                                    <DeleteIcon sx={{ color: 'white' }} />
-                                )}
+                                <CheckIcon sx={{ color: 'white' }} />
                             </IconButton>
                         </Box>
+                        {issue.equipment?.isUnderMaintenance === false && (
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    backgroundColor: '#E8B931',
+                                    width: '50%',
+                                    height: '100%',
+                                }}
+                            >
+                                <IconButton>
+                                    <InfoIcon sx={{ color: 'white' }} />
+                                </IconButton>
+                            </Box>
+                        )}
                     </Box>
                 )}
                 <Card
