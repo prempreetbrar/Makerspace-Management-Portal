@@ -183,7 +183,7 @@ const ReserveEquipment = () => {
             setDisplayModel(filteredResults);
         }
     };
-
+    
     const updateSearchBar = (event: React.ChangeEvent<HTMLInputElement>)=>
     {
         if(event.target.value != searchText)
@@ -262,7 +262,7 @@ const ReserveEquipment = () => {
         setOpen(false);
         setSelectedEquipmentID(-1);
     }
-    
+
     function handleChangeMaintenanceStatus(equipment: Equipment)
     {
         setMaintenanceDialogOpen(true);
