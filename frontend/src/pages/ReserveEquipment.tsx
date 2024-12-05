@@ -105,7 +105,7 @@ const errorChipStyle = {
 
 
 function userCanBookItem(item: Equipment, userRole: string | undefined) {
-    const baseCheck = !item.isUnderMaintenance && item.isBookable;
+    const baseCheck = !item.isUnderMaintenance && item.isBookable && userRole != UserRoles.ADMIN;
     console.log(`${item.name} is bookable:  ${item.isBookable}`);
     console.log(`${item.name} is bookable:  ${baseCheck}`);
     if (userRole === undefined) {
