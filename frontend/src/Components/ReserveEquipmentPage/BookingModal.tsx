@@ -46,6 +46,7 @@ import axiosInstance from '../../axios';
 import ModalBase from './ModalBase';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import TimeButton from './TimeButton';
+import ReportIssueDialog from './ReportIssueDialog';
 
 dayjs.extend(customParseFormat);
 
@@ -146,6 +147,7 @@ const BookingModal = ({
     const [firstSelectedTime, setFirstSelectedTime] = useState('');
     const [secondSelectedTime, setSecondSelectedTime] = useState(''); // NOT IMPLEMENTED
     const [disabled, setDisabled] = useState(false);
+    const [isReportIssueDialogOpen, setReportIssueDialogOpen] = useState(false);
     const submissionInProgress = React.useRef<boolean>(false);
     const handleDetailsUpdate = (
         event: React.ChangeEvent<HTMLInputElement>
@@ -156,6 +158,19 @@ const BookingModal = ({
         setTitleText(event.target.value);
     };
     //@ts-ignore
+
+    const handleOpenReportIssueDialog = () => {
+        setReportIssueDialogOpen(true);
+    };
+    const handleCloseReportIssueDialog = () => {
+        setReportIssueDialogOpen(false);
+        handleCloseModal(true);
+    };
+    const handleSubmitReportIssue = (issueDescription: string) => {
+        console.log('Reported Issue:', issueDescription);
+        // backend here
+    };
+
 
     const handleDateSelection = (newDate: Dayjs) => {
         setSelectedTime('');
@@ -510,13 +525,34 @@ const BookingModal = ({
                                             required
                                         ></TextField>
                                     </Box>
+
+                                    <Box sx={{display:'flex', justifyContent:'space-between'}}>            
+                                    <Button
+                                            variant="contained"
+                                            sx={{marginTop: 3, border: '1px solid #ddd', backgroundColor: 'white', color: 'black', boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.2)', marginRight: '8px',width: '120px',
+                                                textTransform: 'none',
+                                                    '&:hover': {
+                                                        backgroundColor: '#f1f1f1',
+                                                    }, borderRadius: 2, fontWeight: 'bold',
+                                            }}
+                                            onClick={handleOpenReportIssueDialog}
+                                        >
+                                            Report Issue
+                                    </Button>
+
+                                    <ReportIssueDialog
+                                        open={isReportIssueDialogOpen}
+                                        onClose={handleCloseReportIssueDialog}
+                                        onSubmit={handleSubmitReportIssue}
+                                    />
+
                                     <Button
                                         variant="contained"
-                                        sx={{
-                                            marginTop: 3,
-                                            backgroundColor: '#65558F',
-                                            color: '#FFFFFF',
-                                            width: '120px',
+                                        sx={{marginTop: 3, backgroundColor: 'black', color: 'white', boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.4)', textTransform: 'none',
+                                            '&:hover': {
+                                                backgroundColor: '#333',
+                                            }, width: '139px', borderRadius: 2, fontWeight: 'bold',
+                                            
                                         }}
                                         onClick={submitBooking}
                                         disabled={
@@ -524,8 +560,9 @@ const BookingModal = ({
                                             selectedTime === ''
                                         }
                                     >
-                                        Submit
+                                        Submit Request
                                     </Button>
+                                    </Box>
                                 </Box>
                             </Box>
                         </Box>
