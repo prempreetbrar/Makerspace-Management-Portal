@@ -8,6 +8,12 @@ import MobileIssueCard from '../Components/Requests/MobileIssueCard';
 import IssueCard from '../Components/Requests/IssueCard';
 import { Box, Button, useMediaQuery } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import ThreeDPrinterIcon from '../assets/3D_printer.svg';
+import LaserCutterIcon from '../assets/laser_cutter.svg';
+import CNCMillIcon from '../assets/laser_cutter.svg';
+import MakerbotReplicatorImg from '../assets/mb_replicator.jpeg';
+import { useNavigate } from 'react-router-dom';
+import { User, Booking, Request, Issue } from '../models.ts';
 import { Booking, Issue } from '../models.ts';
 import { AuthContext } from '../contexts/AuthContext';
 import Axios from 'axios';
@@ -23,6 +29,13 @@ const Requests = () => {
     //user context
     const { user } = useContext(AuthContext)!;
     const [userState, setUserState] = useState(user?.userRole);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (!user) {
+            navigate('/'); // Navigate to the home page
+        }
+    }, [user, navigate]);
 
     //status for tab container
     const [status, setStatus] = useState(0);

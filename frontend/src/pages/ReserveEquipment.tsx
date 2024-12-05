@@ -45,6 +45,7 @@ import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../axios.ts';
 import axios, { AxiosError } from 'axios';
 import { Search } from '@mui/icons-material';
+import { useSearchParams } from 'react-router-dom';
 
 // a fallback state in case we are provided with bad context
 
@@ -227,6 +228,7 @@ const ReserveEquipment = () => {
     const [equipModel, setEquipModel] = useState<any>(undefined); // I don't know what the equipment model is
     const [displayModel, setDisplayModel] = useState(equipmentModel);
     const [loading, setLoading] = useState(false);
+    const [searchParams, _] = useSearchParams();
 
     function handleChangeUser() {
         userProviderContext.setUser();
@@ -250,7 +252,12 @@ const ReserveEquipment = () => {
         }
     };
     React.useEffect(() => {
-        if (user === null || user === undefined) {
+        if (
+            // when user upgrades to premium, there's a split second where they are undefined while we fetch stuff from
+            // the backend. Don't just kick them out.
+            searchParams.get('checkout') === null &&
+            (user === null || user === undefined)
+        ) {
             navigate('/'); // just go home.
         }
     }, [user, navigate, userProviderContext]);

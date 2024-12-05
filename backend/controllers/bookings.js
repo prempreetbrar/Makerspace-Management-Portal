@@ -1,3 +1,5 @@
+const { DataTypes, INTEGER, Op } = require('sequelize');
+
 // models
 const Booking = require('../models/Booking');
 const User = require('../models/User');
@@ -12,40 +14,50 @@ const errorsController = require('./errors');
   that is free.
 */
 async function _getAvailableBookingSlots(equipmentID, bookingDate, userEmail) {
-  const existingBooking = await Booking.findOne({
-    where: {
-      equipmentID: parseInt(equipmentID, 10),
-      bookingDate,
-      userEmail,
-    },
-  });
+    const existingBooking = await Booking.findOne({
+        where: {
+            equipmentID: parseInt(equipmentID, 10),
+            bookingDate,
+            userEmail,
+            status: { [Op.not]: Booking.STATUS_DENIED },
+        },
+    });
 
-  // user can't make two bookings on the same day
-  if (existingBooking) {
-    return [];
-  }
-
-  const bookings = await Booking.findAll({
-    where: {
-      equipmentID: parseInt(equipmentID, 10),
-      bookingDate,
-    },
-  });
-
-  const unavailableBookingSlots = [];
-  bookings.forEach((booking) => {
-    unavailableBookingSlots.push(booking.timeSlot1);
-
-    if (booking.timeSlot2) {
-      unavailableBookingSlots.push(booking.timeSlot2);
+    // user can't make two bookings on the same day
+    if (existingBooking) {
+        return [];
     }
-  });
 
-  const availableBookingSlots = Booking.allTimeSlots.filter(
-    (slot) => !unavailableBookingSlots.includes(slot)
-  );
+    const bookings = await Booking.findAll({
+        where: {
+            equipmentID: parseInt(equipmentID, 10),
+            bookingDate,
+            status: { [Op.not]: Booking.STATUS_DENIED },
+        },
+    });
 
-  return availableBookingSlots;
+    const unavailableBookingSlots = bookings.map(
+        (booking) => booking.timeSlot1
+    );
+
+    const today = new Date().toISOString().split('T')[0]; // get today's date in YYYY-MM-DD format
+    const now = new Date(); // get the current time
+
+    // Filter out past time slots if bookingDate is today
+    const availableBookingSlots = Booking.allTimeSlots.filter((slot) => {
+        if (bookingDate === today) {
+            const [slotHour, slotMinute] = slot.split(':').map(Number);
+            const slotTime = new Date(now);
+            slotTime.setHours(slotHour, slotMinute, 0, 0);
+
+            // only include slots that are greater than or equal to the current time
+            return !unavailableBookingSlots.includes(slot) && slotTime >= now;
+        }
+
+        return !unavailableBookingSlots.includes(slot);
+    });
+
+    return availableBookingSlots;
 }
 
 /*
@@ -53,25 +65,25 @@ async function _getAvailableBookingSlots(equipmentID, bookingDate, userEmail) {
   we're simply getting the availability for the booking for a single piece of equipment.
 */
 const getAvailableBookingSlots = errorsController.catchAsync(
-  async (request, response, next) => {
-    if (!request.query.equipmentID || !request.query.bookingDate) {
-      throw new errorsController.ErrorWithStatusCode(
-        'URL must be of the format /bookings/slots/?equipmentID=<id>&bookingDate=<YYYY-MM-DD>'
-      );
+    async (request, response, next) => {
+        if (!request.query.equipmentID || !request.query.bookingDate) {
+            throw new errorsController.ErrorWithStatusCode(
+                'URL must be of the format /bookings/slots/?equipmentID=<id>&bookingDate=<YYYY-MM-DD>'
+            );
+        }
+
+        const availableBookingSlots = await _getAvailableBookingSlots(
+            request.query.equipmentID,
+            request.query.bookingDate,
+            request.body.user.email
+        );
+
+        return response.status(200).json({
+            bookingDate: request.query.bookingDate,
+            equipmentID: parseInt(request.query.equipmentID),
+            availableBookingSlots,
+        });
     }
-
-    const availableBookingSlots = await _getAvailableBookingSlots(
-      request.query.equipmentID,
-      request.query.bookingDate,
-      request.body.user.email
-    );
-
-    return response.status(200).json({
-      bookingDate: request.query.bookingDate,
-      equipmentID: parseInt(request.query.equipmentID),
-      availableBookingSlots,
-    });
-  }
 );
 
 /*
@@ -79,32 +91,58 @@ const getAvailableBookingSlots = errorsController.catchAsync(
   prevent duplication of code across both controller methods getAvailableBookingDays and getAvailableBookingDaysSlots.
 */
 async function _getAvailableBookingDays(user, equipmentID) {
-  const today = new Date();
-  const endDate = new Date(today);
-  endDate.setDate(
-    today.getDate() +
-      (user.userRole === User.PREMIUM
-        ? Booking.premiumUserMaxDaysInFuture
-        : Booking.basicUserMaxDaysInFuture)
-  );
-
-  const availableBookingDays = [];
-
-  for (let d = new Date(today); d <= endDate; d.setDate(d.getDate() + 1)) {
-    const date = d.toISOString().split('T')[0]; // format date as YYYY-MM-DD
-    const availableBookingSlots = await _getAvailableBookingSlots(
-      equipmentID,
-      date,
-      user.email
+    const today = new Date();
+    const endDate = new Date(today);
+    endDate.setDate(
+        today.getDate() +
+            (user.userRole === Booking.PREMIUM
+                ? Booking.premiumUserMaxDaysInFuture
+                : Booking.basicUserMaxDaysInFuture)
     );
 
-    // If there's at least one available slot, add the date to availableBookingDays
-    if (availableBookingSlots.length > 0) {
-      availableBookingDays.push(date);
-    }
-  }
+    const availableBookingDays = [];
 
-  return availableBookingDays;
+    for (let d = new Date(today); d <= endDate; d.setDate(d.getDate() + 1)) {
+        const date = d.toISOString().split('T')[0]; // format date as YYYY-MM-DD
+
+        // Check for user bookings in the same week
+        const startOfWeek = new Date(d);
+        startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay()); // Sunday
+        const endOfWeek = new Date(startOfWeek);
+        endOfWeek.setDate(startOfWeek.getDate() + 6); // Saturday
+
+        const userBookingsThisWeek = await Booking.count({
+            where: {
+                equipmentID,
+                userEmail: user.email,
+                bookingDate: { [Op.between]: [startOfWeek, endOfWeek] },
+                status: { [Op.not]: Booking.STATUS_DENIED }, // ignore denied bookings
+            },
+        });
+
+        const maxBookingsPerWeek =
+            user.userRole === Booking.PREMIUM
+                ? Booking.premiumUserMaxPerWeek
+                : Booking.basicUserMaxPerWeek;
+
+        // skip the entire week if the user has max bookings
+        if (userBookingsThisWeek >= maxBookingsPerWeek) {
+            continue;
+        }
+
+        const availableBookingSlots = await _getAvailableBookingSlots(
+            equipmentID,
+            date,
+            user.email
+        );
+
+        // If there's at least one available slot, add the date to availableBookingDays
+        if (availableBookingSlots.length > 0) {
+            availableBookingDays.push(date);
+        }
+    }
+
+    return availableBookingDays;
 }
 
 /*
@@ -112,23 +150,23 @@ async function _getAvailableBookingDays(user, equipmentID) {
   we're simply getting the availability for the booking for a single piece of equipment.
 */
 const getAvailableBookingDays = errorsController.catchAsync(
-  async (request, response, next) => {
-    if (!request.query.equipmentID) {
-      throw new errorsController.ErrorWithStatusCode(
-        'URL must be of the format /bookings/days/?equipmentID=<id>'
-      );
+    async (request, response, next) => {
+        if (!request.query.equipmentID) {
+            throw new errorsController.ErrorWithStatusCode(
+                'URL must be of the format /bookings/days/?equipmentID=<id>'
+            );
+        }
+
+        const availableBookingDays = await _getAvailableBookingDays(
+            request.body.user,
+            request.query.equipmentID
+        );
+
+        return response.status(200).json({
+            equipmentID: parseInt(request.query.equipmentID),
+            availableBookingDays,
+        });
     }
-
-    const availableBookingDays = await _getAvailableBookingDays(
-      request.body.user,
-      request.query.equipmentID
-    );
-
-    return response.status(200).json({
-      equipmentID: parseInt(request.query.equipmentID),
-      availableBookingDays,
-    });
-  }
 );
 
 /*
@@ -137,35 +175,35 @@ const getAvailableBookingDays = errorsController.catchAsync(
   show available bookings on the frontend.
 */
 const getAvailableBookingDaysSlots = errorsController.catchAsync(
-  async (request, response, next) => {
-    if (!request.query.equipmentID) {
-      throw new errorsController.ErrorWithStatusCode(
-        'URL must be of the format /bookings/days/slots?equipmentID=<id>'
-      );
+    async (request, response, next) => {
+        if (!request.query.equipmentID) {
+            throw new errorsController.ErrorWithStatusCode(
+                'URL must be of the format /bookings/days/slots?equipmentID=<id>'
+            );
+        }
+
+        const availableBookingDays = await _getAvailableBookingDays(
+            request.body.user,
+            request.query.equipmentID
+        );
+
+        const availableBookingDaysSlots = {};
+
+        for (const day of availableBookingDays) {
+            const availableBookingSlots = await _getAvailableBookingSlots(
+                request.query.equipmentID,
+                day,
+                request.body.user.email
+            );
+
+            availableBookingDaysSlots[day] = availableBookingSlots;
+        }
+
+        return response.status(200).json({
+            equipmentID: request.query.equipmentID,
+            availableBookingDaysSlots,
+        });
     }
-
-    const availableBookingDays = await _getAvailableBookingDays(
-      request.body.user,
-      request.query.equipmentID
-    );
-
-    const availableBookingDaysSlots = {};
-
-    for (const day of availableBookingDays) {
-      const availableBookingSlots = await _getAvailableBookingSlots(
-        request.query.equipmentID,
-        day,
-        request.body.user.email
-      );
-
-      availableBookingDaysSlots[day] = availableBookingSlots;
-    }
-
-    return response.status(200).json({
-      equipmentID: request.query.equipmentID,
-      availableBookingDaysSlots,
-    });
-  }
 );
 
 /*
@@ -174,45 +212,48 @@ const getAvailableBookingDaysSlots = errorsController.catchAsync(
 */
 
 const extractCreateBookingsFilters = errorsController.catchAsync(
-  async (request, response, next) => {
-    /* this ensures that when creating a booking, the user can't just pass in someone else's email in the
+    async (request, response, next) => {
+        /* this ensures that when creating a booking, the user can't just pass in someone else's email in the
        request body and make a booking on their behalf. It FORCEs the booking to be made for the current user.
     */
-    request.body.userEmail = request.body.user.email;
+        request.body.userEmail = request.body.user.email;
 
-    // move to the next middleware (ie. continue processing the request)
-    next();
-  }
+        // move to the next middleware (ie. continue processing the request)
+        next();
+    }
 );
 
 const extractGetANDDeleteANDUpdateBookingsFilters = errorsController.catchAsync(
-  async (request, response, next) => {
-    request.body.filter = {};
+    async (request, response, next) => {
+        request.body.filter = {};
 
-    // email
-    /*
+        // email
+        /*
       When deleting, this is important -- we don't want the user to be able to delete someone else's booking,
       so we filter the DB so that they can only possibly delete theirs. When an admin is fetching information,
       we want them to be able to see ALL bookings.
     */
-    if (request.body.user.userRole !== User.ADMIN && request.body.user.email) {
-      request.body.filter.userEmail = request.body.user.email;
-    }
+        if (
+            request.body.user.userRole !== User.ADMIN &&
+            request.body.user.email
+        ) {
+            request.body.filter.userEmail = request.body.user.email;
+        }
 
-    // id. Specified in the query when deleting (since DELETE doesn't have a request body as per the REST protocol)
-    // and specified in the body when updating (since PATCH has a request body as per the REST protocol)
-    if (request.query.id || request.body.id) {
-      request.body.filter.id = request.query.id || request.body.id;
-    }
+        // id. Specified in the query when deleting (since DELETE doesn't have a request body as per the REST protocol)
+        // and specified in the body when updating (since PATCH has a request body as per the REST protocol)
+        if (request.query.id || request.body.id) {
+            request.body.filter.id = request.query.id || request.body.id;
+        }
 
-    // status - filter by booking status if provided (e.g., approved, pending, rejected)
-    if (request.query.status) {
-      request.body.filter.status = request.query.status;
-    }
+        // status - filter by booking status if provided (e.g., approved, pending, rejected)
+        if (request.query.status) {
+            request.body.filter.status = request.query.status;
+        }
 
-    // move to the next middleware (ie. continue processing the request)
-    next();
-  }
+        // move to the next middleware (ie. continue processing the request)
+        next();
+    }
 );
 
 const getAllUsersBookings = factoryController.getAll(Booking);
@@ -221,13 +262,13 @@ const deleteBooking = factoryController.deleteOne(Booking);
 const updateBooking = factoryController.updateOne(Booking);
 
 module.exports = {
-  getAvailableBookingSlots,
-  getAvailableBookingDays,
-  getAvailableBookingDaysSlots,
-  extractCreateBookingsFilters,
-  extractGetANDDeleteANDUpdateBookingsFilters,
-  getAllUsersBookings,
-  createBooking,
-  deleteBooking,
-  updateBooking,
+    getAvailableBookingSlots,
+    getAvailableBookingDays,
+    getAvailableBookingDaysSlots,
+    extractCreateBookingsFilters,
+    extractGetANDDeleteANDUpdateBookingsFilters,
+    getAllUsersBookings,
+    createBooking,
+    deleteBooking,
+    updateBooking,
 };

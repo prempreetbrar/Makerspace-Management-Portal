@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react';
-import { Popover, TextField, Button, Link } from '@mui/material';
+import { Popover, TextField, Button, Link, Box } from '@mui/material';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import '../styles/authentication/login/local.css';
 
 import CreateAccountPopover from './CreateAccountPopover.tsx';
@@ -55,8 +56,29 @@ const LoginPopover: React.FC<LoginPopoverProps> = ({
         }
     };
 
+    const theme = createTheme({
+        palette: {
+            primary: {
+                main: '#65558F',
+            },
+            secondary: {
+                main: '#ECE6F0',
+            },
+            text: {
+                primary: '#000000',
+                secondary: '#5F5F5F',
+            },
+            background: {
+                default: '#FFFFFF',
+            },
+        },
+        typography: {
+            fontFamily: 'Roboto, sans-serif',
+        },
+    });
     return (
         <>
+          <ThemeProvider theme={theme}>
             <Popover
                 open={openLogin}
                 anchorEl={anchorEl}
@@ -70,9 +92,9 @@ const LoginPopover: React.FC<LoginPopoverProps> = ({
                     horizontal: 'right',
                 }}
             >
-                <div
+                <Box
                     className="popover-form-container login-container"
-                    style={{ padding: '20px', maxWidth: '300px' }}
+                    sx={{ padding: '20px', maxWidth: '300px' }}
                 >
                     {error && (
                         <p style={{ color: 'red', marginBottom: '1rem' }}>
@@ -106,19 +128,23 @@ const LoginPopover: React.FC<LoginPopoverProps> = ({
                     >
                         Log In
                     </Button>
-                    <div style={{ marginTop: '10px', textAlign: 'center' }}>
+                    <Box sx={{ marginTop: '10px', textAlign: 'center' }}>
                         <Link
-                            href="#"
+                        
+                            component="button"
+                            variant="body2"
                             onClick={(e) => {
                                 e.preventDefault();
                                 handleOpenCreateAccount();
                             }}
+                            sx={{ textDecoration: 'none', color: theme.palette.primary.main }}
                         >
                             Create Account
                         </Link>
-                    </div>
-                </div>
+                    </Box>
+                </Box>
             </Popover>
+            </ThemeProvider>
 
             <CreateAccountPopover
                 anchorEl={anchorEl}

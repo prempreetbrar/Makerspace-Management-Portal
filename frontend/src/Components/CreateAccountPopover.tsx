@@ -1,7 +1,8 @@
 import React, { useState, useContext } from 'react';
-import { Popover, TextField, Button, Link } from '@mui/material';
+import { Popover, TextField, Button, Link, Box } from '@mui/material';
 import '../styles/authentication/login/local.css';
 import { AuthContext } from '../contexts/AuthContext';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { ErrorWithStatusCode } from '../axios';
 
 interface CreateAccountPopoverProps {
@@ -63,8 +64,30 @@ const CreateAccountPopover: React.FC<CreateAccountPopoverProps> = ({
             }
         }
     };
+    const theme = createTheme({
+        palette: {
+            primary: {
+                main: '#65558F',
+            },
+            secondary: {
+                main: '#ECE6F0',
+            },
+            text: {
+                primary: '#000000',
+                secondary: '#5F5F5F',
+            },
+            background: {
+                default: '#FFFFFF',
+            },
+        },
+        typography: {
+            fontFamily: 'Roboto, sans-serif',
+        },
+    });
 
     return (
+        <>
+        <ThemeProvider theme={theme}>
         <Popover
             open={openCreateAccount}
             anchorEl={anchorEl}
@@ -78,9 +101,9 @@ const CreateAccountPopover: React.FC<CreateAccountPopoverProps> = ({
                 horizontal: 'right',
             }}
         >
-            <div
+            <Box
                 className="popover-form-container create-account-container"
-                style={{ padding: '20px', maxWidth: '300px' }}
+                sx={{ padding: '20px', maxWidth: '300px' }}
             >
                 {error && (
                     <p style={{ color: 'red', marginBottom: '1rem' }}>
@@ -141,20 +164,25 @@ const CreateAccountPopover: React.FC<CreateAccountPopoverProps> = ({
                 >
                     Create Account
                 </Button>
-                <div style={{ marginTop: '10px', textAlign: 'center' }}>
+                <Box sx={{ marginTop: '10px', textAlign: 'center', fontFamily: 'Roboto, sans-serif', fontSize:'15px' }}>
                     Already have an account?{' '}
                     <Link
-                        href="#"
+                       
+                        component="button"
+                        variant="body2"
                         onClick={(e) => {
                             e.preventDefault();
                             handleOpenLogin();
                         }}
+                        sx={{  color: theme.palette.primary.main }}
                     >
                         Log In
                     </Link>
-                </div>
-            </div>
+                </Box>
+            </Box>
         </Popover>
+        </ThemeProvider>
+        </>
     );
 };
 
