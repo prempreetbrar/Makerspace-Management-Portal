@@ -255,7 +255,7 @@ const MobileIssueCard: React.FC<MobileIssueCardProps> = ({
                                                 verticalAlign: 'middle',
                                             }}
                                         />
-                                        {issue.createdAt}
+                                        {issue.createdAt.substring(0, 10)}
                                     </Typography>
                                 </Box>
                             </Grid2>
