@@ -1,130 +1,130 @@
 /* Styles for the NavBar component */
 
 .nav-bar-container {
-  position: sticky;
-  z-index: 1000;
-  top: 0;
-  font-family: Arial, sans-serif;
-  min-width: 100%;
+    position: sticky;
+    z-index: 1000;
+    top: 0;
+    font-family: Arial, sans-serif;
+    min-width: 100%;
 }
 
 .navbar {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 20px;
-  background-color: #fff;
-  border-bottom: 1px solid #ddd;
-  box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    background-color: #fff;
+    border-bottom: 1px solid #ddd;
+    box-sizing: border-box;
 }
 
 .left {
-  display: flex;
-  flex-direction: row;
+    display: flex;
+    flex-direction: row;
 }
 
 .logo-container {
-  display: flex;
-  flex-direction: row;
-  align-content: center;
+    display: flex;
+    flex-direction: row;
+    align-content: center;
 }
 
 .logo-wrapper {
-  display: flex;
-  align-items: center;
+    display: flex;
+    align-items: center;
 }
-
 
 .logo-text {
-  color: white;
-  font-size: 18px;
+    color: white;
+    font-size: 18px;
 }
 
-
 .nav-links {
-  list-style-type: none;
-  display: flex;
-  gap: 20px;
-  padding: 0;
+    list-style-type: none;
+    display: flex;
+    gap: 20px;
+    padding: 0;
 }
 
 .nav-links li a {
-  text-decoration: none;
-  color: #333;
-  font-weight: 500;
-  transition: color 0.3s;
-  font-weight: bolder;
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    transition: color 0.3s;
+    font-weight: bolder;
 }
 
 .nav-links li a:hover {
-  color: #5f5084;
+    color: #5f5084;
 }
 
 .auth-buttons {
-  display: flex;
-  gap: 10px;
+    display: flex;
+    gap: 10px;
 }
 
 /* For big screens */
 @media (min-width: 1600px) {
-  .left {
-    gap: 60px;
-    font-size: 20px;
-  }
+    .left {
+        gap: 60px;
+        font-size: 20px;
+    }
 
-  .logo-container {
-    font-size: 30px;
-  }
+    .logo-container {
+        font-size: 30px;
+    }
 
-  .auth-buttons {
-    margin-right: 40px;
-    gap: 20px;
-  }
+    .auth-buttons {
+        margin-right: 40px;
+        gap: 20px;
+    }
+    #nav-create-account {
+        width: auto;
+    }
 }
 
 @media (min-width: 769px) {
-  .navbar {
-    height: 91px;
-  }
-  
-  .left {
-    gap: 25px;
-  }
+    .navbar {
+        height: 91px;
+    }
 
-  .logo-text {
-    display: none;
-  }
+    .left {
+        gap: 25px;
+    }
 
-  .logo-wrapper {
-    pointer-events: none;
-    cursor: default;
-  }
+    .logo-text {
+        display: none;
+    }
+
+    .logo-wrapper {
+        pointer-events: none;
+        cursor: default;
+    }
 }
 
 @media (max-width: 768px) {
-  .navbar {
-    height: 120px;
-  }
+    .navbar {
+        height: 120px;
+    }
 
-  .auth-buttons {
-    flex-direction: column;
-    gap: 5px;
-    margin-top: -10px;
-    margin-right: -6px;
-  }
+    .auth-buttons {
+        flex-direction: column;
+        gap: 5px;
+        margin-top: -10px;
+        margin-right: -6px;
+    }
 }
 
 @media (max-width: 500px) {
-  .auth-buttons {
-    align-items: flex-end;
-  }
+    .auth-buttons {
+        align-items: flex-end;
+    }
 }
 
 @media (max-width: 470px) {
-  .nav-links {
-    font-size: 14px;
-  }
+    .nav-links {
+        font-size: 14px;
+    }
 }
-
