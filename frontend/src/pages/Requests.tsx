@@ -13,9 +13,12 @@ import { Booking, Issue } from '../models.ts';
 import { AuthContext } from '../contexts/AuthContext';
 import Axios from 'axios';
 import axios from '../axios';
-import CancelReservationModal from '../Components/Requests/CancelReservationModal.tsx';
-import RejectReservationModal from '../Components/Requests/RejectReservationModal.tsx';
-import ApproveReservationModal from '../Components/Requests/ApproveReservationModal.tsx';
+import CancelReservationModal from '../Components//Requests/Modals/CancelReservationModal.tsx';
+import RejectReservationModal from '../Components/Requests/Modals/RejectReservationModal.tsx';
+import ApproveReservationModal from '../Components/Requests/Modals/ApproveReservationModal.tsx';
+import ResolveModal from '../Components/Requests/Modals/ResolveModal.tsx';
+import SetOODModal from '../Components/Requests/Modals/SetOODModal.tsx';
+import useSnackbar from '../Components/Requests/useSnackbar.tsx';
 
 const Requests = () => {
     //media query
@@ -40,6 +43,9 @@ const Requests = () => {
         1: 'pending',
         2: 'denied',
     };
+
+    //snackbar
+    const { showSnackbar, SnackbarComponent } = useSnackbar();
 
     // fetch
     const [bookings, setBookings] = useState<Booking[]>([]);
@@ -74,6 +80,9 @@ const Requests = () => {
     //         id="debugButton"
     //         sx={{ width: '250px', position: 'sticky', bottom: 2, zIndex: 1000 }}
     //         variant="contained"
+    //         onClick={() =>
+    //             showSnackbar('Testing what the snackback looks like')
+    //         }
     //     >
     //         User Type: {userState}
     //     </Button>
@@ -108,6 +117,7 @@ const Requests = () => {
         } catch (error) {
             console.log('Error deleting booking:', error);
         }
+        showSnackbar('Successfully cancelled booking!');
         handleCloseModal();
     };
 
@@ -134,11 +144,11 @@ const Requests = () => {
             console.log('Error deleting booking:', error);
         }
 
+        showSnackbar('Successfully rejected booking!');
         handleCloseModal();
     };
 
     const handleApproveBooking = async (idValue?: number) => {
-        console.log(`Approving booking with ID: ${idValue}`);
         try {
             await axios.patch(`/bookings`, {
                 id: idValue,
@@ -154,10 +164,69 @@ const Requests = () => {
                         : booking
                 )
             );
+            console.log(`Approving booking with ID: ${idValue}`);
         } catch (error) {
             console.log('Error approving booking:', error);
         }
 
+        showSnackbar('Successfully approved booking!');
+        handleCloseModal();
+    };
+
+    const handleResolveIssue = async (idValue?: number) => {
+        try {
+            await axios.patch(`/issues`, {
+                id: idValue,
+                isResolved: true,
+            });
+            setIssues((prevIssues) =>
+                prevIssues.map((issues) =>
+                    issues.id === idValue
+                        ? {
+                              ...issues,
+                              isResolved: true,
+                          }
+                        : issues
+                )
+            );
+            console.log(`Resolving issue with ID: ${idValue}`);
+        } catch (error) {
+            console.log('Error resolve issue:', error);
+        }
+
+        showSnackbar('Successfully resolved issue!');
+        handleCloseModal();
+    };
+
+    const handleSetOutOfOrder = async (idValue?: number) => {
+        try {
+            await axios.patch(`/equipment`, {
+                id: idValue,
+                isUnderMaintenance: true,
+            });
+
+            setIssues((prevIssues) =>
+                prevIssues.map((issue) =>
+                    issue.id === idValue
+                        ? {
+                              ...issue,
+                              equipment: issue.equipment
+                                  ? {
+                                        ...issue.equipment,
+                                        isUnderMaintenance: true,
+                                    }
+                                  : undefined,
+                          }
+                        : issue
+                )
+            );
+
+            console.log(`Setting equipment Out-of-Order with ID: ${idValue}`);
+        } catch (error) {
+            console.log('Error setting equipment to Out-of-Order:', error);
+        }
+
+        showSnackbar('Successfully set equipment Out-of-Order!');
         handleCloseModal();
     };
 
@@ -215,6 +284,32 @@ const Requests = () => {
                                               key={bookings.id}
                                               booking={bookings}
                                               userRole={userState}
+                                              handleDelete={() =>
+                                                  handleOpenModal(
+                                                      'cancelReservation',
+                                                      bookings
+                                                  )
+                                              }
+                                              handleReject={() =>
+                                                  handleOpenModal(
+                                                      'rejectReservation',
+                                                      bookings
+                                                  )
+                                              }
+                                              handleAccept={
+                                                  localStorage.getItem(
+                                                      'dontShowModal'
+                                                  ) === 'true'
+                                                      ? () =>
+                                                            handleApproveBooking(
+                                                                bookings?.id
+                                                            )
+                                                      : () =>
+                                                            handleOpenModal(
+                                                                'approveReservation',
+                                                                bookings
+                                                            )
+                                              }
                                           />
                                       ) : (
                                           <RequestCard
@@ -253,31 +348,89 @@ const Requests = () => {
                               ? // Admin view: Show issues when status is 1
                                 issues
                                     .filter(
-                                        (issues) => issues.isResolved == false
+                                        (issues) =>
+                                            issues.isResolved == false &&
+                                            issues.equipment
+                                                ?.isUnderMaintenance == false
                                     )
                                     .map((issues) =>
                                         isMobile ? (
                                             <MobileIssueCard
                                                 key={issues.id}
                                                 issue={issues}
+                                                handleResolve={() => {
+                                                    handleOpenModal(
+                                                        'resolveIssue',
+                                                        issues
+                                                    );
+                                                }}
+                                                handleOOD={() =>
+                                                    handleOpenModal(
+                                                        'setOOD',
+                                                        issues
+                                                    )
+                                                }
                                             />
                                         ) : (
-                                            <IssueCard issue={issues} />
+                                            <IssueCard
+                                                issue={issues}
+                                                handleResolve={() => {
+                                                    handleOpenModal(
+                                                        'resolveIssue',
+                                                        issues
+                                                    );
+                                                }}
+                                                handleOOD={() =>
+                                                    handleOpenModal(
+                                                        'setOOD',
+                                                        issues
+                                                    )
+                                                }
+                                            />
                                         )
                                     )
                               : // Admin view: Default case
                                 issues
                                     .filter(
-                                        (issues) => issues.isResolved == true
+                                        (issues) =>
+                                            issues.isResolved == false &&
+                                            issues.equipment
+                                                ?.isUnderMaintenance == true
                                     )
                                     .map((issues) =>
                                         isMobile ? (
                                             <MobileIssueCard
                                                 key={issues.id}
                                                 issue={issues}
+                                                handleResolve={() => {
+                                                    handleOpenModal(
+                                                        'resolveIssue',
+                                                        issues
+                                                    );
+                                                }}
+                                                handleOOD={() =>
+                                                    handleOpenModal(
+                                                        'setOOD',
+                                                        issues
+                                                    )
+                                                }
                                             />
                                         ) : (
-                                            <IssueCard issue={issues} />
+                                            <IssueCard
+                                                issue={issues}
+                                                handleResolve={() => {
+                                                    handleOpenModal(
+                                                        'resolveIssue',
+                                                        issues
+                                                    );
+                                                }}
+                                                handleOOD={() =>
+                                                    handleOpenModal(
+                                                        'setOOD',
+                                                        issues
+                                                    )
+                                                }
+                                            />
                                         )
                                     )
                         : // General user view: Filter requests based on status
@@ -338,7 +491,25 @@ const Requests = () => {
                     onConfirm={() => {
                         handleApproveBooking(modalState.data?.id);
                     }}
+                    storageKey="dontShowModal"
                 />
+                <ResolveModal
+                    open={modalState.name === 'resolveIssue'}
+                    onClose={handleCloseModal}
+                    data={modalState.data as Issue}
+                    onConfirm={() => {
+                        handleResolveIssue(modalState.data?.id);
+                    }}
+                />
+                <SetOODModal
+                    open={modalState.name === 'setOOD'}
+                    onClose={handleCloseModal}
+                    data={modalState.data as Issue}
+                    onConfirm={() => {
+                        handleSetOutOfOrder(modalState.data?.equipment?.id);
+                    }}
+                />
+                <SnackbarComponent />
             </div>
         </ThemeProvider>
     );
