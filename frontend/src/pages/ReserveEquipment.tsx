@@ -20,6 +20,7 @@ import {
     SxProps,
     Theme,
 } from '@mui/material';
+import UpdateButton from '../Components/UpdateButton.tsx';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Grid2 from '@mui/material/Grid2'; // Import Grid2 from MUI
 import '../styles/reserve_equipment/local.css';
@@ -144,41 +145,7 @@ function userCanBookItem(item: Equipment, userRole: string | undefined) {
     }
 }
 
-interface SpinningButtonProps {
-    spinning: boolean;
-    onClick: () => void;
-}
 
-const SpinningButton = ({ spinning, onClick }: SpinningButtonProps) => {
-    return (
-        <Fab
-            onClick={onClick}
-            color="primary"
-            variant="extended"
-            sx={{ position: 'fixed', bottom: '3%', right: '5%' }}
-        >
-            <Typography fontWeight={500} pr={1}>
-                {' '}
-                Update{' '}
-            </Typography>
-            <SyncIcon
-                sx={{
-                    color: 'white',
-                    animation: spinning ? 'spin 1s linear infinite' : 'none',
-                    transform: 'rotate(-90deg)',
-                    '@keyframes spin': {
-                        '0%': { transform: 'rotate(-90deg)' },
-                        '25%': { transform: 'rotate(-180deg)' },
-                        '50%': { transform: 'rotate(-270deg)' },
-                        '75%': { transform: 'rotate(-360 deg)' },
-                        '100%': { transform: 'rotate(-450deg)' },
-                    },
-                    transition: 'transform 8s ease',
-                }}
-            />
-        </Fab>
-    );
-};
 
 function timeout(delay: number) {
     return new Promise((res) => setTimeout(res, delay));
@@ -246,6 +213,7 @@ const ReserveEquipment = () => {
     }, [user, navigate]);
 
     async function syncData() {
+        statusChanging.current=true;
         if (!spinning) {
             try {
                 setSpinning(true);
@@ -253,17 +221,17 @@ const ReserveEquipment = () => {
                 console.log(
                     `Fetched ${response.data.equipment.length} equipment entries`
                 );
-                equipmentModel.current = response.data.equipment;
+                equipmentModel.current = [equipmentModel.current, ...response.data.equipment];
                 console.log(response.data.equipment);
-                setDisplayModel(equipmentModel.current);
+                setDisplayModel(response.data.equipment);
             } catch (error: any) {
                 console.log('Failed to fetch equipment');
                 console.error(error.response.data);
             } finally {
-                await timeout(1500); // 1.5 second delay remove artificial delay later
+                statusChanging.current=false; // allow other
+                await timeout(1500);
                 setLoading(false);
                 setSpinning(false);
-                console.log(spinning);
             }
         }
     }
@@ -277,7 +245,6 @@ const ReserveEquipment = () => {
                     `Fetched ${response.data.equipment.length} equipment entries`
                 );
                 equipmentModel.current = response.data.equipment; //
-                console.log(response.data.equipment);
                 setDisplayModel(equipmentModel.current);
             } catch (error: any) {
                 console.log('Failed to fetch equipment');
@@ -324,17 +291,24 @@ const ReserveEquipment = () => {
         if(statusChanging.current) return // prevent duplicate requests
         statusChanging.current = true;
         // Keep this
+        const staleStatus = equipment.isUnderMaintenance;
         async function writeStatus()
         {
             try
             {
-                const response = await axiosInstance.patch('/equipment', {id: equipment.id, status: equipment.isUnderMaintenance});
-                if(response.data.status === "success")
+                const response = await axiosInstance.patch('/equipment', {id: equipment.id, isUnderMaintenance: equipment.isUnderMaintenance});
+                if(response.data.status === "success" && response.data.equipment.isUnderMaintenance != staleStatus)
                 {
-                    console.log(response.data);
+                    console.log(response.data.equipment.name);
+                    console.log(response.data.equipment.isUnderMaintenance);
+                    await syncData();
+
                     // fetch from the database again.
+<<<<<<< HEAD
 
                 
+=======
+>>>>>>> b9d945bb655a3aed49883150cd8f8caaad3b07d2
                 }
             }
             catch(error)
@@ -354,9 +328,9 @@ const ReserveEquipment = () => {
             }
         }
         console.log("setting maintenance status");
-        console.log(equipment.name);
-        console.log(equipment.isUnderMaintenance);
+        console.log(`${equipment.name} is under maintenance: ${equipment.isUnderMaintenance}`);
         equipment.isUnderMaintenance = !equipment.isUnderMaintenance;
+        console.log(`${equipment.name} is under maintenance updated: ${equipment.isUnderMaintenance}`);
         writeStatus();
 
         // ... to here.
@@ -367,9 +341,9 @@ const ReserveEquipment = () => {
     }
     return (
         <>
+            <BookingModal open={open} equipmentID={selectedEquipmentID} onClose={handleClose} onSubmit={handleSubmit}/>
             <MainContainer>
                 <ThemeProvider theme={theme}>
-                    <BookingModal open={open} equipmentID={selectedEquipmentID} onClose={handleClose} onSubmit={handleSubmit}/>
                     <Box
                         id="contentBox"
                         sx={{
@@ -505,7 +479,7 @@ const ReserveEquipment = () => {
                             </Grid2>
                         </Box>
                     </Box>
-                    <SpinningButton spinning={spinning} onClick={syncData} />
+                    <UpdateButton spinning={spinning} onClick={syncData} />
                 </ThemeProvider>
             </MainContainer>
         </>

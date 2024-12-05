@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
     Button,
     Card,
@@ -8,6 +8,7 @@ import {
     Grid2,
 } from '@mui/material';
 import EventIcon from '@mui/icons-material/Event';
+import MaintenanceDialog from './MaintenanceDialog';
 import { Issue } from '../../models.ts';
 
 interface IssueCardProps {
@@ -24,6 +25,16 @@ const IssueCard: React.FC<IssueCardProps> = ({
     const IconStyle: React.CSSProperties = {
         width: '100px',
         height: '100px',
+    };
+
+    const [openDialog, setOpenDialog] = useState(false);
+
+    const handleSetOutOfOrder = () => {
+        setOpenDialog(true);
+    };
+
+    const handleCloseDialog = () => {
+        setOpenDialog(false);
     };
 
     return (
@@ -135,6 +146,12 @@ const IssueCard: React.FC<IssueCardProps> = ({
                     </Grid2>
                 </Grid2>
             </CardContent>
+
+            <MaintenanceDialog
+                open={openDialog}
+                onClose={handleCloseDialog}
+                title={issue.equipment?.name}
+            />
         </Card>
     );
 };
