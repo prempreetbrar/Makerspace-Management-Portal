@@ -9,26 +9,24 @@ import {
     Grid2,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import DownloadIcon from '@mui/icons-material/CloudDownload';
 import EventIcon from '@mui/icons-material/Event';
-import EditIcon from '@mui/icons-material/Edit';
+
+import { Booking } from '../../models.ts';
 
 interface RequestCardProps {
-    status?: 'approved' | 'pending' | 'rejected' | string;
-    title?: string;
-    description?: string;
-    date?: string;
-    icon?: any;
-    user?: string | undefined;
+    booking: Booking;
+    userRole: string | undefined;
+    handleDelete?: () => void;
+    handleReject?: () => void;
+    handleAccept?: () => void;
 }
 
 const RequestCard: React.FC<RequestCardProps> = ({
-    status,
-    title,
-    description,
-    date,
-    icon,
-    user,
+    booking,
+    handleDelete,
+    handleReject,
+    handleAccept,
+    userRole,
 }) => {
     const IconStyle: React.CSSProperties = {
         width: '100px',
@@ -50,7 +48,11 @@ const RequestCard: React.FC<RequestCardProps> = ({
             <CardContent>
                 <Grid2 container spacing={4}>
                     <Grid2 size="auto">
-                        <img src={icon} style={IconStyle} alt={icon}></img>
+                        <img
+                            src={booking.equipment?.icon}
+                            style={IconStyle}
+                            alt={booking.equipment?.icon}
+                        ></img>
                     </Grid2>
                     <Grid2 size="grow">
                         <Typography
@@ -60,7 +62,7 @@ const RequestCard: React.FC<RequestCardProps> = ({
                                 fontWeight: 'bolder',
                             }}
                         >
-                            {title}
+                            {booking.title}
                         </Typography>
                         <Typography
                             variant="body2"
@@ -70,7 +72,7 @@ const RequestCard: React.FC<RequestCardProps> = ({
                                 color: '#757575',
                             }}
                         >
-                            {description}
+                            {booking.description}
                         </Typography>
                         <Box
                             className="card-footer"
@@ -89,39 +91,37 @@ const RequestCard: React.FC<RequestCardProps> = ({
                                 }}
                             >
                                 <EventIcon
-                                    className="icon"
+                                    className="booking.equipment?.icon"
                                     sx={{
                                         verticalAlign: 'middle',
                                         color: '#757575',
                                     }}
                                 />{' '}
-                                {date}
+                                {booking.bookingDate}
                             </Typography>
                         </Box>
                     </Grid2>
                     <Grid2 size="auto">
-                        {user !== 'admin' && (
+                        {userRole !== 'admin' && (
                             <Box
-                                className="icon-box"
+                                className="booking.equipment?.icon-box"
                                 sx={{
                                     display: 'flex',
                                     flexDirection: 'column',
                                 }}
                             >
-                                <IconButton className="card-delete">
+                                <IconButton
+                                    className="card-delete"
+                                    onClick={() => handleDelete?.()}
+                                >
                                     <DeleteIcon />
                                 </IconButton>
-                                {status === 'pending' && (
-                                    <IconButton className="card-edit">
-                                        <EditIcon />
-                                    </IconButton>
-                                )}
                             </Box>
                         )}
                     </Grid2>
                 </Grid2>
 
-                {user === 'admin' && (
+                {userRole === 'admin' && (
                     <Grid2 container spacing={2}>
                         <Grid2 size="grow"></Grid2>
                         <Grid2>
@@ -136,6 +136,8 @@ const RequestCard: React.FC<RequestCardProps> = ({
                                     paddingRight: '30px',
                                     fontWeight: 'bold',
                                 }}
+                                variant="contained"
+                                onClick={() => handleReject?.()}
                             >
                                 Reject
                             </Button>
@@ -151,6 +153,8 @@ const RequestCard: React.FC<RequestCardProps> = ({
                                     paddingRight: '30px',
                                     fontWeight: 'bold',
                                 }}
+                                variant="contained"
+                                onClick={() => handleAccept?.()}
                             >
                                 Approve
                             </Button>
