@@ -75,18 +75,18 @@ const Requests = () => {
     }, []);
 
     // for debugging
-    const ChangeUserButton = () => (
-        <Button
-            id="debugButton"
-            sx={{ width: '250px', position: 'sticky', bottom: 2, zIndex: 1000 }}
-            variant="contained"
-            onClick={() =>
-                showSnackbar('Testing what the snackback looks like')
-            }
-        >
-            User Type: {userState}
-        </Button>
-    );
+    // const ChangeUserButton = () => (
+    //     <Button
+    //         id="debugButton"
+    //         sx={{ width: '250px', position: 'sticky', bottom: 2, zIndex: 1000 }}
+    //         variant="contained"
+    //         onClick={() =>
+    //             showSnackbar('Testing what the snackback looks like')
+    //         }
+    //     >
+    //         User Type: {userState}
+    //     </Button>
+    // );
 
     // modals
     const [modalState, setModalState] = useState<{
@@ -253,8 +253,8 @@ const Requests = () => {
 
     return (
         <ThemeProvider theme={theme}>
-            <NavBar id="request" />
             <div className="requestContainer">
+                <NavBar id="request" />
                 <Box
                     sx={{
                         paddingTop: 3,
@@ -263,7 +263,7 @@ const Requests = () => {
                         width: '100%',
                     }}
                 >
-                    <ChangeUserButton />
+                    {/* <ChangeUserButton /> */}
                 </Box>
                 <TabContainer
                     value={status}
