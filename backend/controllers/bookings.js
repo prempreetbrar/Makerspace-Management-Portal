@@ -36,14 +36,26 @@ async function _getAvailableBookingSlots(equipmentID, bookingDate, userEmail) {
         },
     });
 
-    const unavailableBookingSlots = [];
-    bookings.forEach((booking) => {
-        unavailableBookingSlots.push(booking.timeSlot1);
-    });
-
-    const availableBookingSlots = Booking.allTimeSlots.filter(
-        (slot) => !unavailableBookingSlots.includes(slot)
+    const unavailableBookingSlots = bookings.map(
+        (booking) => booking.timeSlot1
     );
+
+    const today = new Date().toISOString().split('T')[0]; // get today's date in YYYY-MM-DD format
+    const now = new Date(); // get the current time
+
+    // Filter out past time slots if bookingDate is today
+    const availableBookingSlots = Booking.allTimeSlots.filter((slot) => {
+        if (bookingDate === today) {
+            const [slotHour, slotMinute] = slot.split(':').map(Number);
+            const slotTime = new Date(now);
+            slotTime.setHours(slotHour, slotMinute, 0, 0);
+
+            // only include slots that are greater than or equal to the current time
+            return !unavailableBookingSlots.includes(slot) && slotTime >= now;
+        }
+
+        return !unavailableBookingSlots.includes(slot);
+    });
 
     return availableBookingSlots;
 }
