@@ -333,8 +333,8 @@ const ReserveEquipment = () => {
                 {
                     console.log(response.data);
                     // fetch from the database again.
+
                 
-                   
                 }
             }
             catch(error)

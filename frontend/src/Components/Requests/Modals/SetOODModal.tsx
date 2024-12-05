@@ -1,13 +1,11 @@
 import React from 'react';
 import { Modal, Box, Typography, Button } from '@mui/material';
-import { Issue } from '../../models';
+import { Issue } from '../../../models';
 
 interface CancelReservationProps {
     open: boolean;
     data?: Issue | null;
     onClose: () => void;
-    title?: string;
-    description?: string;
     onConfirm: () => void;
 }
 
@@ -51,7 +49,7 @@ const buttonStyles = {
     },
 };
 
-const ResolveModal: React.FC<CancelReservationProps> = ({
+const SetOODModal: React.FC<CancelReservationProps> = ({
     open,
     onClose,
     data,
@@ -61,14 +59,14 @@ const ResolveModal: React.FC<CancelReservationProps> = ({
         <Modal open={open} onClose={onClose}>
             <Box sx={style}>
                 <Typography variant="h6" gutterBottom>
-                    Resolve Issue
+                    Set Out-of-Order
                 </Typography>
                 <Typography
                     variant="body2"
                     color="text.secondary"
                     sx={{ mb: 3 }}
                 >
-                    Resolve the issue for {data?.equipment?.name}?
+                    Set the "{data?.equipment?.name}" Out-of-Order
                 </Typography>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                     <Button sx={buttonStyles.close} onClick={onClose}>
@@ -83,4 +81,4 @@ const ResolveModal: React.FC<CancelReservationProps> = ({
     );
 };
 
-export default ResolveModal;
+export default SetOODModal;

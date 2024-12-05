@@ -7,7 +7,7 @@ import {
     FormControlLabel,
     Checkbox,
 } from '@mui/material';
-import { Booking } from '../../models';
+import { Booking } from '../../../models';
 
 interface ApproveReservationModalProps {
     open: boolean;

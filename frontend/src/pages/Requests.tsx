@@ -13,10 +13,11 @@ import { Booking, Issue } from '../models.ts';
 import { AuthContext } from '../contexts/AuthContext';
 import Axios from 'axios';
 import axios from '../axios';
-import CancelReservationModal from '../Components/Requests/CancelReservationModal.tsx';
+import CancelReservationModal from '../Components/Requests/Modals/CancelReservationModal.tsx';
 import RejectReservationModal from '../Components/Requests/RejectReservationModal.tsx';
-import ApproveReservationModal from '../Components/Requests/ApproveReservationModal.tsx';
-import ResolveModal from '../Components/Requests/ResolveModal.tsx';
+import ApproveReservationModal from '../Components/Requests/Modals/ApproveReservationModal.tsx';
+import ResolveModal from '../Components/Requests/Modals/ResolveModal.tsx';
+import SetOODModal from '../Components/Requests/Modals/SetOODModal.tsx';
 
 const Requests = () => {
     //media query
@@ -139,7 +140,6 @@ const Requests = () => {
     };
 
     const handleApproveBooking = async (idValue?: number) => {
-        console.log(`Approving booking with ID: ${idValue}`);
         try {
             await axios.patch(`/bookings`, {
                 id: idValue,
@@ -155,6 +155,7 @@ const Requests = () => {
                         : booking
                 )
             );
+            console.log(`Approving booking with ID: ${idValue}`);
         } catch (error) {
             console.log('Error approving booking:', error);
         }
@@ -162,7 +163,60 @@ const Requests = () => {
         handleCloseModal();
     };
 
-    const handleResolveIssue = async () => {};
+    const handleResolveIssue = async (idValue?: number) => {
+        try {
+            await axios.patch(`/issues`, {
+                id: idValue,
+                isResolved: true,
+            });
+            setIssues((prevIssues) =>
+                prevIssues.map((issues) =>
+                    issues.id === idValue
+                        ? {
+                              ...issues,
+                              isResolved: true,
+                          }
+                        : issues
+                )
+            );
+            console.log(`Resolving issue with ID: ${idValue}`);
+        } catch (error) {
+            console.log('Error resolve issue:', error);
+        }
+
+        handleCloseModal();
+    };
+
+    const handleSetOutOfOrder = async (idValue?: number) => {
+        try {
+            await axios.patch(`/equipment`, {
+                id: idValue,
+                isUnderMaintenance: true,
+            });
+
+            setIssues((prevIssues) =>
+                prevIssues.map((issue) =>
+                    issue.id === idValue
+                        ? {
+                              ...issue,
+                              equipment: issue.equipment
+                                  ? {
+                                        ...issue.equipment,
+                                        isUnderMaintenance: true,
+                                    }
+                                  : undefined,
+                          }
+                        : issue
+                )
+            );
+
+            console.log(`Setting equipment Out-of-Order with ID: ${idValue}`);
+        } catch (error) {
+            console.log('Error setting equipment to Out-of-Order:', error);
+        }
+
+        handleCloseModal();
+    };
 
     const theme = createTheme({
         palette: {
@@ -257,7 +311,7 @@ const Requests = () => {
                                 issues
                                     .filter(
                                         (issues) =>
-                                            issues.isResolved == true &&
+                                            issues.isResolved == false &&
                                             issues.equipment
                                                 ?.isUnderMaintenance == false
                                     )
@@ -275,8 +329,13 @@ const Requests = () => {
                                                         'resolveIssue',
                                                         issues
                                                     );
-                                                    console.log('hi');
                                                 }}
+                                                handleOOD={() =>
+                                                    handleOpenModal(
+                                                        'setOOD',
+                                                        issues
+                                                    )
+                                                }
                                             />
                                         )
                                     )
@@ -284,7 +343,7 @@ const Requests = () => {
                                 issues
                                     .filter(
                                         (issues) =>
-                                            issues.isResolved == true &&
+                                            issues.isResolved == false &&
                                             issues.equipment
                                                 ?.isUnderMaintenance == true
                                     )
@@ -302,8 +361,13 @@ const Requests = () => {
                                                         'resolveIssue',
                                                         issues
                                                     );
-                                                    console.log('hi');
                                                 }}
+                                                handleOOD={() =>
+                                                    handleOpenModal(
+                                                        'setOOD',
+                                                        issues
+                                                    )
+                                                }
                                             />
                                         )
                                     )
@@ -371,7 +435,17 @@ const Requests = () => {
                     open={modalState.name === 'resolveIssue'}
                     onClose={handleCloseModal}
                     data={modalState.data as Issue}
-                    onConfirm={() => {}}
+                    onConfirm={() => {
+                        handleResolveIssue(modalState.data?.id);
+                    }}
+                />
+                <SetOODModal
+                    open={modalState.name === 'setOOD'}
+                    onClose={handleCloseModal}
+                    data={modalState.data as Issue}
+                    onConfirm={() => {
+                        handleSetOutOfOrder(modalState.data?.equipment?.id);
+                    }}
                 />
             </div>
         </ThemeProvider>

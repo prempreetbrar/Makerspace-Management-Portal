@@ -14,8 +14,8 @@ import dayjs, { Dayjs } from 'dayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import axios from '../../axios';
-import { Booking } from '../../models';
+import axios from '../../../axios';
+import { Booking } from '../../../models';
 
 interface EditBookingProps {
     open: boolean;
