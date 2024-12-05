@@ -18,6 +18,7 @@ import RejectReservationModal from '../Components/Requests/Modals/RejectReservat
 import ApproveReservationModal from '../Components/Requests/Modals/ApproveReservationModal.tsx';
 import ResolveModal from '../Components/Requests/Modals/ResolveModal.tsx';
 import SetOODModal from '../Components/Requests/Modals/SetOODModal.tsx';
+import useSnackbar from '../Components/Requests/useSnackbar.tsx';
 
 const Requests = () => {
     //media query
@@ -42,6 +43,9 @@ const Requests = () => {
         1: 'pending',
         2: 'denied',
     };
+
+    //snackbar
+    const { showSnackbar, SnackbarComponent } = useSnackbar();
 
     // fetch
     const [bookings, setBookings] = useState<Booking[]>([]);
@@ -110,6 +114,7 @@ const Requests = () => {
         } catch (error) {
             console.log('Error deleting booking:', error);
         }
+        showSnackbar('Successfully cancelled booking!');
         handleCloseModal();
     };
 
@@ -497,6 +502,7 @@ const Requests = () => {
                         handleSetOutOfOrder(modalState.data?.equipment?.id);
                     }}
                 />
+                <SnackbarComponent />
             </div>
         </ThemeProvider>
     );
