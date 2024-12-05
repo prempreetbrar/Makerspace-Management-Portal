@@ -4,10 +4,23 @@ import { AuthContext, UserRoles } from '../contexts/AuthContext';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import theme from '../theme';
 import star from '../assets/stars.png';
+import axiosInstance from '../axios';
+import { useSearchParams } from 'react-router-dom';
 
 const ProfileLink = () => {
     const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-    const { user, logout } = useContext(AuthContext)!;
+    const { user, logout, refetch } = useContext(AuthContext)!;
+    const iconButtonRef = React.useRef<HTMLButtonElement | null>(null);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [searchParams, _] = useSearchParams();
+
+    React.useEffect(() => {
+        if (searchParams.get('checkout') === 'success') {
+            refetch();
+            setAnchorEl(iconButtonRef.current);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [searchParams]);
 
     const handlePopoverOpen = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
@@ -22,12 +35,43 @@ const ProfileLink = () => {
         handlePopoverClose();
     };
 
+    const handleBuyPremium = async () => {
+        try {
+            const response = await axiosInstance.get('/users/checkout'); // API endpoint for checkout
+            const checkoutUrl = response.data.session.url;
+
+            if (checkoutUrl) {
+                // redirect the user to the Stripe checkout page
+                window.location.href = checkoutUrl;
+            } else {
+                alert('Failed to get checkout URL. Please try again later.');
+            }
+        } catch (error) {
+            console.error('Error fetching Stripe checkout URL:', error);
+            alert('An error occurred. Please try again later.');
+        }
+    };
+
+    const handlePostCheckout = async () => {
+        try {
+            const { isSuccess, message } = await refetch(); // Refetch the user data after checkout
+            if (isSuccess) {
+                console.log('User updated:', message);
+            } else {
+                console.error('Failed to update user:', message);
+            }
+        } catch (error) {
+            console.error('Error refetching user data:', error);
+        }
+    };
+
     const open = Boolean(anchorEl);
 
     return (
         <>
             {/* User Icon */}
             <IconButton
+                ref={iconButtonRef}
                 onClick={handlePopoverOpen}
                 sx={{
                     backgroundColor: theme.palette.secondary.main,
@@ -88,6 +132,10 @@ const ProfileLink = () => {
                     {user?.userRole === UserRoles.BASIC && (
                         <Button
                             variant="contained"
+                            onClick={async () => {
+                                await handleBuyPremium();
+                                handlePostCheckout(); // refetch user data after checkout
+                            }}
                             sx={{
                                 backgroundColor: theme.palette.secondary.main,
                                 color: 'white !important',

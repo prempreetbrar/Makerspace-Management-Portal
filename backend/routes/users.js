@@ -19,6 +19,11 @@ router.put(
     usersController.isUserLoggedIn,
     usersController.updateUserProfile
 );
+router.get(
+    '/profile',
+    usersController.isUserLoggedIn,
+    usersController.getUserProfile
+);
 
 // all routes from this point onwards are only available to logged in, basic users
 router.use(
