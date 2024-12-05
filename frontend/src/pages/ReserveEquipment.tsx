@@ -48,7 +48,7 @@ import {
     EquipmentContext,
     EquipmentDataProvider,
 } from '../contexts/EquipmentContext.tsx';
-import axios, { AxiosError } from 'axios';
+import axios, { AxiosError, isAxiosError } from 'axios';
 import { Search } from '@mui/icons-material';
 import { useSearchParams } from 'react-router-dom';
 
@@ -84,7 +84,6 @@ type Equipment = {
     isPremium: boolean;
     isBookable: boolean;
     icon?: any;
-    setUnderMaintenance?: (value: boolean) => void;
 };
 
 const IconStyle: React.CSSProperties = {
@@ -130,16 +129,15 @@ const errorChipStyle = {
 };
 
 function userCanBookItem(item: Equipment, userRole: string | undefined) {
+    if (userRole === undefined) {
+        console.log('role is undefined');
+        return false;
+    }
     const baseCheck =
         !item.isUnderMaintenance &&
         item.isBookable &&
         userRole != UserRoles.ADMIN;
-    console.log(`${item.name} is bookable:  ${item.isBookable}`);
-    console.log(`${item.name} is bookable:  ${baseCheck}`);
-    if (userRole === undefined) {
-        console.log('role is undefined');
-        return false;
-    } else if (item.isPremium) {
+    if (item.isPremium) {
         return userRole === UserRoles.PREMIUM && baseCheck;
     } else {
         return baseCheck;
@@ -181,13 +179,14 @@ const SpinningButton = ({ spinning, onClick }: SpinningButtonProps) => {
         </Fab>
     );
 };
+
 function timeout(delay: number) {
     return new Promise((res) => setTimeout(res, delay));
 }
 
+
 const ReserveEquipment = () => {
     const { user } = useContext(AuthContext)!;
-    const userProviderContext = useUser(); // dummy context
     const { height, width } = WindowDimensions();
     const [resultsFound, setResultsFound] = useState(true);
     const [searchText, setSearchText] = useState<string>('');
@@ -199,6 +198,16 @@ const ReserveEquipment = () => {
     const [spinning, setSpinning] = useState(false);
     const [sync, setSync] = useState(false); // the state of this variable doesn't matter
     const [maintenanceDialogOpen, setMaintenanceDialogOpen] = useState(false);
+    const statusChanging = React.useRef(false);
+
+    // ** Mehedi ** if the request is successful, then this should get set to "true".
+    // There just needs to be a way to indicate success vs failure.
+    // once the dialog is dismissed, this status should be reset to false.
+
+    // If you know of a better way to handle success vs failure, then please change this.
+
+    const [success, setSuccess] = useState(false); 
+
     const handleSearch = () => {
         if (searchText === '') {
             setDisplayModel(equipmentModel.current);
@@ -214,13 +223,13 @@ const ReserveEquipment = () => {
             setDisplayModel(filteredResults);
         }
     };
-
     const updateSearchBar = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.value != searchText) {
             setDisplayModel(equipmentModel.current);
         }
         setSearchText(event.target.value);
     };
+
 
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
@@ -234,7 +243,7 @@ const ReserveEquipment = () => {
         ) {
             navigate('/'); // just go home.
         }
-    }, [user, navigate, userProviderContext]);
+    }, [user, navigate]);
 
     async function syncData() {
         if (!spinning) {
@@ -251,7 +260,7 @@ const ReserveEquipment = () => {
                 console.log('Failed to fetch equipment');
                 console.error(error.response.data);
             } finally {
-                await timeout(1500); // remove artificial delay later
+                await timeout(1500); // 1.5 second delay remove artificial delay later
                 setLoading(false);
                 setSpinning(false);
                 console.log(spinning);
@@ -298,20 +307,69 @@ const ReserveEquipment = () => {
         setOpen(false);
         setSelectedEquipmentID(-1);
     };
+    function warnOnMaintenanceStatusChange()
+    {
+        // THIS TELLS THE DIALOG TO OPEN
+        setMaintenanceDialogOpen(true);
+    }
 
     function handleChangeMaintenanceStatus(equipment: Equipment) {
-        setMaintenanceDialogOpen(true);
+
+        // Mehedi, you need to block this write function f
+        // WHEN USERS CHANGE THE MAINTENANCE STATUS, THIS IS CALLED. ONLY IF THEY CONFIRM.
+        // THIS TRIGGERS THE MAINTENANCE DIALOG TO OPEN
+
+        // Don't touch from here...
+        // keep this. It prevents the user from clicking button and making duplicate requests.
+        if(statusChanging.current) return // prevent duplicate requests
+        statusChanging.current = true;
+        // Keep this
+        async function writeStatus()
+        {
+            try
+            {
+                const response = await axiosInstance.patch('/equipment', {id: equipment.id, status: equipment.isUnderMaintenance});
+                if(response.data.status === "success")
+                {
+                    console.log(response.data);
+                    // fetch from the database again.
+                
+                   
+                }
+            }
+            catch(error)
+            {
+                if(isAxiosError(error))
+                {
+                    console.log(error.message);
+                }
+                else
+                {
+                    console.log(error);
+                }
+            }
+            finally
+            {
+                statusChanging.current = false;
+            }
+        }
+        console.log("setting maintenance status");
+        console.log(equipment.name);
+        console.log(equipment.isUnderMaintenance);
+        equipment.isUnderMaintenance = !equipment.isUnderMaintenance;
+        writeStatus();
+
+        // ... to here.
+
+        // YOU SHOULD DISPLAY A DIFFERENT MESSAGE 
+        // WHEN THE EQUIPMENT WAS PUT UNDER MAINTENANCE THEN WHEN IT MADE BOOKABLE AGAIN
+        // ** INSERT SNACKBAR TRIGGER HERE **
     }
     return (
         <>
             <MainContainer>
                 <ThemeProvider theme={theme}>
-                    <BookingModal
-                        open={open}
-                        equipmentID={selectedEquipmentID}
-                        onClose={handleClose}
-                        onSubmit={handleSubmit}
-                    />
+                    <BookingModal open={open} equipmentID={selectedEquipmentID} onClose={handleClose} onSubmit={handleSubmit}/>
                     <Box
                         id="contentBox"
                         sx={{
@@ -324,24 +382,13 @@ const ReserveEquipment = () => {
                             padding: 0,
                             scroll: 'none',
                             overflow: 'hidden',
-                        }}
-                    >
+                        }}>
                         <NavBar id="reserve" />
-                        <Box
-                            sx={{
-                                padding: {
-                                    xs: 1.5,
-                                    md: 3,
-                                },
-                                justifyContent: 'center',
-                                width: '100%',
-                            }}
-                        >
+                        <Box sx={{padding: {xs: 1.5, md: 3},justifyContent: 'center', width: '100%'}}>
                             <Typography
                                 color={theme.palette.primary.contrastText}
-                                sx={{ pl: 2 }}
-                            >
-                                Find Equipment for YOUR job
+                                sx={{ pl: 2 }}>
+                                Find equipment for your next project
                             </Typography>
                             <SearchBar
                                 value={searchText}
@@ -349,7 +396,6 @@ const ReserveEquipment = () => {
                                 onSubmit={handleSearch}
                             />
                         </Box>
-
                         <Box
                             sx={{
                                 backgroundColor: '#cac5d4',
@@ -358,8 +404,7 @@ const ReserveEquipment = () => {
                                 margin: 2,
                                 overflowY: 'scroll',
                                 transition: 'flex-grow 3s ease',
-                            }}
-                        >
+                            }}>
                             <Grid2
                                 container
                                 spacing={3}
@@ -368,8 +413,7 @@ const ReserveEquipment = () => {
                                 sx={{
                                     padding: 3,
                                     transition: 'height 3s ease',
-                                }}
-                            >
+                                }}>
                                 {displayModel.length > 0 ? (
                                     displayModel.map((item, index) => (
                                         <Card
@@ -397,46 +441,20 @@ const ReserveEquipment = () => {
                                                 '&:hover .title': {
                                                     opacity: 0,
                                                 },
-                                            }}
-                                        >
+                                            }}>
                                             {/* Conditionally render the maintenance icon if the item is under maintenance */}
-                                            <ConditionalWrapper
-                                                displayCondition={
-                                                    item.isUnderMaintenance
-                                                }
-                                            >
-                                                <Chip
-                                                    sx={errorChipStyle}
-                                                    icon={
-                                                        <ErrorIcon
-                                                            fontSize="medium"
-                                                            sx={{
-                                                                color: 'white',
-                                                            }}
-                                                        />
-                                                    }
-                                                    label="Out of order"
-                                                />
+                                            <ConditionalWrapper displayCondition={item.isUnderMaintenance}>
+                                                <Chip sx={errorChipStyle} icon={<ErrorIcon fontSize="medium" sx={{color: 'white',}}/>} label="Under Maintenance" />
                                             </ConditionalWrapper>
                                             {/* Conditionally render the star icon if the item is premium */}
-                                            <ConditionalWrapper
-                                                displayCondition={
-                                                    item.isPremium
-                                                }
-                                            >
+                                            <ConditionalWrapper displayCondition={item.isPremium}>
                                                 <PremiumBadge />
                                             </ConditionalWrapper>
                                             <CardContent
-                                                sx={{
-                                                    textAlign: 'center',
-                                                    position: 'static',
-                                                }}
-                                            >
+                                                sx={{textAlign: 'center',  position: 'static', }}>
                                                 <ConditionalWrapper
                                                     displayCondition={
-                                                        item.icon !== undefined
-                                                    }
-                                                >
+                                                        item.icon !== undefined}>
                                                     <Box
                                                         component="img"
                                                         src={item.icon}
@@ -448,92 +466,31 @@ const ReserveEquipment = () => {
                                                     className="title"
                                                     variant="h3"
                                                     sx={{
-                                                        color: theme.palette
-                                                            .primary.main,
+                                                        color: theme.palette.primary.main,
                                                         fontWeight: 'bold',
                                                         fontSize: '12pt',
                                                         padding: '5px',
-                                                        transition:
-                                                            'opacity 0.2s ease',
-                                                    }}
-                                                >
-                                                    {item.name}
+                                                        transition:'opacity 0.2s ease',}}> 
+                                                        {item.name}
                                                 </Typography>
-                                                <Box
-                                                    id="detailsBox"
-                                                    className="details"
-                                                    sx={hoverBoxStyle}
-                                                >
-                                                    <Box
-                                                        sx={{
-                                                            height: {
-                                                                xs: '150px',
-                                                                md: '157.5px',
-                                                            },
-                                                        }}
-                                                    >
-                                                        <Typography
-                                                            variant="body2"
-                                                            color="white"
-                                                        >
+                                                <Box id="detailsBox" className="details" sx={hoverBoxStyle}>
+                                                        <Box sx={{height: {xs: '150px', md: '157.5px'}}}>
+                                                        <Typography variant="body2" color="white">
                                                             {item.description}
                                                         </Typography>
                                                     </Box>
-                                                    <Box
-                                                        display="flex"
-                                                        flexDirection="column"
-                                                        alignContent={'center'}
-                                                    >
-                                                        <ConditionalWrapper
-                                                            displayCondition={
-                                                                user?.userRole ===
-                                                                    UserRoles.ADMIN &&
-                                                                item.isBookable
-                                                            }
-                                                        >
+                                                    <Box display="flex" flexDirection="column" alignContent={'center'}>
+                                                        <ConditionalWrapper displayCondition={user?.userRole === UserRoles.ADMIN && item.isBookable}>
                                                             <Button
-                                                                sx={{
-                                                                    opacity: 100,
-                                                                    zIndex: 30,
-                                                                }}
+                                                                sx={{opacity: 100, zIndex: 30}}
                                                                 variant="contained"
-                                                                onClick={() =>
-                                                                    handleChangeMaintenanceStatus(
-                                                                        item
-                                                                    )
-                                                                }
-                                                            >
-                                                                {item.isUnderMaintenance ? (
-                                                                    <>
-                                                                        Enable
-                                                                        Booking{' '}
-                                                                    </>
-                                                                ) : (
-                                                                    <>
-                                                                        Disable
-                                                                        Booking
-                                                                    </>
-                                                                )}
+                                                                onClick={() => handleChangeMaintenanceStatus(item)}>
+                                                                {item.isUnderMaintenance ? (<>Enable Booking</>) : ( <> Disable Booking</>)}
                                                             </Button>
                                                         </ConditionalWrapper>
                                                         <ConditionalWrapper
-                                                            displayCondition={userCanBookItem(
-                                                                item,
-                                                                user?.userRole
-                                                            )}
-                                                        >
-                                                            <Button
-                                                                sx={{
-                                                                    opacity: 100,
-                                                                    zIndex: 30,
-                                                                }}
-                                                                variant="contained"
-                                                                onClick={() => {
-                                                                    handleOpen(
-                                                                        item
-                                                                    );
-                                                                }}
-                                                            >
+                                                            displayCondition={userCanBookItem(item, user?.userRole)}>
+                                                            <Button sx={{opacity: 100, zIndex: 30}} variant="contained" onClick={() => {handleOpen(item)}}>
                                                                 Book
                                                             </Button>
                                                         </ConditionalWrapper>

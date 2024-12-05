@@ -9,9 +9,11 @@ import ReserveEquipment from './ReserveEquipment.tsx';
 import Profile from './Profile.tsx';
 import '../styles/index.css';
 import { UserProvider } from '../hooks/UserProvider.tsx';
-import ManageBookings from './ManageBookings.tsx';
 import { AuthContext, AuthProvider } from '../contexts/AuthContext.tsx';
-import { EquipmentContext, EquipmentDataProvider } from '../contexts/EquipmentContext.tsx';
+import {
+    EquipmentContext,
+    EquipmentDataProvider,
+} from '../contexts/EquipmentContext.tsx';
 
 const router = createBrowserRouter([
     {
@@ -24,17 +26,7 @@ const router = createBrowserRouter([
     },
     {
         path: 'signup',
-        element: (
-            <Signup
-                onClose={function (): void {
-                    throw new Error('Function not implemented.');
-                }}
-            />
-        ),
-    },
-    {
-        path: 'manage',
-        element: <ManageBookings />,
+        element: <Signup />,
     },
     {
         path: 'requests',
@@ -42,10 +34,7 @@ const router = createBrowserRouter([
     },
     {
         path: 'reserve',
-        element:
-            <EquipmentDataProvider> {/* scope context just to here */}
-                <ReserveEquipment />
-             </EquipmentDataProvider>,
+        element: <ReserveEquipment />,
     },
     {
         path: 'profile',
