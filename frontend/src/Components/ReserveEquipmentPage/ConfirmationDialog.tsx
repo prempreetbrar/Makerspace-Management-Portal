@@ -10,7 +10,8 @@ import {
 
 interface ConfirmationDialogProps {
   open: boolean;
-  onClose: (confirmed: boolean) => void; }
+  onClose: () => void; 
+}
 
 const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({ open, onClose }) => {
   return (

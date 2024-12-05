@@ -109,13 +109,14 @@ const errorChipStyle = {
 
 
 function userCanBookItem(item: Equipment, userRole: string | undefined) {
-    const baseCheck = !item.isUnderMaintenance && item.isBookable && userRole != UserRoles.ADMIN;
-    console.log(`${item.name} is bookable:  ${item.isBookable}`);
-    console.log(`${item.name} is bookable:  ${baseCheck}`);
     if (userRole === undefined) {
         console.log('role is undefined');
         return false;
-    } else if (item.isPremium) {
+    }
+    const baseCheck = !item.isUnderMaintenance && item.isBookable && userRole != UserRoles.ADMIN;
+    console.log(`${item.name} is bookable:  ${item.isBookable}`);
+    console.log(`${item.name} is bookable:  ${baseCheck}`);
+    if (item.isPremium) {
         return (userRole === UserRoles.PREMIUM && baseCheck);
     } else {
         return baseCheck;
@@ -156,7 +157,6 @@ function timeout(delay: number)
 
 const ReserveEquipment = () => {
     const { user } = useContext(AuthContext)!;
-    const userProviderContext = useUser(); // dummy context
     const { height, width } = WindowDimensions();
     const [resultsFound, setResultsFound] = useState(true);
     const [searchText, setSearchText] = useState<string>('');
@@ -368,7 +368,7 @@ const ReserveEquipment = () => {
                                                     </Typography>
                                                 </Box>
                                                 <Box display="flex" flexDirection="column" alignContent={'center'}>
-                                                    <ConditionalWrapper displayCondition={user?.userRole ===UserRoles.ADMIN && item.isBookable}>
+                                                    <ConditionalWrapper displayCondition={user !== null && user?.userRole !== null && user!.userRole === UserRoles.ADMIN && item.isBookable}>
                                                         <Button sx={{opacity: 100, zIndex: 30 }} variant="contained" onClick={()=>handleChangeMaintenanceStatus(item)}>
                                                             {item.isUnderMaintenance ? (<>Enable Booking </>) : (<>Disable Booking</>)}
                                                         </Button>

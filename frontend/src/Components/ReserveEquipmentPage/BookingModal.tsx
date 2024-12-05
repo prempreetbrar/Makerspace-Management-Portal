@@ -87,16 +87,6 @@ function createSlots()
     return slots;
 }
 
-interface BookingRequest
-{
-    equipmentID: number,
-    title: string,
-    description: string,
-    bookingDate: string,
-    timeSlot1: string,
-    timeSlot2?: string,
-}
-
 // Need to link clicking off the modal to the close event. For now, linked to the close button only.
 const BookingModal = ({open,  equipmentID, onClose, onSubmit}:BookingModalProps) => {
 
@@ -119,7 +109,7 @@ const BookingModal = ({open,  equipmentID, onClose, onSubmit}:BookingModalProps)
     const [firstSelectedTime, setFirstSelectedTime] = useState("");
     const [secondSelectedTime, setSecondSelectedTime] = useState(""); // NOT IMPLEMENTED
     const [disabled, setDisabled] = useState(false);
-
+    const submissionInProgress = React.useRef<boolean>(false);
     const handleDetailsUpdate = (event:React.ChangeEvent<HTMLInputElement>) =>
     {
         setDetailsText(event.target.value);
@@ -161,11 +151,19 @@ const BookingModal = ({open,  equipmentID, onClose, onSubmit}:BookingModalProps)
         const dateString = date.format("YYYY-MM-DD");
         const pred = !(openings[dateString] && openings[dateString].length > 0);
         return pred;
-    }, [openings]);
+    }, [openings, selectedDate]);
 
     
     async function submitBooking(_event: React.MouseEvent)
     {
+        if(submissionInProgress.current) {
+            return;
+        }
+        else
+        {
+            submissionInProgress.current = true;
+        }
+      
         setDisabled(true); // disable the form
         setLoading(true);
         try
@@ -219,29 +217,33 @@ const BookingModal = ({open,  equipmentID, onClose, onSubmit}:BookingModalProps)
         const maxTime = dayjs(BASIC_MAX_TIME, "HH:MM:SS"); // If time permitted, these should be on the backend.
         Object.keys(slots).forEach((key:string) => 
             {
-                if(user!.userRole !== UserRoles.PREMIUM)
+                if(user)
                 {
-                    const time = dayjs(key, "HH:MM:SS");
-                    if(time.isBefore(maxTime) && time.isAfter(minTime))
+                    if(user!.userRole !== UserRoles.PREMIUM)
                     {
-                        slots[key].isAvailable = times ? times.includes(key) : false
-                        console.log(`${key} is available? ${slots[key].isAvailable}`);
+                        const time = dayjs(key, "HH:MM:SS");
+                        if(time.isBefore(maxTime) && time.isAfter(minTime))
+                        {
+                            slots[key].isAvailable = times ? times.includes(key) : false
+                            console.log(`${key} is available? ${slots[key].isAvailable}`);
+                        }
+                        else
+                        {
+                            slots[key].isAvailable = false;
+                        }
                     }
                     else
                     {
-                        slots[key].isAvailable = false;
+                        // if the key exists in the times array, the slot is available for premium users and basic.
+                        slots[key].isAvailable = times ? times.includes(key) : false;
+                        console.log(`${key} is available? ${slots[key].isAvailable}`);
                     }
-                }
-                else
-                {
-                    // if the key exists in the times array, the slot is available for premium users and basic.
-                    slots[key].isAvailable = times ? times.includes(key) : false;
-                    console.log(`${key} is available? ${slots[key].isAvailable}`);
                 }
             });
         setSlots(slots);
     }
-
+   
+    
     useEffect(() => {
         async function getBookingsForEquipment(equipmentID:number)
         {
@@ -273,21 +275,11 @@ const BookingModal = ({open,  equipmentID, onClose, onSubmit}:BookingModalProps)
         }
         getBookingsForEquipment(equipmentID);
     },[equipmentID]);
-    
-    // for the form element.
+    React.useEffect(()=>
+    {
+        updateTimeSlots();
 
-    
-    
-   
-    // Get bookings for equipment by day
-    // Add a new booking entry
-    // format ? 
-    // 
-    
-    /* axios.post("url", {
-        equipmentID: equipmentID,
-        timeSlot1: "string",
-    });*/
+    }, [selectedDate]);
 
     return (
         <ThemeProvider theme={customTheme}>
