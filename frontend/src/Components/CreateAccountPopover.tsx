@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { Popover, TextField, Button, Link, Box } from '@mui/material';
+import { Popover, TextField, Button, Link, Box, Typography } from '@mui/material';
 import '../styles/authentication/login/local.css';
 import { AuthContext } from '../contexts/AuthContext';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -110,7 +110,10 @@ const CreateAccountPopover: React.FC<CreateAccountPopoverProps> = ({
                         {error}
                     </p>
                 )}
-                <TextField
+                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', width: '100%', padding:'5px' }}>
+                        <Typography sx={{ fontSize: '24px' }}> Create Account </Typography>
+                    </Box>
+                <TextField sx={{backgroundColor: "#E5E5EA"}}
                     margin="dense"
                     label="First Name"
                     type="text"
@@ -119,7 +122,7 @@ const CreateAccountPopover: React.FC<CreateAccountPopoverProps> = ({
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
                 />
-                <TextField
+                <TextField sx={{backgroundColor: "#E5E5EA"}}
                     margin="dense"
                     label="Last Name"
                     type="text"
@@ -128,7 +131,7 @@ const CreateAccountPopover: React.FC<CreateAccountPopoverProps> = ({
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
                 />
-                <TextField
+                <TextField sx={{backgroundColor: "#E5E5EA"}}
                     margin="dense"
                     label="Email Address"
                     type="email"
@@ -137,7 +140,7 @@ const CreateAccountPopover: React.FC<CreateAccountPopoverProps> = ({
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                 />
-                <TextField
+                <TextField sx={{backgroundColor: "#E5E5EA"}}
                     margin="dense"
                     label="Password"
                     type="password"
@@ -146,7 +149,7 @@ const CreateAccountPopover: React.FC<CreateAccountPopoverProps> = ({
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />
-                <TextField
+                <TextField sx={{backgroundColor: "#E5E5EA"}}
                     margin="dense"
                     label="Confirm Password"
                     type="password"

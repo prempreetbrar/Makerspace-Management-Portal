@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { Popover, TextField, Button, Link, Box } from '@mui/material';
+import { Popover, TextField, Button, Link, Box, Typography } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import '../styles/authentication/login/local.css';
 
@@ -79,7 +79,7 @@ const LoginPopover: React.FC<LoginPopoverProps> = ({
     return (
         <>
           <ThemeProvider theme={theme}>
-            <Popover
+            <Popover 
                 open={openLogin}
                 anchorEl={anchorEl}
                 onClose={handleCloseLogin}
@@ -97,11 +97,14 @@ const LoginPopover: React.FC<LoginPopoverProps> = ({
                     sx={{ padding: '20px', maxWidth: '300px' }}
                 >
                     {error && (
-                        <p style={{ color: 'red', marginBottom: '1rem' }}>
+                        <p style={{  fontFamily: 'Roboto, sans-serif', color: 'red', marginBottom: '1rem' }}>
                             {error}
                         </p>
                     )}
-                    <TextField
+                    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', width: '100%', padding:'5px' }}>
+                        <Typography sx={{ fontSize: '24px' }}> Log In </Typography>
+                    </Box>
+                    <TextField sx={{backgroundColor: "#E5E5EA"}}
                         margin="dense"
                         label="Email Address"
                         type="email"
@@ -110,7 +113,7 @@ const LoginPopover: React.FC<LoginPopoverProps> = ({
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                     />
-                    <TextField
+                    <TextField sx={{backgroundColor: "#E5E5EA"}}
                         margin="dense"
                         label="Password"
                         type="password"
