@@ -70,127 +70,6 @@ const IconStyle: React.CSSProperties = {
     top: '30px',
     left: '135px',
 };
-function userCanBookItem(item: Equipment, userRole: string | undefined) {
-    if (userRole === undefined) {
-        console.log('role is undefined');
-        return false;
-    } else if (item.isPremium) {
-        return userRole === 'Premium';
-    } else {
-        return !item.isUnderMaintenance;
-    }
-}
-
-const ReserveEquipment = () => {
-    // Note to graders: some of these hooks are for debugging purposes only, to make sure that the layout and different views
-    // will work correctly when connected to the backend.
-    const navigate = useNavigate();
-    const { user } = useContext(AuthContext)!;
-    // BLOCKED: Cannot deal with "possibly undefined" and "possibly null" -> when does this happen?
-    const userProviderContext = useUser(); // dummy context
-    const { height, width } = WindowDimensions();
-    const [resultsFound, setResultsFound] = useState(true);
-    const [searchText, setSearchText] = useState('');
-    const [open, setOpen] = useState(false);
-    const [equipModel, setEquipModel] = useState<any>(undefined); // I don't know what the equipment model is
-    const [displayModel, setDisplayModel] = useState(equipmentModel);
-    const [loading, setLoading] = useState(false);
-    const [searchParams, _] = useSearchParams();
-
-    function handleChangeUser() {
-        userProviderContext.setUser();
-    }
-
-    const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setSearchText(event.target.value);
-        if (event.target.value === '') {
-            setDisplayModel(equipmentModel);
-        } else {
-            const searchExpr = (input: Equipment, searchTerm: string) => {
-                const normalizedName = input.name.toLowerCase();
-                const normalizedSearchTerm = searchTerm.toLowerCase();
-                return normalizedName.includes(normalizedSearchTerm);
-            };
-            const filteredResults = equipmentModel.filter((elem) =>
-                searchExpr(elem, event.target.value)
-            );
-            setDisplayModel(filteredResults);
-            setResultsFound(filteredResults.length > 0);
-        }
-    };
-    React.useEffect(() => {
-        if (
-            // when user upgrades to premium, there's a split second where they are undefined while we fetch stuff from
-            // the backend. Don't just kick them out.
-            searchParams.get('checkout') === null &&
-            (user === null || user === undefined)
-        ) {
-            navigate('/'); // just go home.
-        }
-    }, [user, navigate, userProviderContext]);
-
-    React.useEffect(() => {
-        setLoading(true);
-        const fetchEquipment = async () => {
-            try {
-                const response = await axiosInstance.get('/equipment');
-                setEquipModel(response.data);
-                console.log(equipModel);
-                /* BLOCKED:
-                 * What is the format of the response?
-                 * What is the type of error?
-                 * How do I make this update?
-                 */
-            } catch (error: any) {
-                console.log('Failed to fetch equipment');
-                console.error(error.response.data);
-            }
-        };
-        fetchEquipment();
-    }, [loading]);
-    console.log(equipModel);
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
-    const IconStyle: React.CSSProperties = {
-        width: '80px',
-        height: '80px',
-        top: '30px',
-        left: '135px',
-    };
-    const SearchBar = () => {
-        return (
-            <TextField
-                sx={{
-                    marginTop: 2,
-                    backgroundColor: 'white',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    width: '100%',
-                    borderRadius: 2,
-                }}
-                placeholder="Search for equipment..."
-                value={searchText}
-                onChange={handleSearch}
-            />
-        );
-    };
-
-    const ModalStyle = {
-        overflow: 'hidden',
-        overflowY: 'scroll',
-        position: 'absolute',
-        display: 'flex',
-        flexDirection: 'column',
-        alignContent: 'center',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        width: { xs: width, md: 900 },
-        height: { xs: height, md: 600 },
-        bgcolor: 'rgba(255, 255, 255, 0)',
-        boxShadow: 80,
-        p: { xs: 1, s: 2, md: 4 },
-    };
 
 const equipmentCardWidth = {
     xs: '350px',
@@ -383,14 +262,10 @@ const ReserveEquipment = () => {
         setOpen(false);
         setSelectedEquipmentID(-1);
     }
-    function openMaintenanceDialog()
-    {
-        setMaintenanceDialogOpen(true);
-    }
-
+    
     function handleChangeMaintenanceStatus(equipment: Equipment)
     {
-        
+        setMaintenanceDialogOpen(true);
     }
     return (
         <>
