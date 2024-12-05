@@ -1,9 +1,10 @@
 import React, { useState, useContext } from 'react';
 import { Box, Button, Popover, Typography, IconButton } from '@mui/material';
 import { AuthContext, UserRoles } from '../contexts/AuthContext';
+import { Link } from 'react-router-dom';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import theme from '../theme';
-import star from '../assets/stars.png';
+import star from '../assets/stars.svg';
 import axiosInstance from '../axios';
 import { useSearchParams } from 'react-router-dom';
 
@@ -11,8 +12,7 @@ const ProfileLink = () => {
     const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
     const { user, logout, refetch } = useContext(AuthContext)!;
     const iconButtonRef = React.useRef<HTMLButtonElement | null>(null);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [searchParams, _] = useSearchParams();
+    const [searchParams] = useSearchParams();
 
     React.useEffect(() => {
         if (searchParams.get('checkout') === 'success') {
@@ -41,7 +41,6 @@ const ProfileLink = () => {
             const checkoutUrl = response.data.session.url;
 
             if (checkoutUrl) {
-                // redirect the user to the Stripe checkout page
                 window.location.href = checkoutUrl;
             } else {
                 alert('Failed to get checkout URL. Please try again later.');
@@ -51,7 +50,6 @@ const ProfileLink = () => {
             alert('An error occurred. Please try again later.');
         }
     };
-
     const handlePostCheckout = async () => {
         try {
             const { isSuccess, message } = await refetch(); // Refetch the user data after checkout
@@ -124,9 +122,32 @@ const ProfileLink = () => {
                         variant="h6"
                         fontWeight="bold"
                         color={theme.palette.text.primary}
+                        sx={{
+                            fontFamily: theme.typography.fontFamily,
+                        }}
                     >
                         {user?.firstName} {user?.lastName}
                     </Typography>
+
+                    {/* Profile Link */}
+                    <Button
+                        component={Link}
+                        to="/profile"
+                        sx={{
+                            backgroundColor: 'transparent',
+                            color: theme.palette.text.primary,
+                            textTransform: 'none',
+                            padding: '0',
+                            fontWeight: 'bold',
+                            textDecoration: 'none',
+                            fontFamily: theme.typography.fontFamily,
+                            '&:hover': {
+                                textDecoration: 'underline',
+                            },
+                        }}
+                    >
+                        Profile
+                    </Button>
 
                     {/* Buy Premium or Premium Badge */}
                     {user?.userRole === UserRoles.BASIC && (
@@ -163,7 +184,7 @@ const ProfileLink = () => {
                     {user?.userRole === UserRoles.PREMIUM && (
                         <Button
                             sx={{
-                                backgroundColor: theme.palette.secondary.main,
+                                backgroundColor: theme.palette.primary.main,
                                 color: 'white !important',
                                 padding: '12px 20px',
                                 borderRadius: '8px',
@@ -173,6 +194,7 @@ const ProfileLink = () => {
                                 textTransform: 'none',
                                 cursor: 'default',
                                 fontWeight: 'bold',
+                                boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.15)',
                             }}
                             disabled
                         >
