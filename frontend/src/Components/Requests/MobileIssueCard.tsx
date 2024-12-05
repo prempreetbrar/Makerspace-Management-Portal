@@ -9,28 +9,16 @@ import {
     Grid2,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
 import EventIcon from '@mui/icons-material/Event';
 import CheckIcon from '@mui/icons-material/Check';
 import InfoIcon from '@mui/icons-material/Info';
-import { Check, Info } from '@mui/icons-material';
+import { Issue } from '../../models.ts';
 
 interface MobileIssueCardProps {
-    title: string | undefined;
-    description: string;
-    date: string;
-    icon: any;
-    isResolved: boolean;
-    status: number;
+    issue: Issue;
 }
 
-const MobileIssueCard: React.FC<MobileIssueCardProps> = ({
-    title,
-    description,
-    date,
-    icon,
-    status,
-}) => {
+const MobileIssueCard: React.FC<MobileIssueCardProps> = ({ issue }) => {
     const [isSwiped, setIsSwiped] = useState(false);
 
     const IconStyle: React.CSSProperties = {
@@ -78,7 +66,7 @@ const MobileIssueCard: React.FC<MobileIssueCardProps> = ({
                             alignItems: 'center',
                         }}
                     >
-                        {status === 1 && (
+                        {issue.isResolved === false && (
                             <Box
                                 sx={{
                                     display: 'flex',
@@ -100,13 +88,16 @@ const MobileIssueCard: React.FC<MobileIssueCardProps> = ({
                                 justifyContent: 'center',
                                 alignItems: 'center',
                                 backgroundColor:
-                                    status === 1 ? '#E8B931' : '#B3261E',
-                                width: status === 1 ? '50%' : '100%',
+                                    issue.isResolved === false
+                                        ? '#E8B931'
+                                        : '#B3261E',
+                                width:
+                                    issue.isResolved === false ? '50%' : '100%',
                                 height: '100%',
                             }}
                         >
                             <IconButton>
-                                {status === 1 ? (
+                                {issue.isResolved === false ? (
                                     <InfoIcon sx={{ color: 'white' }} />
                                 ) : (
                                     <DeleteIcon sx={{ color: 'white' }} />
@@ -133,9 +124,9 @@ const MobileIssueCard: React.FC<MobileIssueCardProps> = ({
                         <Grid2 container spacing={4}>
                             <Grid2 size="auto">
                                 <img
-                                    src={icon}
+                                    src={issue.equipment?.icon}
                                     style={IconStyle}
-                                    alt={icon}
+                                    alt={issue.equipment?.icon}
                                 ></img>
                             </Grid2>
                             <Grid2 size="grow">
@@ -146,7 +137,7 @@ const MobileIssueCard: React.FC<MobileIssueCardProps> = ({
                                         marginBottom: '8px',
                                     }}
                                 >
-                                    {title}
+                                    {issue.equipment?.name}
                                 </Typography>
                                 <Typography
                                     variant="body2"
@@ -157,7 +148,7 @@ const MobileIssueCard: React.FC<MobileIssueCardProps> = ({
                                         color: '#616161',
                                     }}
                                 >
-                                    {description}
+                                    {issue.description}
                                 </Typography>
                                 <Box
                                     display="flex"
@@ -173,12 +164,12 @@ const MobileIssueCard: React.FC<MobileIssueCardProps> = ({
                                         }}
                                     >
                                         <EventIcon
-                                            className="icon"
+                                            className="issue.equipment?.icon"
                                             style={{
                                                 verticalAlign: 'middle',
                                             }}
                                         />
-                                        {date}
+                                        {issue.createdAt}
                                     </Typography>
                                 </Box>
                             </Grid2>

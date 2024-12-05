@@ -20,8 +20,10 @@ const TabContainer: React.FC<TabContainerProps> = ({
             <Box
                 className="tab-container"
                 sx={{
-                    margin: '50px 15px 0px 15px',
-                    marginBottom: '100px',
+                    maxWidth: '1500px',
+                    minHeight: '600px',
+                    marginTop: '10px',
+                    marginInline: 'auto auto',
                     backgroundColor: '#7D768B',
                     padding: '0px 0px 20px 0px',
                     borderRadius: '16px',
@@ -127,6 +129,7 @@ const TabContainer: React.FC<TabContainerProps> = ({
                         justifyContent: 'center',
                         flexDirection: 'column',
                         alignItems: 'center',
+                        paddingTop: '10px',
                         [theme.breakpoints.down('md')]: {
                             width: '90%',
                         },
