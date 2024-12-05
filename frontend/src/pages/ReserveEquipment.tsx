@@ -134,23 +134,14 @@ function userCanBookItem(item: Equipment, userRole: string | undefined) {
         console.log('role is undefined');
         return false;
     }
-    const baseCheck = !item.isUnderMaintenance && item.isBookable && userRole != UserRoles.ADMIN;
-    console.log(`${item.name} is bookable:  ${item.isBookable}`);
-    console.log(`${item.name} is bookable:  ${baseCheck}`);
-    if (item.isPremium) {
-        return (userRole === UserRoles.PREMIUM && baseCheck);
-=======
     const baseCheck =
         !item.isUnderMaintenance &&
         item.isBookable &&
         userRole != UserRoles.ADMIN;
     console.log(`${item.name} is bookable:  ${item.isBookable}`);
     console.log(`${item.name} is bookable:  ${baseCheck}`);
-    if (userRole === undefined) {
-        console.log('role is undefined');
-        return false;
-    } else if (item.isPremium) {
-        return (userRole === UserRoles.PREMIUM && baseCheck);
+    if (item.isPremium) {
+        return userRole === UserRoles.PREMIUM && baseCheck;
     } else {
         return baseCheck;
     }
