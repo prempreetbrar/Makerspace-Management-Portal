@@ -19,10 +19,7 @@ async function _getAvailableBookingSlots(equipmentID, bookingDate, userEmail) {
             equipmentID: parseInt(equipmentID, 10),
             bookingDate,
             userEmail,
-            [Op.or]: [
-                { status: Booking.STATUS_PENDING },
-                { status: Booking.STATUS_APPROVED },
-            ],
+            status: { [Op.not]: Booking.STATUS_DENIED },
         },
     });
 
@@ -35,16 +32,13 @@ async function _getAvailableBookingSlots(equipmentID, bookingDate, userEmail) {
         where: {
             equipmentID: parseInt(equipmentID, 10),
             bookingDate,
+            status: { [Op.not]: Booking.STATUS_DENIED },
         },
     });
 
     const unavailableBookingSlots = [];
     bookings.forEach((booking) => {
         unavailableBookingSlots.push(booking.timeSlot1);
-
-        if (booking.timeSlot2) {
-            unavailableBookingSlots.push(booking.timeSlot2);
-        }
     });
 
     const availableBookingSlots = Booking.allTimeSlots.filter(
