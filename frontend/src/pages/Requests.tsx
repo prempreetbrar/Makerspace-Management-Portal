@@ -307,6 +307,7 @@ const Requests = () => {
                                           />
                                       ) : (
                                           <RequestCard
+                                              key={bookings.id}
                                               booking={bookings}
                                               handleDelete={() =>
                                                   handleOpenModal(
@@ -367,6 +368,7 @@ const Requests = () => {
                                             />
                                         ) : (
                                             <IssueCard
+                                                key={issues.id}
                                                 issue={issues}
                                                 handleResolve={() => {
                                                     handleOpenModal(
@@ -411,6 +413,7 @@ const Requests = () => {
                                             />
                                         ) : (
                                             <IssueCard
+                                                key={issues.id}
                                                 issue={issues}
                                                 handleResolve={() => {
                                                     handleOpenModal(
@@ -449,6 +452,7 @@ const Requests = () => {
                                       />
                                   ) : (
                                       <RequestCard
+                                          key={bookings.id}
                                           booking={bookings}
                                           handleDelete={() =>
                                               handleOpenModal(
