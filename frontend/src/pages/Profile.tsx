@@ -4,7 +4,7 @@ import NavBar from "../Components/NavBar";
 import { Box, TextField, Typography, Button } from "@mui/material";
 import Grid from '@mui/material/Grid2';
 import {
-  AuthContext,
+  useAuth,
   AuthProvider,
   User,
   UserRoles,
@@ -32,18 +32,12 @@ const textFieldSX = {
 
 
 const Profile = () => {
-  const { user } = useContext(AuthContext)!;
+  const { user } = useAuth();
   const userDetailsRef = React.useRef(user!);
   const [userDetails, setUserDetails] = useState({email: user?.email, firstName: user?.firstName, lastName: user?.lastName, confirmPassword: user?.confirmPassword, password: user?.password});
   const [isEditing, setIsEditing] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const navigate = useNavigate();
-  // Navigate to home page if user is not authenticated
-  useEffect(() => {
-    if (!user) {
-      navigate('/'); // Navigate to the home page
-    }
-  }, [user, navigate]);
 
   const handleChange = (field: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
     setUserDetails({ ...userDetails, [field]: event.target.value });

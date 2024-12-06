@@ -1,13 +1,14 @@
-import React, { ReactNode } from 'react';
-import axios from '../axios'; // the
-import Axios from 'axios'; // the module
+import React, { ReactNode, useReducer, useContext, useEffect } from 'react';
+import axios from '../axios'; // Custom axios instance
+import Axios from 'axios'; // Axios library
+
 export enum UserRoles {
     ADMIN = 'admin',
     BASIC = 'basic',
     PREMIUM = 'premium',
 }
 
-// just copied the columns word for word from the backend
+// User interface matching backend schema
 export interface User {
     email: string;
     firstName: string;
@@ -15,8 +16,7 @@ export interface User {
     password?: string;
     confirmPassword?: string;
     userRole?: UserRoles;
-    // additional properties just cause there was miscommunication between the FE and BE
-    [key: string]: unknown;
+    [key: string]: unknown; // Additional dynamic properties
 }
 
 interface AuthState {
@@ -24,62 +24,55 @@ interface AuthState {
     isLoading: boolean;
 }
 
-enum AuthActionsTypes {
+enum AuthActionTypes {
     LOGIN,
     LOGOUT,
 }
 
 interface AuthAction {
-    type: AuthActionsTypes;
+    type: AuthActionTypes;
     payload: User | null;
 }
 
-export interface AuthContext {
-    user: User | null | undefined;
-    isLoading: boolean;
+export type AuthFunctionStatus = Promise<{
+    isSuccess: boolean;
+    message: string | null;
+}>;
+
+interface AuthContextType extends AuthState {
     login: (email: string, password: string) => AuthFunctionStatus;
     signup: (userData: User) => AuthFunctionStatus;
     logout: () => void;
     refetch: () => AuthFunctionStatus;
 }
 
-export const AuthContext = React.createContext<AuthContext | null>(null);
+// Create a strongly typed context
+const AuthContext = React.createContext<AuthContextType | undefined>(undefined);
+
 const authReducer = (state: AuthState, action: AuthAction): AuthState => {
     switch (action.type) {
-        case AuthActionsTypes.LOGIN:
+        case AuthActionTypes.LOGIN:
             return { user: action.payload, isLoading: false };
-        case AuthActionsTypes.LOGOUT:
+        case AuthActionTypes.LOGOUT:
             return { user: null, isLoading: false };
         default:
             return state;
     }
 };
 
-type AuthFunctionStatus = Promise<{
-    isSuccess: boolean;
-    message: string | null;
-}>;
-
-/*
-  We "provide" the children with authentication context.
-*/
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-    const [state, dispatch] = React.useReducer(authReducer, {
-        // to begin with, the user is not logged in; we have no user.
+    const [state, dispatch] = useReducer(authReducer, {
         user: null,
         isLoading: true,
     });
 
-    /*
-      If the user is visiting the frontend for the first time, it's possible they're still
-      logged in from some previous visit. So if they are, make sure we're not prompting them to login again.
-    */
-    React.useEffect(() => {
+    // Check for existing user on initial load
+    useEffect(() => {
         const user = JSON.parse(localStorage.getItem('user') || 'null');
         if (user) {
-            dispatch({ type: AuthActionsTypes.LOGIN, payload: user });
+            dispatch({ type: AuthActionTypes.LOGIN, payload: user });
         } else {
-            dispatch({ type: AuthActionsTypes.LOGOUT, payload: null });
+            dispatch({ type: AuthActionTypes.LOGOUT, payload: null });
         }
     }, []);
 
@@ -88,76 +81,45 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         password: string
     ): AuthFunctionStatus => {
         try {
-            const response = await axios.post('/users/login', {
-                email,
-                password,
-            });
+            const response = await axios.post('/users/login', { email, password });
             const user = response.data?.user;
 
-            // these two lines aren't redundant. localStorage remembers the user for future visits to the website.
-            // dispatch ensures the user is available for the entire application.
             localStorage.setItem('user', JSON.stringify(user));
-            dispatch({ type: AuthActionsTypes.LOGIN, payload: user });
+            dispatch({ type: AuthActionTypes.LOGIN, payload: user });
 
-            return { isSuccess: true, message: 'success' };
+            return { isSuccess: true, message: 'Login successful' };
         } catch (error: unknown) {
             if (Axios.isAxiosError(error)) {
-                console.error(
-                    'Login failed:',
-                    error.response?.data || error.message
-                );
-
-                return {
-                    isSuccess: false,
-                    message: error.response?.data.message,
-                };
+                console.error('Login failed:', error.response?.data || error.message);
+                return { isSuccess: false, message: error.response?.data.message };
             }
+            return { isSuccess: false, message: 'An unexpected error occurred' };
         }
-
-        return {
-            isSuccess: false,
-            message: 'Something went wrong. Please try again later.',
-        };
     };
 
     const signup = async (userData: User): AuthFunctionStatus => {
         try {
             const response = await axios.post('/users/signup', userData);
             const user = response.data?.user;
-            
-            // these two lines aren't redundant. localStorage remembers the user for future visits to the website.
-            // dispatch ensures the user is available for the entire application.
-            localStorage.setItem('user', JSON.stringify(user));
-            dispatch({ type: AuthActionsTypes.LOGIN, payload: user });
 
-            return { isSuccess: true, message: 'success' };
+            localStorage.setItem('user', JSON.stringify(user));
+            dispatch({ type: AuthActionTypes.LOGIN, payload: user });
+
+            return { isSuccess: true, message: 'Signup successful' };
         } catch (error: unknown) {
             if (Axios.isAxiosError(error)) {
-                console.error(
-                    'Signup failed:',
-                    error.response?.data || error.message
-                );
-
-                return {
-                    isSuccess: false,
-                    message: error.response?.data.message,
-                };
+                console.error('Signup failed:', error.response?.data || error.message);
+                return { isSuccess: false, message: error.response?.data.message };
             }
+            return { isSuccess: false, message: 'An unexpected error occurred' };
         }
-
-        return {
-            isSuccess: false,
-            message: 'Something went wrong. Please try again later.',
-        };
     };
 
     const logout = () => {
         localStorage.removeItem('user');
-        dispatch({ type: AuthActionsTypes.LOGOUT, payload: null });
+        dispatch({ type: AuthActionTypes.LOGOUT, payload: null });
     };
 
-    // this function is used when a major change happens to the user (such as becoming premium), and we need their updated
-    // info on the frontend.
     const refetch = async (): AuthFunctionStatus => {
         try {
             const response = await axios.get('/users/profile');
@@ -165,39 +127,33 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
             if (user) {
                 localStorage.setItem('user', JSON.stringify(user));
-                dispatch({ type: AuthActionsTypes.LOGIN, payload: user });
-                return {
-                    isSuccess: true,
-                    message: 'User refetched successfully.',
-                };
+                dispatch({ type: AuthActionTypes.LOGIN, payload: user });
+                return { isSuccess: true, message: 'User refetched successfully' };
             }
 
-            return { isSuccess: false, message: 'User not found.' };
+            return { isSuccess: false, message: 'User not found' };
         } catch (error: unknown) {
             if (Axios.isAxiosError(error)) {
-                console.error(
-                    'Failed to refetch user:',
-                    error.response?.data || error.message
-                );
-                return {
-                    isSuccess: false,
-                    message:
-                        error.response?.data?.message ||
-                        'Failed to refetch user.',
-                };
+                console.error('Refetch failed:', error.response?.data || error.message);
+                return { isSuccess: false, message: error.response?.data.message };
             }
+            return { isSuccess: false, message: 'An unexpected error occurred' };
         }
-        return {
-            isSuccess: false,
-            message: 'Something went wrong. Please try again later.',
-        };
     };
 
     return (
-        <AuthContext.Provider
-            value={{ ...state, login, signup, logout, refetch }}
-        >
+        <AuthContext.Provider value={{ ...state, login, signup, logout, refetch }}>
             {children}
         </AuthContext.Provider>
     );
 };
+
+// Hook for accessing the context
+export const useAuth = (): AuthContextType => {
+    const context = useContext(AuthContext);
+    if (!context) {
+        throw new Error('useAuth must be used within an AuthProvider');
+    }
+    return context;
+};
+

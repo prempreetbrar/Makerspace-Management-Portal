@@ -10,7 +10,7 @@ import { Box, Button, useMediaQuery } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import { Booking, Issue } from '../models.ts';
-import { AuthContext } from '../contexts/AuthContext';
+import { useAuth } from '../contexts/AuthContext';
 import Axios from 'axios';
 import axios from '../axios';
 import CancelReservationModal from '../Components//Requests/Modals/CancelReservationModal.tsx';
@@ -25,15 +25,9 @@ const Requests = () => {
     const isMobile = useMediaQuery('(max-width:768px)');
 
     //user context
-    const { user } = useContext(AuthContext)!;
+    const { user, isLoading } = useAuth();
     const [userState, setUserState] = useState(user?.userRole);
     const navigate = useNavigate();
-
-    useEffect(() => {
-        if (!user) {
-            navigate('/'); // Navigate to the home page
-        }
-    }, [user, navigate]);
 
     //status for tab container
     const [status, setStatus] = useState(0);

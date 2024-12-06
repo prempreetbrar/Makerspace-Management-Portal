@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { Box, Button, Popover, Typography, IconButton } from '@mui/material';
-import { AuthContext, UserRoles } from '../contexts/AuthContext';
+import { useAuth, UserRoles } from '../contexts/AuthContext';
 import { Link } from 'react-router-dom';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import theme from '../theme';
@@ -10,7 +10,7 @@ import { useSearchParams } from 'react-router-dom';
 
 const ProfileLink = () => {
     const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-    const { user, logout, refetch } = useContext(AuthContext)!;
+    const { user, logout, refetch } = useAuth();
     const iconButtonRef = React.useRef<HTMLButtonElement | null>(null);
     const [searchParams] = useSearchParams();
 

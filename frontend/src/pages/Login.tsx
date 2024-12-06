@@ -8,7 +8,7 @@ import {
     DialogTitle,
 } from '@mui/material';
 import '../styles/authentication/login/Login-mobile.css';
-import { AuthContext } from '../contexts/AuthContext';
+import { useAuth } from '../contexts/AuthContext';
 import { ErrorWithStatusCode } from '../axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -17,7 +17,7 @@ interface LoginProps {
 }
 
 const Login: React.FC<LoginProps> = ({ onClose }) => {
-    const { login } = useContext(AuthContext)!;
+    const { login } = useAuth();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState<string | null>(null);
