@@ -56,6 +56,9 @@ import { useSearchParams } from 'react-router-dom';
 // a fallback state in case we are provided with bad context
 import SyncIcon from '@mui/icons-material/Sync';
 import BookingModal from '../Components/ReserveEquipmentPage/BookingModal.tsx';
+
+import useSnackbar from '../Components/useSnackbar.tsx';
+
 const theme = createTheme({
     palette: {
         primary: {
@@ -166,6 +169,8 @@ const ReserveEquipment = () => {
     const [sync, setSync] = useState(false); // the state of this variable doesn't matter
     const [maintenanceDialogOpen, setMaintenanceDialogOpen] = useState(false);
     const statusChanging = React.useRef(false);
+    //snackbar
+    const { showSnackbar, SnackbarComponent } = useSnackbar();
 
     // ** Mehedi ** if the request is successful, then this should get set to "true".
     // There just needs to be a way to indicate success vs failure.
@@ -272,6 +277,7 @@ const ReserveEquipment = () => {
 
     const handleSubmit = () => {
         setOpen(false);
+        showSnackbar(`Successfully booked equipment`)
         setSelectedEquipmentID(-1);
     };
     function warnOnMaintenanceStatusChange()
@@ -339,6 +345,7 @@ const ReserveEquipment = () => {
             <BookingModal open={open} equipmentID={selectedEquipmentID} onClose={handleClose} onSubmit={handleSubmit}/>
             <MainContainer>
                 <ThemeProvider theme={theme}>
+                <SnackbarComponent/>
                     <Box
                         id="contentBox"
                         sx={{
@@ -354,11 +361,11 @@ const ReserveEquipment = () => {
                         }}>
                         <NavBar id="reserve" />
                         <Box sx={{padding: {xs: 1.5, md: 3},justifyContent: 'center', width: '100%'}}>
-                            <Typography
+                            {/* <Typography
                                 color={theme.palette.primary.contrastText}
                                 sx={{ pl: 2 }}>
                                 Find equipment for your next project
-                            </Typography>
+                            </Typography> */}
                             <SearchBar
                                 value={searchText}
                                 onChange={updateSearchBar}

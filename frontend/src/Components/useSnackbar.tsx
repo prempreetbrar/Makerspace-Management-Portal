@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Snackbar, useMediaQuery } from '@mui/material';
-import theme from '../../theme.ts';
+import theme from '../theme.ts';
 
 const useSnackbar = () => {
     const [open, setOpen] = useState(false);

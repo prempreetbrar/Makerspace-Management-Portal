@@ -47,6 +47,7 @@ import ModalBase from './ModalBase';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import TimeButton from './TimeButton';
 import ReportIssueDialog from './ReportIssueDialog';
+import CloseIcon from '@mui/icons-material/Close';
 
 dayjs.extend(customParseFormat);
 
@@ -171,7 +172,6 @@ const BookingModal = ({
         // backend here
     };
 
-
     const handleDateSelection = (newDate: Dayjs) => {
         setSelectedTime('');
         setSelectedDate(newDate);
@@ -251,32 +251,36 @@ const BookingModal = ({
         // Safeguards are in place to make sure that Array.includes is not being called on "undefined".
         const minTime = dayjs(BASIC_MIN_TIME, 'HH:MM:SS');
         const maxTime = dayjs(BASIC_MAX_TIME, 'HH:MM:SS'); // If time permitted, these should be on the backend.
-        Object.keys(slots).forEach((key: string) => {
+
+        // FIXES bug where the available times dont render correctly at first
+        const updatedSlots = { ...slots };
+
+        Object.keys(updatedSlots).forEach((key: string) => {
             if (user) {
                 if (user!.userRole !== UserRoles.PREMIUM) {
                     const time = dayjs(key, 'HH:MM:SS');
                     if (time.isBefore(maxTime) && time.isAfter(minTime)) {
-                        slots[key].isAvailable = times
+                        updatedSlots[key].isAvailable = times
                             ? times.includes(key)
                             : false;
                         console.log(
-                            `${key} is available? ${slots[key].isAvailable}`
+                            `${key} is available? ${updatedSlots[key].isAvailable}`
                         );
                     } else {
-                        slots[key].isAvailable = false;
+                        updatedSlots[key].isAvailable = false;
                     }
                 } else {
                     // if the key exists in the times array, the slot is available for premium users and basic.
-                    slots[key].isAvailable = times
+                    updatedSlots[key].isAvailable = times
                         ? times.includes(key)
                         : false;
                     console.log(
-                        `${key} is available? ${slots[key].isAvailable}`
+                        `${key} is available? ${updatedSlots[key].isAvailable}`
                     );
                 }
             }
         });
-        setSlots(slots);
+        setSlots(updatedSlots);
     };
 
     useEffect(() => {
@@ -318,6 +322,16 @@ const BookingModal = ({
     return (
         <ThemeProvider theme={customTheme}>
             <ModalBase open={open} onClose={handleCloseModal}>
+                <IconButton
+                    sx={{
+                        position: 'absolute',
+                        top: '35px',
+                        right: '35px',
+                    }}
+                    onClick={onClose}
+                >
+                    <CloseIcon />
+                </IconButton>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <Box
                         key="ModalBaseBox"
@@ -328,7 +342,7 @@ const BookingModal = ({
                             height: {
                                 xs: height,
                             },
-                            overflowY: 'scroll',
+                            //overflowY: 'scroll',
                             borderRadius: 5,
                             padding: 2,
                             backgroundColor: 'white',
@@ -341,12 +355,12 @@ const BookingModal = ({
                     >
                         <Box
                             key="ModalContentBox"
-                            sx={{ overflowX: 'hidden', overflowY: 'scroll' }}
+                            //sx={{ overflowX: 'hidden', overflowY: 'scroll' }}
                             display="flex"
                             flexDirection={'column'}
                             alignContent={'center'}
                         >
-                            <Box
+                            {/* <Box
                                 key="HeaderBox"
                                 className="headerbox"
                                 display="flex"
@@ -359,9 +373,9 @@ const BookingModal = ({
                                 <Typography
                                     variant="h4"
                                     pl={2}
-                                    fontWeight={1000}
+                                    fontWeight={300}
                                 >
-                                    Reserve a Time
+                                    Reserve Equipment
                                 </Typography>
                                 <IconButton
                                     sx={{
@@ -372,12 +386,12 @@ const BookingModal = ({
                                     onClick={onClose}
                                 >
                                     {' '}
-                                    {/* confirmation dialog would be nice */}
+                                   
                                     <CancelRounded fontSize="large">
                                         Cancel
                                     </CancelRounded>
                                 </IconButton>
-                            </Box>
+                            </Box> */}
                             <Box
                                 sx={{
                                     display: 'flex',
@@ -396,10 +410,22 @@ const BookingModal = ({
                                     sx={{
                                         display: 'flex',
                                         flexDirection: 'column',
-                                        justifyContent: 'space-around',
+                                        //justifyContent: 'space-around',
                                         mr: { xs: 0, md: 5 },
                                     }}
                                 >
+                                    <Typography
+                                        variant="h6"
+                                        sx={{
+                                            //marginTop: 1,
+                                            fontSize: 30,
+                                            fontWeight: 10000,
+                                            color: '#49454F',
+                                            mb: 2,
+                                        }}
+                                    >
+                                        Reserve Equipment
+                                    </Typography>
                                     <DateCalendar
                                         value={selectedDate}
                                         shouldDisableDate={shouldDisableDate}
@@ -423,9 +449,14 @@ const BookingModal = ({
                                 >
                                     <Typography
                                         variant="h6"
-                                        sx={{ marginTop: 1 }}
+                                        sx={{
+                                            marginTop: 2,
+                                            fontSize: 16,
+                                            fontWeight: 700,
+                                            color: '#49454F',
+                                        }}
                                     >
-                                        Available Times:
+                                        Available Times
                                     </Typography>
                                     <Box
                                         id="time-display"
@@ -476,15 +507,29 @@ const BookingModal = ({
                                     </Box>
                                     <Box
                                         component="form"
-                                        sx={{ paddingTop: 3 }}
+                                        sx={{ paddingTop: 2 }}
                                     >
+                                        <Typography
+                                            variant="h6"
+                                            sx={{
+                                                //marginTop: 1,
+                                                fontSize: 16,
+                                                fontWeight: 700,
+                                                color: '#49454F',
+                                            }}
+                                        >
+                                            Title
+                                        </Typography>
                                         <TextField
                                             key={'TitleForm'}
-                                            label="Request Title"
-                                            minRows={2}
+                                            placeholder="Reservation Title"
+                                            //minRows={2}
                                             sx={{
-                                                fontSize: 14,
-                                                '& .MuiInputBase-root': {
+                                                mb: '10px',
+                                                '& .MuiOutlinedInput-root': {
+                                                    backgroundColor: '#E5E5EA',
+                                                },
+                                                '& .MuiInputBase-input': {
                                                     fontSize: 14,
                                                 },
                                             }}
@@ -496,29 +541,40 @@ const BookingModal = ({
                                                 },
                                             }}
                                             maxRows={1}
-                                            variant="filled"
                                             onChange={handleTitleUpdate}
-                                            multiline
                                             fullWidth
                                             required
                                         ></TextField>
                                     </Box>
                                     <Box
                                         component="form"
-                                        sx={{ paddingTop: 3 }}
+                                        sx={{ paddingTop: 0 }}
                                     >
+                                        <Typography
+                                            variant="h6"
+                                            sx={{
+                                                //marginTop: 1,
+                                                fontSize: 16,
+                                                fontWeight: 700,
+                                                color: '#49454F',
+                                            }}
+                                        >
+                                            Description
+                                        </Typography>
                                         <TextField
                                             id="DescriptionField"
-                                            label="Details"
-                                            minRows={2}
+                                            placeholder="Details"
+                                            minRows={4}
                                             sx={{
-                                                fontSize: 10,
-                                                '& .MuiInputBase-root': {
+                                                mb: '20px',
+                                                '& .MuiOutlinedInput-root': {
+                                                    backgroundColor: '#E5E5EA',
+                                                },
+                                                '& .MuiInputBase-input': {
                                                     fontSize: 14,
                                                 },
                                             }}
-                                            maxRows={2}
-                                            variant="filled"
+                                            maxRows={4}
                                             onChange={handleDetailsUpdate}
                                             multiline
                                             fullWidth
@@ -526,42 +582,69 @@ const BookingModal = ({
                                         ></TextField>
                                     </Box>
 
-                                    <Box sx={{display:'flex', justifyContent:'space-between'}}>            
-                                    <Button
+                                    <Box
+                                        sx={{
+                                            display: 'flex',
+                                            justifyContent: 'space-between',
+                                        }}
+                                    >
+                                        <Button
                                             variant="contained"
-                                            sx={{marginTop: 3, border: '1px solid #ddd', backgroundColor: 'white', color: 'black', boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.2)', marginRight: '8px',width: '120px',
+                                            sx={{
+                                                marginTop: 3,
+                                                border: '1px solid #ddd',
+                                                backgroundColor: 'white',
+                                                color: 'black',
+                                                boxShadow:
+                                                    '0px 2px 8px rgba(0, 0, 0, 0.2)',
+                                                marginRight: '8px',
+                                                width: '120px',
                                                 textTransform: 'none',
-                                                    '&:hover': {
-                                                        backgroundColor: '#f1f1f1',
-                                                    }, borderRadius: 2, fontWeight: 'bold',
+                                                '&:hover': {
+                                                    backgroundColor: '#f1f1f1',
+                                                },
+                                                borderRadius: 2,
+                                                fontWeight: 'bold',
                                             }}
-                                            onClick={handleOpenReportIssueDialog}
+                                            onClick={
+                                                handleOpenReportIssueDialog
+                                            }
                                         >
                                             Report Issue
-                                    </Button>
+                                        </Button>
 
-                                    <ReportIssueDialog
-                                        open={isReportIssueDialogOpen}
-                                        onClose={handleCloseReportIssueDialog}
-                                        onSubmit={handleSubmitReportIssue}
-                                    />
+                                        <ReportIssueDialog
+                                            open={isReportIssueDialogOpen}
+                                            onClose={
+                                                handleCloseReportIssueDialog
+                                            }
+                                            onSubmit={handleSubmitReportIssue}
+                                        />
 
-                                    <Button
-                                        variant="contained"
-                                        sx={{marginTop: 3, backgroundColor: 'black', color: 'white', boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.4)', textTransform: 'none',
-                                            '&:hover': {
-                                                backgroundColor: '#333',
-                                            }, width: '139px', borderRadius: 2, fontWeight: 'bold',
-                                            
-                                        }}
-                                        onClick={submitBooking}
-                                        disabled={
-                                            inputText === '' ||
-                                            selectedTime === ''
-                                        }
-                                    >
-                                        Submit Request
-                                    </Button>
+                                        <Button
+                                            variant="contained"
+                                            sx={{
+                                                marginTop: 3,
+                                                backgroundColor: 'black',
+                                                color: 'white',
+                                                boxShadow:
+                                                    '0px 2px 8px rgba(0, 0, 0, 0.4)',
+                                                textTransform: 'none',
+                                                '&:hover': {
+                                                    backgroundColor: '#333',
+                                                },
+                                                width: '139px',
+                                                borderRadius: 2,
+                                                fontWeight: 'bold',
+                                            }}
+                                            onClick={submitBooking}
+                                            disabled={
+                                                inputText === '' ||
+                                                selectedTime === ''
+                                            }
+                                        >
+                                            Submit Request
+                                        </Button>
                                     </Box>
                                 </Box>
                             </Box>

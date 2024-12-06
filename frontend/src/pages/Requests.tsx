@@ -18,7 +18,7 @@ import RejectReservationModal from '../Components/Requests/Modals/RejectReservat
 import ApproveReservationModal from '../Components/Requests/Modals/ApproveReservationModal.tsx';
 import ResolveModal from '../Components/Requests/Modals/ResolveModal.tsx';
 import SetOODModal from '../Components/Requests/Modals/SetOODModal.tsx';
-import useSnackbar from '../Components/Requests/useSnackbar.tsx';
+import useSnackbar from '../Components/useSnackbar.tsx';
 
 const Requests = () => {
     //media query
