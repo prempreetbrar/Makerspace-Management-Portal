@@ -56,7 +56,7 @@ import { useSearchParams } from 'react-router-dom';
 // a fallback state in case we are provided with bad context
 import SyncIcon from '@mui/icons-material/Sync';
 import BookingModal from '../Components/ReserveEquipmentPage/BookingModal.tsx';
-
+import ReservationModal from '../Components/ReserveEquipmentPage/ReservationModal.tsx';
 import useSnackbar from '../Components/useSnackbar.tsx';
 
 const theme = createTheme({
@@ -343,9 +343,9 @@ const ReserveEquipment = () => {
     }
     return (
         <>
-            <BookingModal open={open} equipmentID={selectedEquipmentID} onClose={handleClose} onSubmit={handleSubmit}/>
             <MainContainer>
-                <ThemeProvider theme={theme}>
+                <ThemeProvider theme={theme}>\
+                <ReservationModal open={open} equipmentID={selectedEquipmentID} onClose={handleClose} onConfirm={handleSubmit}/>
                 <SnackbarComponent/>
                     <Box
                         id="contentBox"

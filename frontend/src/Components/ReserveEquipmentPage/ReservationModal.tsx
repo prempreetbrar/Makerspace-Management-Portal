@@ -14,14 +14,14 @@ import dayjs, { Dayjs } from 'dayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import axios from '../../../axios';
-import { Booking } from '../../../models';
+import axios from '../../axios';
+import { Booking } from '../../models';
 
 interface EditBookingProps {
     open: boolean;
     onClose: () => void;
     onConfirm: () => void;
-    booking: Booking | null;
+    equipmentID: number;
 }
 
 const style = {
@@ -61,6 +61,10 @@ const buttonStyles = {
         },
         width: '100px',
         borderRadius: 2,
+        '&.Mui-disabled': {
+            backgroundColor: '#d3d3d3',
+            color: '#9e9e9e',
+        },
     },
 };
 
@@ -68,12 +72,14 @@ const EditBookingModal: React.FC<EditBookingProps> = ({
     open,
     onClose,
     onConfirm,
-    booking,
+    equipmentID,
 }) => {
     const [availableDates, setAvailableDates] = useState<string[]>([]);
     const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
     const [availableTimeSlots, setAvailableTimeSlots] = useState<string[]>([]);
     const [selectedTime, setSelectedTime] = useState<string | null>(null);
+    const [titleValue, setTitleValue] = useState<string>('');
+    const [descriptionValue, setDescriptionValue] = useState<string>('');
 
     const timeSlots = [
         '8:00AM',
@@ -90,23 +96,42 @@ const EditBookingModal: React.FC<EditBookingProps> = ({
         '7:00PM',
     ];
 
+    const isConfirmDisabled =
+        !descriptionValue.trim() || // Checks if descriptionValue is empty
+        !titleValue.trim() || // Checks if titleValue is empty
+        !selectedDate || // Checks if a date is not selected
+        !selectedTime; // Checks if a time is not selected
+
     // Utility to format API times
     const formatApiTimes = (apiTimes: string[]) =>
         apiTimes.map((time) => dayjs(time, 'HH:mm:ss').format('h:mmA'));
 
+    const formatDateForApi = (date: Dayjs | null): string | null => {
+        if (!date) return null;
+        return date.format('YYYY-MM-DD');
+    };
+
+    const formatTimeForApi = (time: string | null): string | null => {
+        if (!time) return null;
+
+        // Parse time string (e.g., "8:00AM") and reformat to 24-hour time
+        const timeParsed = dayjs(time, 'h:mmA');
+        if (!timeParsed.isValid()) return null;
+
+        return timeParsed.format('HH:mm');
+    };
+
     // Fetch available dates when modal opens
     useEffect(() => {
         const fetchData = async () => {
-            if (booking?.equipment?.id) {
+            if (equipmentID) {
                 try {
-                    console.log(booking?.equipment?.id);
+                    console.log(equipmentID);
                     const response = await axios.get(
-                        `/bookings/days?equipmentID=${booking.equipment.id}`
+                        `/bookings/days?equipmentID=${equipmentID}`
                     );
                     setAvailableDates(response.data.availableBookingDays);
                     setAvailableDates((prevList) => [...prevList]);
-                    console.log(availableDates);
-                    console.log(selectedTime);
                 } catch (error) {
                     console.error('Failed to fetch available dates:', error);
                 }
@@ -115,8 +140,9 @@ const EditBookingModal: React.FC<EditBookingProps> = ({
 
         if (open) {
             fetchData();
+            console.log(availableDates);
         }
-    }, [booking, open]);
+    }, [open]);
 
     // Fetch available time slots when a date is selected
     useEffect(() => {
@@ -124,7 +150,7 @@ const EditBookingModal: React.FC<EditBookingProps> = ({
             if (selectedDate) {
                 try {
                     const response = await axios.get(
-                        `/bookings/slots?equipmentID=${booking?.equipment?.id}&bookingDate=${selectedDate.format(
+                        `/bookings/slots?equipmentID=${equipmentID}&bookingDate=${selectedDate.format(
                             'YYYY-MM-DD'
                         )}`
                     );
@@ -133,13 +159,6 @@ const EditBookingModal: React.FC<EditBookingProps> = ({
                     );
                     setAvailableTimeSlots(formattedSlots);
                     console.log(selectedDate);
-                    console.log(booking?.bookingDate);
-                    if (
-                        selectedDate.format('YYYY-MM-DD') ===
-                        booking?.bookingDate
-                    ) {
-                        setAvailableTimeSlots(timeSlots);
-                    }
                     console.log(availableTimeSlots);
                 } catch (error) {
                     console.error(
@@ -158,6 +177,8 @@ const EditBookingModal: React.FC<EditBookingProps> = ({
         setSelectedDate(null);
         setSelectedTime(null);
         setAvailableTimeSlots([]);
+        setDescriptionValue('');
+        setTitleValue('');
     }, [onClose]);
 
     const shouldDisableDate = (date: Dayjs | null) => {
@@ -173,6 +194,26 @@ const EditBookingModal: React.FC<EditBookingProps> = ({
         if (newTime) {
             setSelectedTime(newTime);
         }
+    };
+
+    const handleReserveBooking = async (equipmentIDValue: number) => {
+        console.log(
+            `Reserving equipment with ID:${equipmentIDValue} on ${formatDateForApi(selectedDate)} ${selectedTime}`
+        );
+        try {
+            await axios.post('/bookings', {
+                equipmentID: equipmentIDValue,
+                bookingDate: formatDateForApi(selectedDate),
+                timeSlot1: formatTimeForApi(selectedTime),
+                title: titleValue,
+                description: descriptionValue,
+            });
+            console.log('success');
+        } catch (error) {
+            console.log(error);
+        }
+
+        onConfirm();
     };
 
     return (
@@ -321,6 +362,10 @@ const EditBookingModal: React.FC<EditBookingProps> = ({
                                 }}
                                 placeholder="Reservation Title"
                                 fullWidth
+                                value={titleValue}
+                                onChange={(e) => {
+                                    setTitleValue(e.target.value);
+                                }}
                             />
                             <Typography
                                 variant="h6"
@@ -338,6 +383,10 @@ const EditBookingModal: React.FC<EditBookingProps> = ({
                                 fullWidth
                                 placeholder="Details"
                                 rows={4}
+                                value={descriptionValue}
+                                onChange={(e) => {
+                                    setDescriptionValue(e.target.value);
+                                }}
                                 sx={{
                                     mb: '20px',
                                     '& .MuiOutlinedInput-root': {
@@ -359,7 +408,15 @@ const EditBookingModal: React.FC<EditBookingProps> = ({
                             <Button sx={buttonStyles.close} onClick={onClose}>
                                 Report Issue
                             </Button>
-                            <Button sx={buttonStyles.continue}>Continue</Button>
+                            <Button
+                                disabled={isConfirmDisabled}
+                                sx={buttonStyles.continue}
+                                onClick={() => {
+                                    handleReserveBooking(equipmentID);
+                                }}
+                            >
+                                Confirm
+                            </Button>
                         </Box>
                     </Grid2>
                 </Grid2>
