@@ -19,6 +19,7 @@ import ApproveReservationModal from '../Components/Requests/Modals/ApproveReserv
 import ResolveModal from '../Components/Requests/Modals/ResolveModal.tsx';
 import SetOODModal from '../Components/Requests/Modals/SetOODModal.tsx';
 import useSnackbar from '../Components/useSnackbar.tsx';
+import EditBookingModal from '../Components/Requests/Modals/EditBookingModal.tsx';
 
 const Requests = () => {
     //media query
@@ -66,6 +67,7 @@ const Requests = () => {
                 } else {
                     const bookingsResponse = await axios.get('/bookings');
                     setBookings(bookingsResponse.data.bookings);
+                    console.log(bookingsResponse);
                 }
             } catch (error) {
                 console.log(error);
@@ -75,18 +77,19 @@ const Requests = () => {
     }, []);
 
     // for debugging
-    // const ChangeUserButton = () => (
-    //     <Button
-    //         id="debugButton"
-    //         sx={{ width: '250px', position: 'sticky', bottom: 2, zIndex: 1000 }}
-    //         variant="contained"
-    //         onClick={() =>
-    //             showSnackbar('Testing what the snackback looks like')
-    //         }
-    //     >
-    //         User Type: {userState}
-    //     </Button>
-    // );
+    const ChangeUserButton = () => (
+        <Button
+            id="debugButton"
+            sx={{ width: '250px', position: 'sticky', bottom: 2, zIndex: 1000 }}
+            variant="contained"
+            onClick={() => {
+                console.log(bookings[3]);
+                handleOpenModal('edit', bookings[3]);
+            }}
+        >
+            User Type: {userState}
+        </Button>
+    );
 
     // modals
     const [modalState, setModalState] = useState<{
@@ -263,7 +266,7 @@ const Requests = () => {
                         width: '100%',
                     }}
                 >
-                    {/* <ChangeUserButton /> */}
+                    <ChangeUserButton />
                 </Box>
                 <TabContainer
                     value={status}
@@ -509,6 +512,15 @@ const Requests = () => {
                         handleSetOutOfOrder(modalState.data?.equipment?.id);
                     }}
                 />
+                <EditBookingModal
+                    open={modalState.name === 'edit'}
+                    onClose={handleCloseModal}
+                    onConfirm={() => {
+                        console.log('Hi!');
+                    }}
+                    booking={modalState.data as Booking}
+                />
+
                 <SnackbarComponent />
             </div>
         </ThemeProvider>

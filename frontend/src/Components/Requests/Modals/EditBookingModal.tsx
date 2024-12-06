@@ -101,14 +101,13 @@ const EditBookingModal: React.FC<EditBookingProps> = ({
         const fetchData = async () => {
             if (booking?.equipment?.id) {
                 try {
+                    console.log(booking?.equipment?.id);
                     const response = await axios.get(
                         `/bookings/days?equipmentID=${booking.equipment.id}`
                     );
                     setAvailableDates(response.data.availableBookingDays);
-                    setAvailableDates((prevList) => [
-                        ...prevList,
-                        booking?.bookingDate,
-                    ]);
+                    setAvailableDates((prevList) => [...prevList]);
+                    console.log(availableDates);
                 } catch (error) {
                     console.error('Failed to fetch available dates:', error);
                 }
