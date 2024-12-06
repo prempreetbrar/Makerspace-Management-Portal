@@ -20,7 +20,7 @@ import { Booking } from '../../../models';
 interface EditBookingProps {
     open: boolean;
     onClose: () => void;
-    onConfirm: () => void;
+    onConfirm: (response: string) => void;
     booking: Booking | null;
 }
 
@@ -34,7 +34,7 @@ const style = {
     borderRadius: 2,
     p: 4,
     textAlign: 'left',
-    width: '700px',
+    width: '850px',
 };
 
 const buttonStyles = {
@@ -71,9 +71,7 @@ const EditBookingModal: React.FC<EditBookingProps> = ({
     booking,
 }) => {
     const [availableDates, setAvailableDates] = useState<string[]>([]);
-    const [selectedDate, setSelectedDate] = useState<Dayjs | null>(
-        dayjs(booking?.bookingDate)
-    );
+    const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
     const [availableTimeSlots, setAvailableTimeSlots] = useState<string[]>([]);
     const [selectedTime, setSelectedTime] = useState<string | null>(null);
 
@@ -101,14 +99,14 @@ const EditBookingModal: React.FC<EditBookingProps> = ({
         const fetchData = async () => {
             if (booking?.equipment?.id) {
                 try {
+                    console.log(booking?.equipment?.id);
                     const response = await axios.get(
                         `/bookings/days?equipmentID=${booking.equipment.id}`
                     );
                     setAvailableDates(response.data.availableBookingDays);
-                    setAvailableDates((prevList) => [
-                        ...prevList,
-                        booking?.bookingDate,
-                    ]);
+                    setAvailableDates((prevList) => [...prevList]);
+                    console.log(availableDates);
+                    console.log(selectedTime);
                 } catch (error) {
                     console.error('Failed to fetch available dates:', error);
                 }
@@ -159,6 +157,7 @@ const EditBookingModal: React.FC<EditBookingProps> = ({
     useEffect(() => {
         setSelectedDate(null);
         setSelectedTime(null);
+        setAvailableTimeSlots([]);
     }, [onClose]);
 
     const shouldDisableDate = (date: Dayjs | null) => {
@@ -181,41 +180,29 @@ const EditBookingModal: React.FC<EditBookingProps> = ({
             <Box sx={style}>
                 <Grid2 container spacing={3}>
                     <Grid2 size="auto">
+                        <Typography
+                            variant="h5"
+                            sx={{
+                                //marginTop: 1,
+                                fontSize: 30,
+                                fontWeight: 10000,
+                                color: '#49454F',
+                                mb: 2,
+                            }}
+                        >
+                            Reserve Equipment
+                        </Typography>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DateCalendar
                                 value={selectedDate}
                                 onChange={(newDate) => setSelectedDate(newDate)}
                                 shouldDisableDate={shouldDisableDate}
+                                sx={{
+                                    backgroundColor: '#ECE6F0',
+                                    borderRadius: 4,
+                                }}
                             />
                         </LocalizationProvider>
-                    </Grid2>
-                    <Grid2 size="auto">
-                        <ToggleButtonGroup
-                            value={selectedTime}
-                            exclusive
-                            onChange={handleTimeChange}
-                            orientation="vertical"
-                            aria-label="time slots"
-                        >
-                            {timeSlots.map((slot) => (
-                                <ToggleButton
-                                    key={slot}
-                                    value={slot}
-                                    disabled={
-                                        !availableTimeSlots.includes(slot)
-                                    }
-                                    aria-label={slot}
-                                    sx={{
-                                        padding: '4px 8px',
-                                        fontSize: '0.75rem',
-                                        minWidth: '50px',
-                                        height: '30px',
-                                    }}
-                                >
-                                    {slot}
-                                </ToggleButton>
-                            ))}
-                        </ToggleButtonGroup>
                     </Grid2>
                     <Grid2
                         size="grow"
@@ -226,31 +213,140 @@ const EditBookingModal: React.FC<EditBookingProps> = ({
                                 flexGrow: 1,
                             }}
                         >
-                            <Typography variant="h5" sx={{ mb: '15px' }}>
-                                Edit Booking
-                            </Typography>
                             <Typography
-                                variant="body2"
-                                sx={{ fontWeight: '600' }}
+                                variant="h6"
+                                sx={{
+                                    marginTop: 2,
+                                    fontSize: 16,
+                                    fontWeight: 700,
+                                    color: '#49454F',
+                                }}
+                            >
+                                Available Times
+                            </Typography>
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    flexWrap: 'wrap', // Allows buttons to wrap to the next line
+                                    justifyContent: 'center', // Center align horizontally
+
+                                    gap: 1, // Spacing between buttons
+                                }}
+                            >
+                                <ToggleButtonGroup
+                                    value={selectedTime}
+                                    exclusive
+                                    onChange={handleTimeChange}
+                                    aria-label="time slots"
+                                    sx={{
+                                        '& .MuiToggleButtonGroup-grouped': {
+                                            display: 'flex',
+                                            margin: 0, // Adds spacing between buttons
+                                            border: '1px solid ', // Optional: Adds border to each button
+                                            borderRadius: '4px', // Ensures rounded corners
+                                            borderLeft: '1px solid !important',
+                                        },
+                                        display: 'flex',
+                                        flexWrap: 'wrap', // Allows buttons to wrap
+                                        gap: 1, // Space between buttons
+                                        justifyContent: 'flex-start',
+                                    }}
+                                >
+                                    {timeSlots.map((slot) => (
+                                        <ToggleButton
+                                            key={slot}
+                                            value={slot}
+                                            disabled={
+                                                !availableTimeSlots.includes(
+                                                    slot
+                                                )
+                                            }
+                                            aria-label={slot}
+                                            sx={{
+                                                padding: '4px 8px',
+                                                fontSize: '0.75rem',
+                                                minWidth: '50px',
+                                                height: 35,
+                                                width: 100,
+                                                color: '#65558F',
+                                                '&.Mui-selected': {
+                                                    backgroundColor: '#65558F',
+                                                    color: '#fff',
+                                                    borderColor: '#65558F',
+                                                },
+                                                '&.Mui-selected:hover': {
+                                                    backgroundColor: '#65558F', // Slightly darker green on hover when active
+                                                },
+                                                '&.Mui-disabled': {
+                                                    backgroundColor: 'clear',
+                                                    color: '#CAC4D0',
+                                                    borderColor: '#CAC4D0',
+                                                    cursor: 'not-allowed',
+                                                },
+                                            }}
+                                        >
+                                            {slot}
+                                        </ToggleButton>
+                                    ))}
+                                </ToggleButtonGroup>
+                            </Box>
+
+                            <Typography
+                                variant="h6"
+                                sx={{
+                                    marginTop: 2,
+                                    fontSize: 16,
+                                    fontWeight: 700,
+                                    color: '#49454F',
+                                }}
                             >
                                 Title
                             </Typography>
                             <TextField
-                                size="small"
-                                sx={{ mb: '10px' }}
-                                defaultValue={booking?.title || ''}
+                                sx={{
+                                    mb: '10px',
+                                    '& .MuiOutlinedInput-root': {
+                                        backgroundColor: '#E5E5EA',
+                                    },
+                                    '& .MuiInputBase-input': {
+                                        fontSize: 14,
+                                    },
+                                }}
+                                slotProps={{
+                                    input: {
+                                        inputProps: {
+                                            maxLength: 50,
+                                        },
+                                    },
+                                }}
+                                placeholder="Reservation Title"
+                                fullWidth
                             />
                             <Typography
-                                variant="body2"
-                                sx={{ fontWeight: '600' }}
+                                variant="h6"
+                                sx={{
+                                    marginTop: 2,
+                                    fontSize: 16,
+                                    fontWeight: 700,
+                                    color: '#49454F',
+                                }}
                             >
                                 Description
                             </Typography>
                             <TextField
-                                size="small"
                                 multiline
+                                fullWidth
+                                placeholder="Details"
                                 rows={4}
-                                defaultValue={booking?.description || ''}
+                                sx={{
+                                    mb: '20px',
+                                    '& .MuiOutlinedInput-root': {
+                                        backgroundColor: '#E5E5EA',
+                                    },
+                                    '& .MuiInputBase-input': {
+                                        fontSize: 14,
+                                    },
+                                }}
                             />
                         </Box>
 
@@ -261,7 +357,7 @@ const EditBookingModal: React.FC<EditBookingProps> = ({
                             }}
                         >
                             <Button sx={buttonStyles.close} onClick={onClose}>
-                                Close
+                                Report Issue
                             </Button>
                             <Button sx={buttonStyles.continue}>Continue</Button>
                         </Box>

@@ -18,7 +18,8 @@ import RejectReservationModal from '../Components/Requests/Modals/RejectReservat
 import ApproveReservationModal from '../Components/Requests/Modals/ApproveReservationModal.tsx';
 import ResolveModal from '../Components/Requests/Modals/ResolveModal.tsx';
 import SetOODModal from '../Components/Requests/Modals/SetOODModal.tsx';
-import useSnackbar from '../Components/Requests/useSnackbar.tsx';
+import { useSnackbar } from '../contexts/SnackbarProvider.tsx';
+import EditBookingModal from '../Components/Requests/Modals/EditBookingModal.tsx';
 
 const Requests = () => {
     //media query
@@ -39,7 +40,7 @@ const Requests = () => {
     };
 
     //snackbar
-    const { showSnackbar, SnackbarComponent } = useSnackbar();
+    const { showSnackbar } = useSnackbar();
 
     // fetch
     const [bookings, setBookings] = useState<Booking[]>([]);
@@ -60,6 +61,7 @@ const Requests = () => {
                 } else {
                     const bookingsResponse = await axios.get('/bookings');
                     setBookings(bookingsResponse.data.bookings);
+                    console.log(bookingsResponse);
                 }
             } catch (error) {
                 console.log(error);
@@ -74,9 +76,10 @@ const Requests = () => {
     //         id="debugButton"
     //         sx={{ width: '250px', position: 'sticky', bottom: 2, zIndex: 1000 }}
     //         variant="contained"
-    //         onClick={() =>
-    //             showSnackbar('Testing what the snackback looks like')
-    //         }
+    //         onClick={() => {
+    //             console.log(bookings[3]);
+    //             handleOpenModal('edit', bookings[3]);
+    //         }}
     //     >
     //         User Type: {userState}
     //     </Button>
@@ -507,7 +510,14 @@ const Requests = () => {
                         handleSetOutOfOrder(modalState.data?.equipment?.id);
                     }}
                 />
-                <SnackbarComponent />
+                <EditBookingModal
+                    open={modalState.name === 'edit'}
+                    onClose={handleCloseModal}
+                    onConfirm={() => {
+                        console.log('Hi!');
+                    }}
+                    booking={modalState.data as Booking}
+                />
             </div>
         </ThemeProvider>
     );

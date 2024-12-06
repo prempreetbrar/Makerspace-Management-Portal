@@ -1,20 +1,18 @@
-import React from 'react'
-import { Box, Modal } from '@mui/material'
-import { BorderAll } from '@mui/icons-material'
-import WindowDimensions from '../WindowDimensions'
-interface ModalBaseProps
-{
-    open: boolean,
-    onClose: ()=>void,
-    children: React.ReactNode,
+import React from 'react';
+import { Box, Modal } from '@mui/material';
+import { BorderAll } from '@mui/icons-material';
+import WindowDimensions from '../WindowDimensions';
+interface ModalBaseProps {
+    open: boolean;
+    onClose: () => void;
+    children: React.ReactNode;
 }
 
-const ModalBase = ({open, onClose, children}:ModalBaseProps) =>
-{
-    const {width, height} = WindowDimensions();
+const ModalBase = ({ open, onClose, children }: ModalBaseProps) => {
+    const { width, height } = WindowDimensions();
     const ModalStyle = {
         overflow: 'hidden',
-        overflowY: 'scroll',
+        //overflowY: 'scroll',
         position: 'absolute',
         display: 'flex',
         flexDirection: 'column',
@@ -29,12 +27,14 @@ const ModalBase = ({open, onClose, children}:ModalBaseProps) =>
         p: { xs: 1, s: 2, md: 4 },
     };
 
-    return(
-    <Modal open={open} onClose={onClose} sx={{display: open ? undefined : 'none'}}>
-        <Box sx={ModalStyle}>
-            {children}
-        </Box>
-    </Modal>
+    return (
+        <Modal
+            open={open}
+            onClose={onClose}
+            sx={{ display: open ? undefined : 'none' }}
+        >
+            <Box sx={ModalStyle}>{children}</Box>
+        </Modal>
     );
-}
-export default ModalBase
+};
+export default ModalBase;
