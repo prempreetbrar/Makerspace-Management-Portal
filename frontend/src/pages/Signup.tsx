@@ -8,7 +8,7 @@ import {
     DialogTitle,
 } from '@mui/material';
 import '../styles/authentication/login/Login-mobile.css';
-import { User, AuthContext } from '../contexts/AuthContext';
+import { User, useAuth } from '../contexts/AuthContext';
 import { ErrorWithStatusCode } from '../axios';
 
 interface SignupProps {
@@ -17,7 +17,7 @@ interface SignupProps {
 
 const Signup: React.FC<SignupProps> = ({ onClose }) => {
     // context will never be null. We'll always be sure to wrap all components in an AuthContext.Provider
-    const { signup } = React.useContext(AuthContext)!;
+    const { signup } = useAuth();
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',

@@ -9,11 +9,9 @@ import ReserveEquipment from './ReserveEquipment.tsx';
 import Profile from './Profile.tsx';
 import '../styles/index.css';
 import { UserProvider } from '../hooks/UserProvider.tsx';
-import { AuthContext, AuthProvider } from '../contexts/AuthContext.tsx';
-import {
-    EquipmentContext,
-    EquipmentDataProvider,
-} from '../contexts/EquipmentContext.tsx';
+import { AuthProvider } from '../contexts/AuthContext.tsx';
+import { EquipmentContext, EquipmentDataProvider } from '../contexts/EquipmentContext.tsx';
+import ProtectedRoute from '../Components/ProtectedRoute.tsx';
 
 const router = createBrowserRouter([
     {
@@ -26,19 +24,39 @@ const router = createBrowserRouter([
     },
     {
         path: 'signup',
-        element: <Signup />,
+        element: (
+            <Signup
+                onClose={function (): void {
+                    throw new Error('Function not implemented.');
+                }}
+            />
+        ),
     },
     {
         path: 'requests',
-        element: <Requests />,
+        element: (
+          <ProtectedRoute>
+              <Requests />
+          </ProtectedRoute>
+      ),
     },
     {
         path: 'reserve',
-        element: <ReserveEquipment />,
+        element: (
+          <ProtectedRoute>
+              <EquipmentDataProvider>
+                  <ReserveEquipment />
+              </EquipmentDataProvider>
+          </ProtectedRoute>
+      ),
     },
     {
         path: 'profile',
-        element: <Profile />,
+        element: (
+          <ProtectedRoute>
+              <Profile />
+          </ProtectedRoute>
+      ),
     },
     {
         path: 'home',
@@ -48,10 +66,10 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
-        <AuthProvider>
-            <UserProvider>
-                <RouterProvider router={router} />
-            </UserProvider>
-        </AuthProvider>
+    <AuthProvider>
+        <UserProvider>
+            <RouterProvider router={router} />
+        </UserProvider>
+    </AuthProvider>
     </React.StrictMode>
 );

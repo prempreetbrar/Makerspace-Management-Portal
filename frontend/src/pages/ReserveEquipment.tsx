@@ -41,7 +41,7 @@ import DisguisedButton from '../Components/DisguisedSwitch.tsx';
 import ErrorIcon from '@mui/icons-material/Error';
 import PremiumBadge from '../Components/ReserveEquipmentPage/PremiumBadge.tsx';
 import ConditionalWrapper from '../Components/ConditionalWrapper.tsx';
-import { AuthContext, UserRoles } from '../contexts/AuthContext.tsx';
+import { useAuth, UserRoles } from '../contexts/AuthContext.tsx';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../axios.ts';
 import SearchBar from '../Components/SearchBar.tsx';
@@ -156,7 +156,8 @@ function timeout(delay: number) {
 
 
 const ReserveEquipment = () => {
-    const { user } = useContext(AuthContext)!;
+    const { user } = useAuth();
+    const userProviderContext = useUser(); // dummy context
     const { height, width } = WindowDimensions();
     const [resultsFound, setResultsFound] = useState(true);
     const [searchText, setSearchText] = useState<string>('');

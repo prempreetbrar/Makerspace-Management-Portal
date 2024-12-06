@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { Popover, TextField, Button, Link, Box, Typography } from '@mui/material';
 import '../styles/authentication/login/local.css';
-import { AuthContext } from '../contexts/AuthContext';
+import { useAuth } from '../contexts/AuthContext';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { ErrorWithStatusCode } from '../axios';
 
@@ -18,7 +18,7 @@ const CreateAccountPopover: React.FC<CreateAccountPopoverProps> = ({
     handleCloseCreateAccount,
     handleOpenLogin,
 }) => {
-    const { signup } = useContext(AuthContext)!;
+    const { signup } = useAuth();
 
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');

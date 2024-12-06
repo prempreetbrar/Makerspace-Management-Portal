@@ -7,10 +7,10 @@ import { useState, useContext } from 'react';
 import LoginPopover from './Loginpopover.tsx';
 import CreateAccountPopover from './CreateAccountPopover.tsx';
 import ProfileLink from './ProfileLink.tsx';
-import { AuthContext, UserRoles } from '../contexts/AuthContext.tsx';
+import { useAuth, UserRoles } from '../contexts/AuthContext.tsx';
 
 const NavBar = ({ id }: { id: string }) => {
-    const { user } = useContext(AuthContext)!;
+    const { user } = useAuth();
     const isLoggedIn = !!user;
     const isAdmin = user?.userRole === UserRoles.ADMIN;
 

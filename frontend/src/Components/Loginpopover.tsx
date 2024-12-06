@@ -4,7 +4,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import '../styles/authentication/login/local.css';
 
 import CreateAccountPopover from './CreateAccountPopover.tsx';
-import { AuthContext } from '../contexts/AuthContext';
+import { useAuth } from '../contexts/AuthContext';
 import { ErrorWithStatusCode } from '../axios.ts';
 import { useNavigate } from 'react-router-dom';
 
@@ -19,7 +19,7 @@ const LoginPopover: React.FC<LoginPopoverProps> = ({
     openLogin,
     handleCloseLogin,
 }) => {
-    const { login } = useContext(AuthContext)!;
+    const { login } = useAuth();
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');

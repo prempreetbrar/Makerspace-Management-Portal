@@ -12,15 +12,15 @@ import Login from './Login.tsx';
 import Signup from './Signup.tsx';
 import MobileLogo from "../assets/logo_purple.svg";
 import {
-  AuthContext,
   AuthProvider,
   User,
   UserRoles,
 } from '../contexts/AuthContext.tsx';
+import { useAuth } from '../contexts/AuthContext';
 
 const Landing = () => {
-  const { user } = useContext(AuthContext)!;
-  const { logout } = useContext(AuthContext)!;
+  const { user, isLoading } = useAuth();
+  const { logout } = useAuth();
   const [isMobileLoginOpen, setIsMobileLoginOpen] = useState(false); 
   const handleOpenLoginMobile = () => setIsMobileLoginOpen(true);  
   const handleCloseLoginMobile = () => setIsMobileLoginOpen(false);  

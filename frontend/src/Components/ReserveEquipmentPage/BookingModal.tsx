@@ -39,7 +39,7 @@ import {
     TheaterComedyOutlined,
 } from '@mui/icons-material';
 import WindowDimensions from '../WindowDimensions';
-import { AuthContext, UserRoles } from '../../contexts/AuthContext';
+import { useAuth, UserRoles } from '../../contexts/AuthContext';
 import { daDK } from '@mui/x-date-pickers/locales';
 import { get } from 'http';
 import axiosInstance from '../../axios';
@@ -133,8 +133,8 @@ const BookingModal = ({
     const [titleText, setTitleText] = useState('');
     const baseOpenings = React.useRef<BookingData>({}); // this never changes.
     const [openings, setOpenings] = useState<BookingData>({});
-    const { user } = useContext(AuthContext)!;
-    const { height, width } = WindowDimensions();
+    const {user} = useAuth();
+    const {height, width} = WindowDimensions();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<any>();
     // all event listeners would need to be exposed at some point via Props.
