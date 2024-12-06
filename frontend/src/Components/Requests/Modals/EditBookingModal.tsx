@@ -20,7 +20,7 @@ import { Booking } from '../../../models';
 interface EditBookingProps {
     open: boolean;
     onClose: () => void;
-    onConfirm: () => void;
+    onConfirm: (response: string) => void;
     booking: Booking | null;
 }
 

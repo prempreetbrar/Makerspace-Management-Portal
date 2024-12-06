@@ -18,7 +18,7 @@ import RejectReservationModal from '../Components/Requests/Modals/RejectReservat
 import ApproveReservationModal from '../Components/Requests/Modals/ApproveReservationModal.tsx';
 import ResolveModal from '../Components/Requests/Modals/ResolveModal.tsx';
 import SetOODModal from '../Components/Requests/Modals/SetOODModal.tsx';
-import useSnackbar from '../Components/useSnackbar.tsx';
+import { useSnackbar } from '../contexts/SnackbarProvider.tsx';
 import EditBookingModal from '../Components/Requests/Modals/EditBookingModal.tsx';
 
 const Requests = () => {
@@ -40,7 +40,7 @@ const Requests = () => {
     };
 
     //snackbar
-    const { showSnackbar, SnackbarComponent } = useSnackbar();
+    const { showSnackbar } = useSnackbar();
 
     // fetch
     const [bookings, setBookings] = useState<Booking[]>([]);
@@ -71,19 +71,19 @@ const Requests = () => {
     }, []);
 
     // for debugging
-    const ChangeUserButton = () => (
-        <Button
-            id="debugButton"
-            sx={{ width: '250px', position: 'sticky', bottom: 2, zIndex: 1000 }}
-            variant="contained"
-            onClick={() => {
-                console.log(bookings[3]);
-                handleOpenModal('edit', bookings[3]);
-            }}
-        >
-            User Type: {userState}
-        </Button>
-    );
+    // const ChangeUserButton = () => (
+    //     <Button
+    //         id="debugButton"
+    //         sx={{ width: '250px', position: 'sticky', bottom: 2, zIndex: 1000 }}
+    //         variant="contained"
+    //         onClick={() => {
+    //             console.log(bookings[3]);
+    //             handleOpenModal('edit', bookings[3]);
+    //         }}
+    //     >
+    //         User Type: {userState}
+    //     </Button>
+    // );
 
     // modals
     const [modalState, setModalState] = useState<{
@@ -260,7 +260,7 @@ const Requests = () => {
                         width: '100%',
                     }}
                 >
-                    <ChangeUserButton />
+                    {/* <ChangeUserButton /> */}
                 </Box>
                 <TabContainer
                     value={status}
@@ -518,8 +518,6 @@ const Requests = () => {
                     }}
                     booking={modalState.data as Booking}
                 />
-
-                <SnackbarComponent />
             </div>
         </ThemeProvider>
     );

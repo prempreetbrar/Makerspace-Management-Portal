@@ -57,7 +57,7 @@ import { useSearchParams } from 'react-router-dom';
 import SyncIcon from '@mui/icons-material/Sync';
 import BookingModal from '../Components/ReserveEquipmentPage/BookingModal.tsx';
 import ReservationModal from '../Components/ReserveEquipmentPage/ReservationModal.tsx';
-import useSnackbar from '../Components/useSnackbar.tsx';
+import { useSnackbar } from '../contexts/SnackbarProvider.tsx';
 
 const theme = createTheme({
     palette: {
@@ -171,7 +171,7 @@ const ReserveEquipment = () => {
     const [maintenanceDialogOpen, setMaintenanceDialogOpen] = useState(false);
     const statusChanging = React.useRef(false);
     //snackbar
-    const { showSnackbar, SnackbarComponent } = useSnackbar();
+    const { showSnackbar } = useSnackbar();
 
     // ** Mehedi ** if the request is successful, then this should get set to "true".
     // There just needs to be a way to indicate success vs failure.
@@ -346,7 +346,6 @@ const ReserveEquipment = () => {
             <MainContainer>
                 <ThemeProvider theme={theme}>\
                 <ReservationModal open={open} equipmentID={selectedEquipmentID} onClose={handleClose} onConfirm={handleSubmit}/>
-                <SnackbarComponent/>
                     <Box
                         id="contentBox"
                         sx={{
