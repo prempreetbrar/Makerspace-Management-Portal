@@ -27,7 +27,7 @@ const TabContainer: React.FC<TabContainerProps> = ({
                     marginTop: '10px',
                     marginInline: 'auto',
                     backgroundColor: '#7D768B',
-                    padding: '0px 0px 20px 0px',
+                    padding: '0px 0px 0px 0px',
                     borderRadius: '16px',
                     [theme.breakpoints.down('md')]: {
                         backgroundColor: 'transparent',
@@ -131,13 +131,21 @@ const TabContainer: React.FC<TabContainerProps> = ({
                     className="tab-content"
                     sx={{
                         display: 'flex',
-                        justifyContent: 'center',
+                        justifyContent: 'flex-start',
                         flexDirection: 'column',
                         alignItems: 'center',
-                        paddingTop: '10px',
-                        overflowY: 'scroll',
+                        paddingTop: '100 rem',
+                        overflowY: 'auto',
+                        height: '40rem',
+                        width: '100%',
+                        heigth: '100%',
                         [theme.breakpoints.down('md')]: {
                             width: '90%',
+                            overflowY: 'scroll',
+                        },
+                        '::-webkit-scrollbar': {
+                            width: '0px',
+                            height: '0px',
                         },
                     }}
                 >
@@ -182,7 +190,17 @@ const TabContainer: React.FC<TabContainerProps> = ({
                             </Typography>
                         </>
                     ) : (
-                        children
+                        <Box
+                            sx={{
+                                width: '100%', // Ensure the children take full width
+                                height: 'auto',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                            }}
+                        >
+                            {children}
+                        </Box>
                     )}
                 </Box>
             </Box>
