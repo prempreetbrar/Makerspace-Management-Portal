@@ -46,7 +46,7 @@ const style = {
     borderRadius: 2,
     p: 4,
     textAlign: 'left',
-    width: '850px',
+    width: 900,
     zIndex: 1000,
     [theme.breakpoints.down('md')]: {
         top: '50%',
@@ -152,6 +152,7 @@ const EditBookingModal: React.FC<EditBookingProps> = ({
                         `/bookings/days?equipmentID=${equipmentID}`
                     );
                     setAvailableDates(response.data.availableBookingDays);
+                    console.log(response.data);
                 } catch (error) {
                     console.error('Failed to fetch available dates:', error);
                 }
@@ -184,6 +185,7 @@ const EditBookingModal: React.FC<EditBookingProps> = ({
                         response.data.availableBookingSlots
                     );
                     setAvailableTimeSlots(formattedSlots);
+                    console.log(response.data);
                 } catch (error) {
                     console.error(
                         'Failed to fetch available time slots:',
