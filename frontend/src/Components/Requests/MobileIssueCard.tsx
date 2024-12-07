@@ -167,7 +167,10 @@ const MobileIssueCard: React.FC<MobileIssueCardProps> = ({
                         }}
                     >
                         <Grid2 container spacing={4}>
-                            <Grid2 size="auto">
+                            <Grid2
+                                size="auto"
+                                sx={{ display: 'flex', alignItems: 'center' }}
+                            >
                                 <img
                                     src={issue.equipment?.icon}
                                     style={IconStyle}
@@ -197,6 +200,7 @@ const MobileIssueCard: React.FC<MobileIssueCardProps> = ({
                                         WebkitBoxOrient: 'vertical',
                                         overflow: 'hidden',
                                         textOverflow: 'ellipsis',
+                                        wordWrap: 'break-word',
                                         WebkitLineClamp: isExpanded
                                             ? 'unset'
                                             : 2,

@@ -71,6 +71,8 @@ const RequestCard: React.FC<RequestCardProps> = ({
                             sx={{
                                 margin: '10px 0',
                                 color: '#757575',
+                                whiteSpace: 'normal',
+                                wordWrap: 'break-word',
                             }}
                         >
                             {booking.description}

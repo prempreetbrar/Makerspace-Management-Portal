@@ -14,17 +14,16 @@ interface IssueCardProps {
     handleOOD?: () => void;
     handleResolve?: () => void;
 }
+const IconStyle: React.CSSProperties = {
+    width: '100px',
+    height: '100px',
+};
 
 const IssueCard: React.FC<IssueCardProps> = ({
     issue,
     handleOOD,
     handleResolve,
 }) => {
-    const IconStyle: React.CSSProperties = {
-        width: '100px',
-        height: '100px',
-    };
-
     return (
         <Card
             className="request-card"
@@ -62,6 +61,7 @@ const IssueCard: React.FC<IssueCardProps> = ({
                             sx={{
                                 margin: '10px 0',
                                 color: '#757575',
+                                wordWrap: 'break-word',
                             }}
                         >
                             {issue.description}
@@ -97,23 +97,25 @@ const IssueCard: React.FC<IssueCardProps> = ({
                 <Grid2 container>
                     <Grid2 size="grow"></Grid2>
                     <Grid2>
-                        {issue.equipment?.isUnderMaintenance === false && (
-                            <Button
-                                sx={{
-                                    backgroundColor: 'white',
-                                    color: 'black',
-                                    textTransform: 'none',
-                                    borderRadius: 2,
-                                    boxShadow: '0px 1px 8px rgba(0, 0, 0, 0.7)',
-                                    paddingLeft: '30px',
-                                    paddingRight: '30px',
-                                    fontWeight: 'bold',
-                                }}
-                                onClick={() => handleOOD?.()}
-                            >
-                                Set Out-Of-Order
-                            </Button>
-                        )}
+                        {issue.equipment?.isUnderMaintenance === false &&
+                            issue.equipment?.isBookable === true && (
+                                <Button
+                                    sx={{
+                                        backgroundColor: 'white',
+                                        color: 'black',
+                                        textTransform: 'none',
+                                        borderRadius: 2,
+                                        boxShadow:
+                                            '0px 1px 8px rgba(0, 0, 0, 0.7)',
+                                        paddingLeft: '30px',
+                                        paddingRight: '30px',
+                                        fontWeight: 'bold',
+                                    }}
+                                    onClick={() => handleOOD?.()}
+                                >
+                                    Set Out-Of-Order
+                                </Button>
+                            )}
 
                         <Button
                             sx={{

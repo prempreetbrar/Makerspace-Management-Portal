@@ -229,6 +229,7 @@ const MobileRequestCard: React.FC<MobileRequestCardProps> = ({
                                         WebkitBoxOrient: 'vertical',
                                         overflow: 'hidden',
                                         textOverflow: 'ellipsis',
+                                        wordWrap: 'break-word',
                                         WebkitLineClamp: isExpanded
                                             ? 'unset'
                                             : 2,
