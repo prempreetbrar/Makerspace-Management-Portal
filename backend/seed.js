@@ -125,6 +125,42 @@ const seedDatabase = async (clear = false) => {
                         // only null because Sequelize does not validate passwords match on bulk create (intentional, just how the ORM is implemented)
                     },
                     {
+                        email: 'joe@gmail.com',
+                        firstName: 'Joe',
+                        lastName: 'Burrow',
+                        userRole: User.PREMIUM,
+                        password: 'joe',
+                        confirmPassword: 'joe',
+                        // only null because Sequelize does not validate passwords match on bulk create (intentional, just how the ORM is implemented)
+                    },
+                    {
+                        email: 'patrick@gmail.com',
+                        firstName: 'Patrick',
+                        lastName: 'Mahomes',
+                        userRole: User.PREMIUM,
+                        password: 'patrick',
+                        confirmPassword: 'patrick',
+                        // only null because Sequelize does not validate passwords match on bulk create (intentional, just how the ORM is implemented)
+                    },
+                    {
+                        email: 'josh@gmail.com',
+                        firstName: 'Josh',
+                        lastName: 'Allen',
+                        userRole: User.PREMIUM,
+                        password: 'josh',
+                        confirmPassword: 'josh',
+                        // only null because Sequelize does not validate passwords match on bulk create (intentional, just how the ORM is implemented)
+                    },
+                    {
+                        email: 'chris@gmail.com',
+                        firstName: 'Chris',
+                        lastName: 'Jones',
+                        userRole: User.PREMIUM,
+                        password: 'chris',
+                        confirmPassword: 'chris',
+                        // only null because Sequelize does not validate passwords match on bulk create (intentional, just how the ORM is implemented)
+                    },
+                    {
                         email: 'carter.marcelo@ucalgary.ca',
                         firstName: 'Carter',
                         lastName: 'Marcelo',

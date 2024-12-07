@@ -40,8 +40,6 @@ async function _getAvailableBookingSlots(equipmentID, bookingDate, userEmail) {
         (booking) => booking.timeSlot1
     );
 
-    console.log('\n' + unavailableBookingSlots + '\n');
-
     const today = new Date().toISOString().split('T')[0]; // get today's date in YYYY-MM-DD format
     const now = new Date(); // get the current time
 
@@ -58,8 +56,6 @@ async function _getAvailableBookingSlots(equipmentID, bookingDate, userEmail) {
 
         return !unavailableBookingSlots.includes(slot);
     });
-
-    console.log('\n' + availableBookingSlots + '\n');
 
     return availableBookingSlots;
 }

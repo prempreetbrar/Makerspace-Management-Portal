@@ -103,8 +103,8 @@ const EditBookingModal: React.FC<EditBookingProps> = ({
     const { showSnackbar } = useSnackbar();
 
     const timeSlots = [
-        '8:00AM',
-        '9:00AM',
+        '08:00AM',
+        '09:00AM',
         '10:00AM',
         '11:00AM',
         '12:00PM',
@@ -138,7 +138,7 @@ const EditBookingModal: React.FC<EditBookingProps> = ({
         const timeParsed = dayjs.utc(time, 'h:mmA');
         if (!timeParsed.isValid()) return null;
 
-        return timeParsed.format('HH:mm');
+        return timeParsed.format('HH:mm:ss');
     };
 
     useEffect(() => {

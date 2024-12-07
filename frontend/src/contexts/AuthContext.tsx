@@ -68,7 +68,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     // Check for existing user on initial load
     useEffect(() => {
-        const user = JSON.parse(localStorage.getItem('user') || 'null');
+        const user = JSON.parse(sessionStorage.getItem('user') || 'null');
         if (user) {
             dispatch({ type: AuthActionTypes.LOGIN, payload: user });
         } else {
@@ -81,19 +81,31 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         password: string
     ): AuthFunctionStatus => {
         try {
-            const response = await axios.post('/users/login', { email, password });
+            const response = await axios.post('/users/login', {
+                email,
+                password,
+            });
             const user = response.data?.user;
 
-            localStorage.setItem('user', JSON.stringify(user));
+            sessionStorage.setItem('user', JSON.stringify(user));
             dispatch({ type: AuthActionTypes.LOGIN, payload: user });
 
             return { isSuccess: true, message: 'Login successful' };
         } catch (error: unknown) {
             if (Axios.isAxiosError(error)) {
-                console.error('Login failed:', error.response?.data || error.message);
-                return { isSuccess: false, message: error.response?.data.message };
+                console.error(
+                    'Login failed:',
+                    error.response?.data || error.message
+                );
+                return {
+                    isSuccess: false,
+                    message: error.response?.data.message,
+                };
             }
-            return { isSuccess: false, message: 'An unexpected error occurred' };
+            return {
+                isSuccess: false,
+                message: 'An unexpected error occurred',
+            };
         }
     };
 
@@ -102,21 +114,30 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             const response = await axios.post('/users/signup', userData);
             const user = response.data?.user;
 
-            localStorage.setItem('user', JSON.stringify(user));
+            sessionStorage.setItem('user', JSON.stringify(user));
             dispatch({ type: AuthActionTypes.LOGIN, payload: user });
 
             return { isSuccess: true, message: 'Signup successful' };
         } catch (error: unknown) {
             if (Axios.isAxiosError(error)) {
-                console.error('Signup failed:', error.response?.data || error.message);
-                return { isSuccess: false, message: error.response?.data.message };
+                console.error(
+                    'Signup failed:',
+                    error.response?.data || error.message
+                );
+                return {
+                    isSuccess: false,
+                    message: error.response?.data.message,
+                };
             }
-            return { isSuccess: false, message: 'An unexpected error occurred' };
+            return {
+                isSuccess: false,
+                message: 'An unexpected error occurred',
+            };
         }
     };
 
     const logout = () => {
-        localStorage.removeItem('user');
+        sessionStorage.removeItem('user');
         dispatch({ type: AuthActionTypes.LOGOUT, payload: null });
     };
 
@@ -126,23 +147,37 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             const user = response.data?.user;
 
             if (user) {
-                localStorage.setItem('user', JSON.stringify(user));
+                sessionStorage.setItem('user', JSON.stringify(user));
                 dispatch({ type: AuthActionTypes.LOGIN, payload: user });
-                return { isSuccess: true, message: 'User refetched successfully' };
+                return {
+                    isSuccess: true,
+                    message: 'User refetched successfully',
+                };
             }
 
             return { isSuccess: false, message: 'User not found' };
         } catch (error: unknown) {
             if (Axios.isAxiosError(error)) {
-                console.error('Refetch failed:', error.response?.data || error.message);
-                return { isSuccess: false, message: error.response?.data.message };
+                console.error(
+                    'Refetch failed:',
+                    error.response?.data || error.message
+                );
+                return {
+                    isSuccess: false,
+                    message: error.response?.data.message,
+                };
             }
-            return { isSuccess: false, message: 'An unexpected error occurred' };
+            return {
+                isSuccess: false,
+                message: 'An unexpected error occurred',
+            };
         }
     };
 
     return (
-        <AuthContext.Provider value={{ ...state, login, signup, logout, refetch }}>
+        <AuthContext.Provider
+            value={{ ...state, login, signup, logout, refetch }}
+        >
             {children}
         </AuthContext.Provider>
     );
@@ -156,4 +191,3 @@ export const useAuth = (): AuthContextType => {
     }
     return context;
 };
-
