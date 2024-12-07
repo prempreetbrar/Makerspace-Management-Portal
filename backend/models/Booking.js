@@ -172,8 +172,8 @@ Booking.addHook('beforeValidate', async (booking) => {
 
     const maxBookingDays =
         user.userRole === User.PREMIUM
-            ? Booking.premiumDaysInFuture
-            : Booking.regularDaysInFuture;
+            ? Booking.premiumUserMaxDaysInFuture
+            : Booking.basicUserMaxDaysInFuture;
     const maxBookingDate = new Date(today);
     maxBookingDate.setDate(today.getDate() + maxBookingDays);
 

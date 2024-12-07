@@ -95,7 +95,7 @@ async function _getAvailableBookingDays(user, equipmentID) {
     const endDate = new Date(today);
     endDate.setDate(
         today.getDate() +
-            (user.userRole === Booking.PREMIUM
+            (user.userRole === User.PREMIUM
                 ? Booking.premiumUserMaxDaysInFuture
                 : Booking.basicUserMaxDaysInFuture)
     );
