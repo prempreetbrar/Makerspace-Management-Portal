@@ -21,7 +21,7 @@ router
         equipmentController.getAllEquipment
     )
     .patch(
-        ///usersController.isUserAuthorized(User.ADMIN),
+        usersController.isUserAuthorized(User.ADMIN),
         equipmentController.extractEquipmentFilters,
         equipmentController.updateEquipment
     );

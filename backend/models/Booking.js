@@ -70,8 +70,8 @@ Booking.STATUS_DENIED = STATUS_DENIED;
 Booking.STATUS_PENDING = STATUS_PENDING;
 
 Booking.allTimeSlots = [
-    '08:00:00',
-    '09:00:00',
+    '8:00:00',
+    '9:00:00',
     '10:00:00',
     '11:00:00',
     '12:00:00',
