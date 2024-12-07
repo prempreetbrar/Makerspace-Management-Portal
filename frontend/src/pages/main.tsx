@@ -16,6 +16,7 @@ import {
 } from '../contexts/EquipmentContext.tsx';
 import ProtectedRoute from '../Components/ProtectedRoute.tsx';
 import { SnackbarProvider } from '../contexts/SnackbarProvider.tsx';
+import globalStyles from '../globalStyle.tsx';
 
 const router = createBrowserRouter([
     {
@@ -73,6 +74,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <AuthProvider>
             <UserProvider>
                 <SnackbarProvider>
+                    {globalStyles}
                     <RouterProvider router={router} />
                 </SnackbarProvider>
             </UserProvider>

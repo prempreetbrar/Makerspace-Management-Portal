@@ -23,8 +23,7 @@ const TabContainer: React.FC<TabContainerProps> = ({
             <Box
                 className="tab-container"
                 sx={{
-                    maxWidth: '1500px',
-                    minHeight: '600px',
+                    minHeight: '40rem',
                     marginTop: '10px',
                     marginInline: 'auto',
                     backgroundColor: '#7D768B',
@@ -136,6 +135,7 @@ const TabContainer: React.FC<TabContainerProps> = ({
                         flexDirection: 'column',
                         alignItems: 'center',
                         paddingTop: '10px',
+                        overflowY: 'scroll',
                         [theme.breakpoints.down('md')]: {
                             width: '90%',
                         },

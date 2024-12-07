@@ -20,10 +20,11 @@ import ResolveModal from '../Components/Requests/Modals/ResolveModal.tsx';
 import SetOODModal from '../Components/Requests/Modals/SetOODModal.tsx';
 import { useSnackbar } from '../contexts/SnackbarProvider.tsx';
 import EditBookingModal from '../Components/Requests/Modals/EditBookingModal.tsx';
+import theme from '../theme.ts';
 
 const Requests = () => {
     //media query
-    const isMobile = useMediaQuery('(max-width:768px)');
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
     //user context
     const { user, isLoading } = useAuth();
@@ -229,247 +230,235 @@ const Requests = () => {
         handleCloseModal();
     };
 
-    const theme = createTheme({
-        palette: {
-            primary: {
-                main: '#65558F',
-            },
-            secondary: {
-                main: '#ECE6F0',
-            },
-            text: {
-                primary: '#000000',
-                secondary: '#5F5F5F',
-            },
-            background: {
-                default: '#FFFFFF',
-            },
-        },
-        typography: {
-            fontFamily: 'Roboto, sans-serif',
-        },
-    });
-
     return (
         <ThemeProvider theme={theme}>
-            <NavBar id="request" />
             <div className="requestContainer">
+                <NavBar id="request" />
                 <Box
                     sx={{
-                        paddingTop: 3,
-                        paddingLeft: 3,
-                        justifyContent: 'center',
-                        width: '100%',
+                        width: '90%',
+                        marginInline: 'auto',
+                        marginTop: '2rem',
+                        [theme.breakpoints.down('md')]: {
+                            width: '100%',
+                        },
                     }}
                 >
-                    {/* <ChangeUserButton /> */}
-                </Box>
-                <TabContainer
-                    value={status}
-                    onChange={setStatus}
-                    user={userState}
-                >
-                    {userState === 'admin'
-                        ? status === 0
-                            ? // Admin view: Show pending requests
-                              bookings
-                                  .filter(
-                                      (bookings) =>
-                                          bookings.status === 'pending'
-                                  )
-                                  .map((bookings) =>
-                                      isMobile ? (
-                                          <MobileRequestCard
-                                              key={bookings.id}
-                                              booking={bookings}
-                                              userRole={userState}
-                                              handleDelete={() =>
-                                                  handleOpenModal(
-                                                      'cancelReservation',
-                                                      bookings
-                                                  )
-                                              }
-                                              handleReject={() =>
-                                                  handleOpenModal(
-                                                      'rejectReservation',
-                                                      bookings
-                                                  )
-                                              }
-                                              handleAccept={
-                                                  localStorage.getItem(
-                                                      'dontShowModal'
-                                                  ) === 'true'
-                                                      ? () =>
-                                                            handleApproveBooking(
-                                                                bookings?.id
-                                                            )
-                                                      : () =>
+                    <Box>
+                        <TabContainer
+                            value={status}
+                            onChange={setStatus}
+                            user={userState}
+                        >
+                            {userState === 'admin'
+                                ? status === 0
+                                    ? // Admin view: Show pending requests
+                                      bookings
+                                          .filter(
+                                              (bookings) =>
+                                                  bookings.status === 'pending'
+                                          )
+                                          .map((bookings) =>
+                                              isMobile ? (
+                                                  <MobileRequestCard
+                                                      key={bookings.id}
+                                                      booking={bookings}
+                                                      userRole={userState}
+                                                      handleDelete={() =>
+                                                          handleOpenModal(
+                                                              'cancelReservation',
+                                                              bookings
+                                                          )
+                                                      }
+                                                      handleReject={() =>
+                                                          handleOpenModal(
+                                                              'rejectReservation',
+                                                              bookings
+                                                          )
+                                                      }
+                                                      handleAccept={
+                                                          localStorage.getItem(
+                                                              'dontShowModal'
+                                                          ) === 'true'
+                                                              ? () =>
+                                                                    handleApproveBooking(
+                                                                        bookings?.id
+                                                                    )
+                                                              : () =>
+                                                                    handleOpenModal(
+                                                                        'approveReservation',
+                                                                        bookings
+                                                                    )
+                                                      }
+                                                  />
+                                              ) : (
+                                                  <RequestCard
+                                                      key={bookings.id}
+                                                      booking={bookings}
+                                                      handleDelete={() =>
+                                                          handleOpenModal(
+                                                              'cancelReservation',
+                                                              bookings
+                                                          )
+                                                      }
+                                                      handleReject={() =>
+                                                          handleOpenModal(
+                                                              'rejectReservation',
+                                                              bookings
+                                                          )
+                                                      }
+                                                      handleAccept={
+                                                          localStorage.getItem(
+                                                              'dontShowModal'
+                                                          ) === 'true'
+                                                              ? () =>
+                                                                    handleApproveBooking(
+                                                                        bookings?.id
+                                                                    )
+                                                              : () =>
+                                                                    handleOpenModal(
+                                                                        'approveReservation',
+                                                                        bookings
+                                                                    )
+                                                      }
+                                                      userRole={userState}
+                                                  />
+                                              )
+                                          )
+                                    : status === 1
+                                      ? // Admin view: Show issues when status is 1
+                                        issues
+                                            .filter(
+                                                (issues) =>
+                                                    issues.isResolved ==
+                                                        false &&
+                                                    issues.equipment
+                                                        ?.isUnderMaintenance ==
+                                                        false
+                                            )
+                                            .map((issues) =>
+                                                isMobile ? (
+                                                    <MobileIssueCard
+                                                        key={issues.id}
+                                                        issue={issues}
+                                                        handleResolve={() => {
                                                             handleOpenModal(
-                                                                'approveReservation',
-                                                                bookings
-                                                            )
-                                              }
-                                          />
-                                      ) : (
-                                          <RequestCard
-                                              key={bookings.id}
-                                              booking={bookings}
-                                              handleDelete={() =>
-                                                  handleOpenModal(
-                                                      'cancelReservation',
-                                                      bookings
-                                                  )
-                                              }
-                                              handleReject={() =>
-                                                  handleOpenModal(
-                                                      'rejectReservation',
-                                                      bookings
-                                                  )
-                                              }
-                                              handleAccept={
-                                                  localStorage.getItem(
-                                                      'dontShowModal'
-                                                  ) === 'true'
-                                                      ? () =>
-                                                            handleApproveBooking(
-                                                                bookings?.id
-                                                            )
-                                                      : () =>
+                                                                'resolveIssue',
+                                                                issues
+                                                            );
+                                                        }}
+                                                        handleOOD={() =>
                                                             handleOpenModal(
-                                                                'approveReservation',
-                                                                bookings
+                                                                'setOOD',
+                                                                issues
                                                             )
-                                              }
-                                              userRole={userState}
-                                          />
+                                                        }
+                                                    />
+                                                ) : (
+                                                    <IssueCard
+                                                        key={issues.id}
+                                                        issue={issues}
+                                                        handleResolve={() => {
+                                                            handleOpenModal(
+                                                                'resolveIssue',
+                                                                issues
+                                                            );
+                                                        }}
+                                                        handleOOD={() =>
+                                                            handleOpenModal(
+                                                                'setOOD',
+                                                                issues
+                                                            )
+                                                        }
+                                                    />
+                                                )
+                                            )
+                                      : // Admin view: Default case
+                                        issues
+                                            .filter(
+                                                (issues) =>
+                                                    issues.isResolved ==
+                                                        false &&
+                                                    issues.equipment
+                                                        ?.isUnderMaintenance ==
+                                                        true
+                                            )
+                                            .map((issues) =>
+                                                isMobile ? (
+                                                    <MobileIssueCard
+                                                        key={issues.id}
+                                                        issue={issues}
+                                                        handleResolve={() => {
+                                                            handleOpenModal(
+                                                                'resolveIssue',
+                                                                issues
+                                                            );
+                                                        }}
+                                                        handleOOD={() =>
+                                                            handleOpenModal(
+                                                                'setOOD',
+                                                                issues
+                                                            )
+                                                        }
+                                                    />
+                                                ) : (
+                                                    <IssueCard
+                                                        key={issues.id}
+                                                        issue={issues}
+                                                        handleResolve={() => {
+                                                            handleOpenModal(
+                                                                'resolveIssue',
+                                                                issues
+                                                            );
+                                                        }}
+                                                        handleOOD={() =>
+                                                            handleOpenModal(
+                                                                'setOOD',
+                                                                issues
+                                                            )
+                                                        }
+                                                    />
+                                                )
+                                            )
+                                : // General user view: Filter requests based on status
+                                  bookings
+                                      .filter(
+                                          (bookings) =>
+                                              bookings.status ===
+                                              numberToStringMap[status]
                                       )
-                                  )
-                            : status === 1
-                              ? // Admin view: Show issues when status is 1
-                                issues
-                                    .filter(
-                                        (issues) =>
-                                            issues.isResolved == false &&
-                                            issues.equipment
-                                                ?.isUnderMaintenance == false
-                                    )
-                                    .map((issues) =>
-                                        isMobile ? (
-                                            <MobileIssueCard
-                                                key={issues.id}
-                                                issue={issues}
-                                                handleResolve={() => {
-                                                    handleOpenModal(
-                                                        'resolveIssue',
-                                                        issues
-                                                    );
-                                                }}
-                                                handleOOD={() =>
-                                                    handleOpenModal(
-                                                        'setOOD',
-                                                        issues
-                                                    )
-                                                }
-                                            />
-                                        ) : (
-                                            <IssueCard
-                                                key={issues.id}
-                                                issue={issues}
-                                                handleResolve={() => {
-                                                    handleOpenModal(
-                                                        'resolveIssue',
-                                                        issues
-                                                    );
-                                                }}
-                                                handleOOD={() =>
-                                                    handleOpenModal(
-                                                        'setOOD',
-                                                        issues
-                                                    )
-                                                }
-                                            />
-                                        )
-                                    )
-                              : // Admin view: Default case
-                                issues
-                                    .filter(
-                                        (issues) =>
-                                            issues.isResolved == false &&
-                                            issues.equipment
-                                                ?.isUnderMaintenance == true
-                                    )
-                                    .map((issues) =>
-                                        isMobile ? (
-                                            <MobileIssueCard
-                                                key={issues.id}
-                                                issue={issues}
-                                                handleResolve={() => {
-                                                    handleOpenModal(
-                                                        'resolveIssue',
-                                                        issues
-                                                    );
-                                                }}
-                                                handleOOD={() =>
-                                                    handleOpenModal(
-                                                        'setOOD',
-                                                        issues
-                                                    )
-                                                }
-                                            />
-                                        ) : (
-                                            <IssueCard
-                                                key={issues.id}
-                                                issue={issues}
-                                                handleResolve={() => {
-                                                    handleOpenModal(
-                                                        'resolveIssue',
-                                                        issues
-                                                    );
-                                                }}
-                                                handleOOD={() =>
-                                                    handleOpenModal(
-                                                        'setOOD',
-                                                        issues
-                                                    )
-                                                }
-                                            />
-                                        )
-                                    )
-                        : // General user view: Filter requests based on status
-                          bookings
-                              .filter(
-                                  (bookings) =>
-                                      bookings.status ===
-                                      numberToStringMap[status]
-                              )
-                              .map((bookings) =>
-                                  isMobile ? (
-                                      <MobileRequestCard
-                                          key={bookings.id}
-                                          booking={bookings}
-                                          userRole={userState}
-                                          handleDelete={() =>
-                                              handleOpenModal(
-                                                  'cancelReservation',
-                                                  bookings
-                                              )
-                                          }
-                                      />
-                                  ) : (
-                                      <RequestCard
-                                          key={bookings.id}
-                                          booking={bookings}
-                                          handleDelete={() =>
-                                              handleOpenModal(
-                                                  'cancelReservation',
-                                                  bookings
-                                              )
-                                          }
-                                          userRole={userState}
-                                      />
-                                  )
-                              )}
-                </TabContainer>
+                                      .map((bookings) =>
+                                          isMobile ? (
+                                              <MobileRequestCard
+                                                  key={bookings.id}
+                                                  booking={bookings}
+                                                  userRole={userState}
+                                                  handleDelete={() =>
+                                                      handleOpenModal(
+                                                          'cancelReservation',
+                                                          bookings
+                                                      )
+                                                  }
+                                              />
+                                          ) : (
+                                              <RequestCard
+                                                  key={bookings.id}
+                                                  booking={bookings}
+                                                  handleDelete={() =>
+                                                      handleOpenModal(
+                                                          'cancelReservation',
+                                                          bookings
+                                                      )
+                                                  }
+                                                  userRole={userState}
+                                              />
+                                          )
+                                      )}
+                        </TabContainer>
+
+                        {/* <ChangeUserButton /> */}
+                    </Box>
+                </Box>
 
                 <CancelReservationModal
                     open={modalState.name === 'cancelReservation'}

@@ -55,7 +55,7 @@ export const SnackbarProvider: React.FC<{ children: React.ReactNode }> = ({
                 return {
                     backgroundColor: isMobile
                         ? theme.palette.primary.main
-                        : '#121212', // Default color
+                        : '#1D1B20', // Default color
                 };
         }
     }, [type, isMobile]);
