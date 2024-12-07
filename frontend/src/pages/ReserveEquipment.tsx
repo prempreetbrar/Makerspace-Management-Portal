@@ -58,6 +58,7 @@ import SyncIcon from '@mui/icons-material/Sync';
 import BookingModal from '../Components/ReserveEquipmentPage/BookingModal.tsx';
 import ReservationModal from '../Components/ReserveEquipmentPage/ReservationModal.tsx';
 import { useSnackbar } from '../contexts/SnackbarProvider.tsx';
+import ReportIssueDialog from '../Components/ReserveEquipmentPage/ReportIssueDialog.tsx';
 
 const theme = createTheme({
     palette: {
@@ -162,6 +163,7 @@ const ReserveEquipment = () => {
     const [resultsFound, setResultsFound] = useState(true);
     const [searchText, setSearchText] = useState<string>('');
     const [open, setOpen] = useState(false);
+    const [issueOpen, setIssueOpen] = useState(false);
     const [displayModel, setDisplayModel] = useState<Equipment[]>([]);
     const [loading, setLoading] = useState(false);
     const equipmentModel = React.useRef<Equipment[]>([]); // this is the entire equipment model. It doesn't change unless updated, and
@@ -267,6 +269,7 @@ const ReserveEquipment = () => {
         console.log(`Equipment ID: ${equipment.id}`);
         //setEquipmentData({id: equipment.id, name: equipment.name, isPremium: equipment.isPremium}); // pass the context to the child.
         setSelectedEquipmentID(equipment.id);
+        
         setOpen(true);
     };
     // the BookingModal component will handle the logic of registering booking separately.
@@ -278,7 +281,7 @@ const ReserveEquipment = () => {
 
     const handleSubmit = () => {
         setOpen(false);
-        showSnackbar(`Successfully booked equipment`)
+        //showSnackbar(`Successfully booked equipment`)
         setSelectedEquipmentID(-1);
     };
     function warnOnMaintenanceStatusChange()
@@ -344,8 +347,9 @@ const ReserveEquipment = () => {
     return (
         <>
             <MainContainer>
-                <ThemeProvider theme={theme}>\
-                <ReservationModal open={open} equipmentID={selectedEquipmentID} onClose={handleClose} onConfirm={handleSubmit}/>
+                <ThemeProvider theme={theme}>
+                <ReservationModal open={open} equipmentID={selectedEquipmentID} onClose={handleClose} onConfirm={handleSubmit} onReportIssue={()=>{setIssueOpen(true)}}/>
+                <ReportIssueDialog open={issueOpen} equipmentID={selectedEquipmentID} onClose={()=>{setIssueOpen(false)}} onSubmit={()=>{setIssueOpen(false);handleSubmit();}}/>
                     <Box
                         id="contentBox"
                         sx={{

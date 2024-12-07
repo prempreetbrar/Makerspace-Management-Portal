@@ -21,11 +21,16 @@ import { Booking } from '../../models';
 import { useSnackbar } from '../../contexts/SnackbarProvider.tsx';
 import zIndex from '@mui/material/styles/zIndex';
 import CloseIcon from '@mui/icons-material/Close';
+import utc from 'dayjs/plugin/utc';
+import gmt from 'dayjs/pluin/gmt';
+
+dayjs.extend(utc);
 
 interface EditBookingProps {
     open: boolean;
     onClose: () => void;
     onConfirm: () => void;
+    onReportIssue: () => void;
     equipmentID: number;
 }
 
@@ -78,6 +83,7 @@ const EditBookingModal: React.FC<EditBookingProps> = ({
     open,
     onClose,
     onConfirm,
+    onReportIssue,
     equipmentID,
 }) => {
     const [availableDates, setAvailableDates] = useState<string[]>([]);
@@ -112,7 +118,7 @@ const EditBookingModal: React.FC<EditBookingProps> = ({
 
     // Utility to format API times
     const formatApiTimes = (apiTimes: string[]) =>
-        apiTimes.map((time) => dayjs(time, 'HH:mm:ss').format('h:mmA'));
+        apiTimes.map((time) => dayjs.utc(time, 'HH:mm:ss').format('h:mmA'));
 
     const formatDateForApi = (date: Dayjs | null): string | null => {
         if (!date) return null;
@@ -123,7 +129,7 @@ const EditBookingModal: React.FC<EditBookingProps> = ({
         if (!time) return null;
 
         // Parse time string (e.g., "8:00AM") and reformat to 24-hour time
-        const timeParsed = dayjs(time, 'h:mmA');
+        const timeParsed = dayjs.utc(time, 'h:mmA');
         if (!timeParsed.isValid()) return null;
 
         return timeParsed.format('HH:mm');
@@ -180,6 +186,7 @@ const EditBookingModal: React.FC<EditBookingProps> = ({
             fetchData();
             setSelectedTime(null);
         }
+        console.log(selectedDate);
     }, [selectedDate, open]);
 
     useEffect(() => {
@@ -207,12 +214,12 @@ const EditBookingModal: React.FC<EditBookingProps> = ({
 
     const handleReserveBooking = async (equipmentIDValue: number) => {
         console.log(
-            `Reserving equipment with ID:${equipmentIDValue} on ${formatDateForApi(selectedDate)} ${selectedTime}`
+            `Reserving equipment with ID:${equipmentIDValue} on ${selectedDate} ${selectedTime}`
         );
         try {
             await axios.post('/bookings', {
                 equipmentID: equipmentIDValue,
-                bookingDate: formatDateForApi(selectedDate),
+                bookingDate: selectedDate,
                 timeSlot1: formatTimeForApi(selectedTime),
                 title: titleValue,
                 description: descriptionValue,
@@ -222,6 +229,7 @@ const EditBookingModal: React.FC<EditBookingProps> = ({
         } catch (error) {
             if (axios.isAxiosError(error)) {
                 showSnackbar(error.response?.data.message);
+                console.log(error.response?.data.message);
             }
         }
     };
@@ -444,7 +452,7 @@ const EditBookingModal: React.FC<EditBookingProps> = ({
                                 >
                                     <Button
                                         sx={buttonStyles.close}
-                                        onClick={onClose}
+                                        onClick={onReportIssue}
                                     >
                                         Report Issue
                                     </Button>

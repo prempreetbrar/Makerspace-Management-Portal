@@ -1,5 +1,6 @@
 const { DataTypes, INTEGER, Op } = require('sequelize');
 const sequelize = require('../config/database');
+const dayjs = require('dayjs');
 
 // status constants
 STATUS_APPROVED = 'approved';
@@ -165,7 +166,7 @@ Booking.addHook('beforeValidate', async (booking) => {
     today.setHours(0, 0, 0, 0); // Reset time to midnight for accurate comparison
     const bookingDate = new Date(booking.bookingDate);
 
-    if (bookingDate < today) {
+    if (dayjs(booking.bookingDate).valueOf < today) {
         throw new Error('Booking date must be today or a future date.');
     }
 

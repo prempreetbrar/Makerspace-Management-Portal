@@ -197,14 +197,15 @@ const Requests = () => {
 
     const handleSetOutOfOrder = async (idValue?: number) => {
         try {
-            await axios.patch(`/equipment`, {
+            const response = await axios.patch(`/equipment`, {
                 id: idValue,
                 isUnderMaintenance: true,
             });
-
+            console.log(response);
+            console.log('updating');
             setIssues((prevIssues) =>
                 prevIssues.map((issue) =>
-                    issue.id === idValue
+                    issue.equipment?.id === idValue
                         ? {
                               ...issue,
                               equipment: issue.equipment
@@ -217,6 +218,7 @@ const Requests = () => {
                         : issue
                 )
             );
+            console.log(issues);
 
             console.log(`Setting equipment Out-of-Order with ID: ${idValue}`);
         } catch (error) {
