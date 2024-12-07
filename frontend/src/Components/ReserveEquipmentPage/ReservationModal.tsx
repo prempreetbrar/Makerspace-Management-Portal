@@ -135,24 +135,23 @@ const EditBookingModal: React.FC<EditBookingProps> = ({
     const formatTimeForApi = (time: string | null): string | null => {
         if (!time) return null;
 
-        // Parse time string (e.g., "8:00AM") and reformat to 24-hour time
         const timeParsed = dayjs.utc(time, 'h:mmA');
         if (!timeParsed.isValid()) return null;
 
         return timeParsed.format('HH:mm');
     };
 
-    // Fetch available dates when modal opens
     useEffect(() => {
+        let intervalId: NodeJS.Timeout;
+
         const fetchData = async () => {
+            console.log('fetcing bookings days');
             if (equipmentID) {
                 try {
-                    console.log(equipmentID);
                     const response = await axios.get(
                         `/bookings/days?equipmentID=${equipmentID}`
                     );
                     setAvailableDates(response.data.availableBookingDays);
-                    setAvailableDates((prevList) => [...prevList]);
                 } catch (error) {
                     console.error('Failed to fetch available dates:', error);
                 }
@@ -161,13 +160,19 @@ const EditBookingModal: React.FC<EditBookingProps> = ({
 
         if (open) {
             fetchData();
-            console.log(availableDates);
+            intervalId = setInterval(fetchData, 5000);
         }
-    }, [open]);
 
-    // Fetch available time slots when a date is selected
+        return () => {
+            clearInterval(intervalId);
+        };
+    }, [open, equipmentID]);
+
     useEffect(() => {
+        let intervalId: NodeJS.Timeout;
+
         const fetchData = async () => {
+            console.log('fetcing booking slots');
             if (selectedDate) {
                 try {
                     const response = await axios.get(
@@ -179,8 +184,6 @@ const EditBookingModal: React.FC<EditBookingProps> = ({
                         response.data.availableBookingSlots
                     );
                     setAvailableTimeSlots(formattedSlots);
-                    console.log(selectedDate);
-                    console.log(availableTimeSlots);
                 } catch (error) {
                     console.error(
                         'Failed to fetch available time slots:',
@@ -189,15 +192,18 @@ const EditBookingModal: React.FC<EditBookingProps> = ({
                 }
             }
         };
-        if (open) {
+
+        if (open && selectedDate) {
             fetchData();
-            setSelectedTime(null);
+            intervalId = setInterval(fetchData, 5000);
         }
-        console.log(selectedDate);
-    }, [selectedDate, open]);
+
+        return () => {
+            clearInterval(intervalId);
+        };
+    }, [selectedDate, open, equipmentID]);
 
     useEffect(() => {
-        console.log('hey');
         setSelectedDate(null);
         setSelectedTime(null);
         setAvailableTimeSlots([]);
@@ -232,19 +238,19 @@ const EditBookingModal: React.FC<EditBookingProps> = ({
                 title: titleValue,
                 description: descriptionValue,
             });
-            showSnackbar('Successfully reserved equipment!');
+            showSnackbar('Successfully reserved equipment!', 'success');
             onConfirm();
         } catch (error) {
             console.log(error);
             if (axios.isAxiosError(error)) {
-                if (error.response?.data.message.length() == 0) {
+                if (error.response?.data.message.length) {
                     showSnackbar(error.response?.data.message);
                     console.log(error.response?.data.message);
                 } else {
-                    showSnackbar(error.message);
+                    showSnackbar(error.message, 'error');
                 }
             } else {
-                showSnackbar('Unexpected Error Occured');
+                showSnackbar('Unexpected Error Occured', 'error');
             }
         }
     };

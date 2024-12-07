@@ -121,7 +121,7 @@ async function _getAvailableBookingDays(user, equipmentID) {
         });
 
         const maxBookingsPerWeek =
-            user.userRole === Booking.PREMIUM
+            user.userRole === User.PREMIUM
                 ? Booking.premiumUserMaxPerWeek
                 : Booking.basicUserMaxPerWeek;
 
