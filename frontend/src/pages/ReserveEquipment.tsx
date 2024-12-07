@@ -79,6 +79,15 @@ const theme = createTheme({
     typography: {
         fontFamily: 'Roboto, sans-serif',
     },
+    breakpoints: {
+      values: {
+          xs: 0,
+          sm: 600,
+          md: 768,
+          lg: 1200,
+          xl: 1536,
+      },
+  },
 });
 
 type Equipment = {
@@ -364,12 +373,15 @@ const ReserveEquipment = () => {
                             overflow: 'hidden',
                         }}>
                         <NavBar id="reserve" />
-                        <Box sx={{padding: {xs: 1.5, md: 3},justifyContent: 'center', width: '100%'}}>
-                            {/* <Typography
+                        <Box sx={{padding: {xs: 1.5, md: 3}, paddingTop: {xs: "1rem", md: "6rem !important"}, justifyContent: 'center', width: '100%', textAlign: "center"}}>
+                            <Typography
                                 color={theme.palette.primary.contrastText}
-                                sx={{ pl: 2 }}>
-                                Find equipment for your next project
-                            </Typography> */}
+                                sx={{fontSize:"3rem", textTransform: "uppercase", fontWeight: "medium",  display: {
+                                  xs: "none",
+                                  md: "block"
+                              }, paddingBottom: "1rem",}}>
+                                FIND THE RIGHT <Typography sx={{display: "inline", fontSize:"3rem", textTransform: "uppercase", fontWeight: "bold", color: "#D0BCFE"}}>TOOLS</Typography> FOR YOUR PROJECT
+                            </Typography>
                             <SearchBar
                                 value={searchText}
                                 onChange={updateSearchBar}
