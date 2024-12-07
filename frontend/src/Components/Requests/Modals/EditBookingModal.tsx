@@ -67,7 +67,6 @@ const buttonStyles = {
 const EditBookingModal: React.FC<EditBookingProps> = ({
     open,
     onClose,
-    onConfirm,
     booking,
 }) => {
     const [availableDates, setAvailableDates] = useState<string[]>([]);
@@ -167,7 +166,7 @@ const EditBookingModal: React.FC<EditBookingProps> = ({
     };
 
     const handleTimeChange = (
-        event: React.MouseEvent<HTMLElement>,
+        _event: React.MouseEvent<HTMLElement>,
         newTime: string | null
     ) => {
         if (newTime) {

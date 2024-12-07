@@ -1,5 +1,4 @@
 import React from 'react'
-import {motion} from 'framer-motion'
 import StarsRoundedIcon from '@mui/icons-material/StarsRounded';
 const PremiumBadge = ()=>
 (

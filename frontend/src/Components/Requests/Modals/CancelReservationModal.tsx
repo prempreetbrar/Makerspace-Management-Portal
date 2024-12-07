@@ -113,7 +113,6 @@ const closeIconStyle = {
 const CancelReservationModal: React.FC<CancelReservationProps> = ({
     open,
     onClose,
-    data,
     title = 'Cancel Request?',
     description = 'This action cannot be undone.',
     onConfirm,

@@ -167,8 +167,8 @@ const BookingModal = ({
         setReportIssueDialogOpen(false);
         handleCloseModal(true);
     };
-    const handleSubmitReportIssue = (issueDescription: string) => {
-        console.log('Reported Issue:', issueDescription);
+    const handleSubmitReportIssue = () => {
+        console.log('Reported Issue');
         // backend here
     };
 
@@ -619,6 +619,7 @@ const BookingModal = ({
                                                 handleCloseReportIssueDialog
                                             }
                                             onSubmit={handleSubmitReportIssue}
+                                            equipmentID={equipmentID}
                                         />
 
                                         <Button

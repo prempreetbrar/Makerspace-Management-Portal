@@ -14,7 +14,12 @@ Note that this is not a comprehensive guide and you will likely encounter issues
 ## Local Development Servers
 - In frontend/src/axios.ts, find the constant 'axiosInstance' and set the value of 'baseURL' to `http://localhost:8080`.
 - Open two terminals and navigate to the frontend folder in one and the backend folder in the other.
-- Run `npm list` in the frontend terminal and ensure that all of the following packages are installed:
+- In the frontend terminal, run:
+  ```
+  npm install
+  npm list
+  ``` 
+- Confirm the output of npm list matches the following:
   ```
   +-- @emotion/react@11.13.3
   +-- @emotion/styled@11.13.0
@@ -41,11 +46,17 @@ Note that this is not a comprehensive guide and you will likely encounter issues
   +-- react-router-dom@6.28.0
   +-- react-swipeable@7.0.2
   +-- react@18.3.1
+  +-- sequelize@6.37.5
   +-- typescript-eslint@8.15.0
   +-- typescript@5.6.3
   `-- vite@5.4.11
   ```
-- Run `npm list` in the backend terminal and ensure that all of the following packages are installed:
+- In the backend terminal, run:
+  ```
+  npm install
+  npm list
+  ``` 
+- Confirm the output of npm list matches the following:
   ```
   +-- bcrypt@5.1.1
   +-- cookie-parser@1.4.7
@@ -53,6 +64,7 @@ Note that this is not a comprehensive guide and you will likely encounter issues
   +-- dollars-to-cents@1.0.3
   +-- dotenv@16.4.5
   +-- express@4.21.1
+  +-- js-cookie@3.0.5
   +-- jsonwebtoken@9.0.2
   +-- morgan@1.10.0
   +-- nodemon@3.1.7
@@ -74,7 +86,7 @@ Note that this is not a comprehensive guide and you will likely encounter issues
     <div style="border: 1px solid black;">![screenshot](frontend/public/landing_page.png)</div>
 
 ## Docker Containers
-- Confirm that you can run the project on local development servers as detailed above before attempting to run it in Docker.
+- Optional: confirm that you can run the project on local development servers as detailed above before attempting to run it in Docker.
 - In frontend/src/axios.ts, find the constant 'axiosInstance' and set the value of 'baseURL' to `http://localhost:5001`.
 - Open a terminal and navigate to the project root.
 - Build the images by running:

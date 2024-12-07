@@ -22,7 +22,6 @@ import { useSnackbar } from '../../contexts/SnackbarProvider.tsx';
 import zIndex from '@mui/material/styles/zIndex';
 import CloseIcon from '@mui/icons-material/Close';
 import utc from 'dayjs/plugin/utc';
-import gmt from 'dayjs/pluin/gmt';
 import theme from '../../theme';
 
 dayjs.extend(utc);
@@ -220,7 +219,7 @@ const EditBookingModal: React.FC<EditBookingProps> = ({
     };
 
     const handleTimeChange = (
-        event: React.MouseEvent<HTMLElement>,
+        _event: React.MouseEvent<HTMLElement>,
         newTime: string | null
     ) => {
         if (newTime) {
