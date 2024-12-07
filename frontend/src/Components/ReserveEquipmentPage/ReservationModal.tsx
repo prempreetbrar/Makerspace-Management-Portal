@@ -197,12 +197,13 @@ const EditBookingModal: React.FC<EditBookingProps> = ({
     }, [selectedDate, open]);
 
     useEffect(() => {
+        console.log('hey');
         setSelectedDate(null);
         setSelectedTime(null);
         setAvailableTimeSlots([]);
         setDescriptionValue('');
         setTitleValue('');
-    }, [onClose]);
+    }, [open]);
 
     const shouldDisableDate = (date: Dayjs | null) => {
         if (!date) return true;
@@ -234,9 +235,16 @@ const EditBookingModal: React.FC<EditBookingProps> = ({
             showSnackbar('Successfully reserved equipment!');
             onConfirm();
         } catch (error) {
+            console.log(error);
             if (axios.isAxiosError(error)) {
-                showSnackbar(error.response?.data.message);
-                console.log(error.response?.data.message);
+                if (error.response?.data.message.length() == 0) {
+                    showSnackbar(error.response?.data.message);
+                    console.log(error.response?.data.message);
+                } else {
+                    showSnackbar(error.message);
+                }
+            } else {
+                showSnackbar('Unexpected Error Occured');
             }
         }
     };
