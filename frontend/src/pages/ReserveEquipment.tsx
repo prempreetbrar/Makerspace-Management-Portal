@@ -370,7 +370,7 @@ const ReserveEquipment = () => {
                             overflow: 'hidden',
                         }}>
                         <NavBar id="reserve" />
-                        <Box sx={{padding: {xs: 1.5, md: 3}, paddingTop: "6rem !important", justifyContent: 'center', width: '100%', textAlign: "center"}}>
+                        <Box sx={{padding: {xs: 1.5, md: 3}, paddingTop: {xs: "1rem", md: "6rem !important"}, justifyContent: 'center', width: '100%', textAlign: "center"}}>
                             <Typography
                                 color={theme.palette.primary.contrastText}
                                 sx={{fontSize:"3rem", textTransform: "uppercase", fontWeight: "medium",  display: {
