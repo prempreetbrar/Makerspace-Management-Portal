@@ -246,7 +246,7 @@ const EditBookingModal: React.FC<EditBookingProps> = ({
             console.log(error);
             if (axios.isAxiosError(error)) {
                 if (error.response?.data.message.length) {
-                    showSnackbar(error.response?.data.message);
+                    showSnackbar(error.response?.data.message, 'error');
                     console.log(error.response?.data.message);
                 } else {
                     showSnackbar(error.message, 'error');
