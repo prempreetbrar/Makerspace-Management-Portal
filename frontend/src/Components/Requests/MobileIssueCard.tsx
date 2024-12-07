@@ -123,31 +123,32 @@ const MobileIssueCard: React.FC<MobileIssueCardProps> = ({
                                 <CheckIcon sx={{ color: 'white' }} />
                             </IconButton>
                         </Box>
-                        {issue.equipment?.isUnderMaintenance === false && (
-                            <Box
-                                sx={{
-                                    display: 'flex',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    backgroundColor: '#E8B931',
-                                    width: '50%',
-                                    height: '100%',
-                                }}
-                                onClick={() => {
-                                    handleOOD?.();
-                                    setIsSwiped(false);
-                                }}
-                            >
-                                <IconButton
+                        {issue.equipment?.isUnderMaintenance === false &&
+                            issue.equipment?.isBookable === true && (
+                                <Box
+                                    sx={{
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        backgroundColor: '#E8B931',
+                                        width: '50%',
+                                        height: '100%',
+                                    }}
                                     onClick={() => {
                                         handleOOD?.();
                                         setIsSwiped(false);
                                     }}
                                 >
-                                    <InfoIcon sx={{ color: 'white' }} />
-                                </IconButton>
-                            </Box>
-                        )}
+                                    <IconButton
+                                        onClick={() => {
+                                            handleOOD?.();
+                                            setIsSwiped(false);
+                                        }}
+                                    >
+                                        <InfoIcon sx={{ color: 'white' }} />
+                                    </IconButton>
+                                </Box>
+                            )}
                     </Box>
                 )}
                 <Card

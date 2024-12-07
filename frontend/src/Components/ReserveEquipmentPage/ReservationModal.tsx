@@ -23,6 +23,7 @@ import zIndex from '@mui/material/styles/zIndex';
 import CloseIcon from '@mui/icons-material/Close';
 import utc from 'dayjs/plugin/utc';
 import gmt from 'dayjs/pluin/gmt';
+import theme from '../../theme';
 
 dayjs.extend(utc);
 
@@ -35,6 +36,7 @@ interface EditBookingProps {
 }
 
 const style = {
+    overflowY: 'scroll',
     position: 'absolute',
     top: '40%',
     left: '50%',
@@ -46,6 +48,11 @@ const style = {
     textAlign: 'left',
     width: '850px',
     zIndex: 1000,
+    [theme.breakpoints.down('md')]: {
+        top: '50%',
+        width: '100%',
+        height: '100%',
+    },
 };
 
 const buttonStyles = {
@@ -244,12 +251,26 @@ const EditBookingModal: React.FC<EditBookingProps> = ({
                                 position: 'absolute',
                                 top: '35px',
                                 right: '35px',
+                                [theme.breakpoints.down('md')]: {
+                                    position: 'fixed',
+                                    top: 20,
+                                    right: 10,
+                                },
                             }}
                             onClick={onClose}
                         >
                             <CloseIcon />
                         </IconButton>
-                        <Grid2 container spacing={3}>
+                        <Grid2
+                            container
+                            spacing={3}
+                            sx={{
+                                display: 'flex',
+                                [theme.breakpoints.down('md')]: {
+                                    flexDirection: 'column',
+                                },
+                            }}
+                        >
                             <Grid2 size="auto">
                                 <Typography
                                     variant="h5"
