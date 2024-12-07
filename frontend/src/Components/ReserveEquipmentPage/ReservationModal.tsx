@@ -234,9 +234,10 @@ const EditBookingModal: React.FC<EditBookingProps> = ({
             showSnackbar('Successfully reserved equipment!');
             onConfirm();
         } catch (error) {
+            console.error(error);
             if (axios.isAxiosError(error)) {
-                showSnackbar(error.response?.data.message);
-                console.log(error.response?.data.message);
+                showSnackbar(error.response?.data.message || error.message);
+                console.log(error.response?.data.message || error.message);
             }
         }
     };
