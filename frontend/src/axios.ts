@@ -7,7 +7,7 @@ import Cookies from 'js-cookie';
 
 // The frontend will use its own port unless we manually intercept it and redirect it to the backend.
 const axiosInstance = axios.create({
-    baseURL: `http://localhost:8080`,
+    baseURL: `http://localhost:5001`,
 }) as AxiosInstance & typeof axios;
 
 axiosInstance.defaults.withCredentials = true;
