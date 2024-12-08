@@ -5,9 +5,13 @@ Note that this is not a comprehensive guide and you will likely encounter issues
   ```
   git clone https://csgit.ucalgary.ca/carter.marcelo/seng513-fall24-group-16.git
   ```
-- Checkout the production branch by running:
+- Go to the project root:
   ```
-  git checkout sp-reverted
+  cd seng513-fall24-group-16
+  ```
+- Confirm you are on the production branch by running:
+  ```
+  git checkout main
   ```
 - In backend/seed.js, set the value of the variable 'clear' to true if you want to clear and seed backend/database.db every time the backend starts, otherwise leave it as false.
 
@@ -87,6 +91,7 @@ Note that this is not a comprehensive guide and you will likely encounter issues
 
 ## Docker Containers
 - Optional: confirm that you can run the project on local development servers as detailed above before attempting to run it in Docker.
+- Launch Docker Desktop.
 - In frontend/src/axios.ts, find the constant 'axiosInstance' and set the value of 'baseURL' to `http://localhost:5001`.
 - Open a terminal and navigate to the project root.
 - Build the images by running:
