@@ -1,5 +1,4 @@
-*This project has been exported from GitLab, and was created by the 
-
+*This project has been exported from GitLab, and was created by a team of 5 students which are not shown on this project*
 
 # How to Run
 Note that this is not a comprehensive guide and you will likely encounter issues that will require some light troubleshooting to fix. Be sure to read output from your terminals and browser console if you get stuck.
