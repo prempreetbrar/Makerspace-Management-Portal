@@ -175,7 +175,7 @@ const ReserveEquipment = () => {
     const [issueOpen, setIssueOpen] = useState(false);
     const [displayModel, setDisplayModel] = useState<Equipment[]>([]);
     const [loading, setLoading] = useState(false);
-    const equipmentModel = React.useRef<Equipment[]>([]); // this is the entire equipment model. It doesn't change unless updated, and
+    const equipmentModel = React.useRef<Equipment[]>([]);
     const [selectedEquipmentID, setSelectedEquipmentID] = useState(-1); // Using -1 will prevent any "undefined" errors.
     const [spinning, setSpinning] = useState(false);
     const [sync, setSync] = useState(false); // the state of this variable doesn't matter
@@ -183,12 +183,6 @@ const ReserveEquipment = () => {
     const statusChanging = React.useRef(false);
     //snackbar
     const { showSnackbar } = useSnackbar();
-
-    // ** Mehedi ** if the request is successful, then this should get set to "true".
-    // There just needs to be a way to indicate success vs failure.
-    // once the dialog is dismissed, this status should be reset to false.
-
-    // If you know of a better way to handle success vs failure, then please change this.
 
     const [success, setSuccess] = useState(false); 
 
@@ -301,12 +295,6 @@ const ReserveEquipment = () => {
 
     function handleChangeMaintenanceStatus(equipment: Equipment) {
 
-        // Mehedi, you need to block this write function f
-        // WHEN USERS CHANGE THE MAINTENANCE STATUS, THIS IS CALLED. ONLY IF THEY CONFIRM.
-        // THIS TRIGGERS THE MAINTENANCE DIALOG TO OPEN
-
-        // Don't touch from here...
-        // keep this. It prevents the user from clicking button and making duplicate requests.
         if(statusChanging.current) return // prevent duplicate requests
         statusChanging.current = true;
         // Keep this
@@ -346,12 +334,6 @@ const ReserveEquipment = () => {
         equipment.isUnderMaintenance = !equipment.isUnderMaintenance;
         console.log(`${equipment.name} is under maintenance updated: ${equipment.isUnderMaintenance}`);
         writeStatus();
-
-        // ... to here.
-
-        // YOU SHOULD DISPLAY A DIFFERENT MESSAGE 
-        // WHEN THE EQUIPMENT WAS PUT UNDER MAINTENANCE THEN WHEN IT MADE BOOKABLE AGAIN
-        // ** INSERT SNACKBAR TRIGGER HERE **
     }
     return (
         <>
