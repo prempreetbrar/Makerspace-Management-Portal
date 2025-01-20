@@ -1,7 +1,14 @@
-*This project has been exported from GitLab, and was created by a team of 5 students which are not shown on this project*
+# Makerspace Management Portal
 
-# How to Run
-Note that this is not a comprehensive guide and you will likely encounter issues that will require some light troubleshooting to fix. Be sure to read output from your terminals and browser console if you get stuck.
+A program that allows students to reserve and view available equipment in the university's makerspace -- students can see available times and report issues with equipment, while admins can accept or deny bookings, and set equipment status. Watch a GIF of me interacting with it below!
+
+[]
+
+Interested in learning more? Click [here](https://drive.google.com/file/d/166LxzKaVnde0scdmqk1s0WQN2wszqNO4/view?usp=sharing) to see a showcase of the entire website.
+
+Want to see some of the technical deatils and explanation of the code behind the project? Click [here](https://drive.google.com/file/d/1nT2A-kkFWXPrl19oSGhr4a-unjOmnsBV/view?usp=sharing)!
+
+## Features
 
 - Navigate to the directory you want to store the project files in and clone the repository by running:
   ```
