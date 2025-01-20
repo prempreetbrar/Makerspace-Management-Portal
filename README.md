@@ -6,7 +6,7 @@ A program that allows students to reserve and view available equipment in the un
 
 Interested in learning more? Click [here](https://drive.google.com/file/d/166LxzKaVnde0scdmqk1s0WQN2wszqNO4/view?usp=sharing) to see a showcase of the entire website.
 
-Want to see some of the technical deatils and explanation of the code behind the project? Click [here](https://drive.google.com/file/d/1nT2A-kkFWXPrl19oSGhr4a-unjOmnsBV/view?usp=sharing)!
+Want to see some of the technical details and explanation of the code behind the project? Click [here](https://drive.google.com/file/d/1nT2A-kkFWXPrl19oSGhr4a-unjOmnsBV/view?usp=sharing)!
 
 ## Features
 
